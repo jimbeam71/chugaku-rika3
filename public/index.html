@@ -1,0 +1,2497 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中学理科 レベル3</title>
+<style>
+@font-face { font-family: "OmegaFix"; src: local("Arial"), local("Helvetica Neue"), local("Helvetica"), local("Roboto"), local("Noto Sans"), local("Segoe UI"), local("DejaVu Sans"); unicode-range: U+03A9, U+2126; }
+
+  /* layout: 目次(home) と 1話(lesson) を切り替える単一ページ。読みは最大640pxの一列。accent = ティール（理科・レベル3） */
+  :root {
+    --bg: #f2f8f8; --surface: #ffffff; --surface-2: #e5eff0;
+    --fg: #22272e; --muted: #667183; --line: #d3e3e4;
+    --accent: #1f7f86; --accent-ink: #17606a; --accent-soft: #e0f1f2;
+    --good: #2f7d57; --good-soft: #e4f1e9; --good-line: #bfe0cd;
+    --wrong: #b23a3a; --wrong-soft: #f7e5e3; --wrong-line: #ecc9c6;
+    --chip: #e6f3f4; --radius: 14px; --maxw: 640px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #131a1a; --surface: #1c2525; --surface-2: #263130;
+      --fg: #e6eeee; --muted: #9aaaaa; --line: #34443f;
+      --accent: #6cc6cc; --accent-ink: #8fd8dc; --accent-soft: #1b3032;
+      --good: #6cc394; --good-soft: #22352b; --good-line: #345a44;
+      --wrong: #e59090; --wrong-soft: #3a2626; --wrong-line: #5c3a3a;
+      --chip: #213b3d; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #131a1a; --surface: #1c2525; --surface-2: #263130;
+    --fg: #e6eeee; --muted: #9aaaaa; --line: #34443f;
+    --accent: #6cc6cc; --accent-ink: #8fd8dc; --accent-soft: #1b3032;
+    --good: #6cc394; --good-soft: #22352b; --good-line: #345a44;
+    --wrong: #e59090; --wrong-soft: #3a2626; --wrong-line: #5c3a3a;
+    --chip: #213b3d; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--fg); margin: 0;
+    font-family: "OmegaFix", "Noto Sans JP", system-ui, sans-serif; font-weight: 400; line-height: 1.95; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 18px 18px 72px; }
+  ruby rt { font-size: .58em; font-weight: 400; color: var(--muted); }
+  h1, h2, .lesson-head, .q-head, .done-head, .secret-head, .home-h1, .block-era, .lc-ttl, .figcap, .done-head { font-family: "OmegaFix", "Zen Maru Gothic", "Noto Sans JP", sans-serif; }
+
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .brand { font-size: .78rem; font-weight: 700; letter-spacing: .06em; color: var(--accent-ink); cursor: pointer; background: none; border: none; font-family: inherit; padding: 0; }
+  .theme-btn { font: inherit; font-size: .78rem; cursor: pointer; background: var(--surface); color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  .theme-btn:hover { color: var(--fg); border-color: var(--accent); }
+
+  /* ---------- 目次 ---------- */
+  .home-h1 { font-size: 1.8rem; font-weight: 700; margin: 4px 0 4px; }
+  .home-lead { color: var(--muted); font-size: .95rem; margin: 0 0 8px; }
+  .home-note { font-size: .85rem; color: var(--muted); background: var(--surface-2); border-radius: 10px; padding: 11px 14px; margin: 14px 0 20px; }
+  .home-note b { color: var(--fg); }
+
+  .intro { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); margin: 0 0 28px; overflow: hidden; }
+  .intro > summary { list-style: none; cursor: pointer; padding: 14px 16px; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; color: var(--accent-ink); display: flex; align-items: center; gap: 8px; }
+  .intro > summary::-webkit-details-marker { display: none; }
+  .intro > summary .chev { margin-left: auto; transition: transform .2s; font-size: .72rem; color: var(--muted); }
+  .intro[open] > summary .chev { transform: rotate(180deg); }
+  .intro-body { padding: 0 16px 18px; }
+  .intro-body > p { margin: 0 0 12px; font-size: .92rem; }
+  .intro-h { font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-size: 1rem; margin: 20px 0 9px; }
+  .steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; counter-reset: st; }
+  .steps li { display: flex; gap: 10px; align-items: flex-start; font-size: .92rem; line-height: 1.7; }
+  .steps li::before { counter-increment: st; content: counter(st); flex: none; width: 22px; height: 22px; border-radius: 7px; background: var(--chip); color: var(--accent-ink); border: 1.5px solid var(--accent); display: grid; place-items: center; font-size: .76rem; font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; }
+  .tips { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .tips li { font-size: .9rem; line-height: 1.7; background: var(--surface-2); border-radius: 9px; padding: 9px 12px; }
+  .tips li b { color: var(--accent-ink); }
+  .goro { background: var(--accent-soft); border-radius: 10px; padding: 14px; }
+  .goro .big { font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-size: 1.32rem; color: var(--accent-ink); letter-spacing: .04em; text-align: center; margin: 0 0 12px; }
+  .goro-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .goro-list li { display: flex; align-items: center; gap: 9px; font-size: .92rem; background: var(--surface); border-radius: 8px; padding: 6px 10px; }
+  .goro-list .kana { flex: none; width: 24px; height: 24px; border-radius: 6px; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: .85rem; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; }
+  .goro .sub { font-size: .78rem; color: var(--muted); margin: 10px 0 0; }
+  .flow { font-size: .86rem; line-height: 2; background: var(--surface-2); border-radius: 9px; padding: 11px 13px; margin: 0; }
+  .block { margin-bottom: 24px; }
+  .block-era { display: flex; align-items: baseline; gap: 10px; font-size: 1.12rem; font-weight: 700; margin: 0 0 10px; }
+  .block-era .w { font-size: .72rem; font-weight: 700; color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 2px 9px; }
+  .lc-grid { display: grid; gap: 9px; }
+  .lc { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; cursor: pointer; color: var(--fg); }
+  .lc.ready:hover { border-color: var(--accent); }
+  .lc.soon { opacity: .5; cursor: default; }
+  .lc-no { flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--surface-2); color: var(--accent-ink);
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; }
+  .lc.ready .lc-no { background: var(--accent); color: #fff; }
+  .lc-ttl { font-weight: 700; font-size: 1rem; }
+  .lc-tag { margin-left: auto; flex: none; font-size: .72rem; color: var(--muted); }
+  .lc.ready .lc-tag { color: var(--accent-ink); font-weight: 700; }
+
+  /* ---------- 1話 ---------- */
+  .crumbs { font-size: .76rem; font-weight: 700; color: var(--accent-ink); margin-bottom: 2px; }
+  .crumbs .sep { color: var(--line); margin: 0 .5em; }
+  h1 { font-size: 1.68rem; font-weight: 700; line-height: 1.35; margin: 2px 0 6px; text-wrap: balance; }
+  .subhead { color: var(--muted); font-size: .9rem; margin: 0 0 26px; }
+
+  .frame { background: var(--accent-soft); border-radius: var(--radius); padding: 18px; margin-bottom: 30px; }
+  .frame-tag { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; font-weight: 700; color: var(--accent-ink); margin-bottom: 8px; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; }
+  .frame-tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .frame p { margin: 0; } .frame p + p { margin-top: 10px; }
+  .read3 { margin: 13px 0 0 !important; font-size: .82rem; font-weight: 700; color: var(--accent-ink); }
+
+  .lesson-head, .q-head { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 700; margin: 0 0 4px; }
+  .num-badge { flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--accent); color: #fff;
+    display: grid; place-items: center; font-size: .82rem; font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; }
+  :root[data-theme="dark"] .num-badge, :root:not([data-theme="light"]) .num-badge,
+  :root[data-theme="dark"] .goro-list .kana, :root:not([data-theme="light"]) .goro-list .kana,
+  :root[data-theme="dark"] .ondoku-btn, :root:not([data-theme="light"]) .ondoku-btn { color: #131a1a; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .num-badge, :root:not([data-theme="dark"]) .goro-list .kana, :root:not([data-theme="dark"]) .ondoku-btn { color: #fff; } }
+  .sec-note { color: var(--muted); font-size: .88rem; margin: 0 0 16px 40px; }
+
+  .goals { display: grid; gap: 10px; margin: 0 0 30px; }
+  .goal { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 13px 15px; }
+  .goal .ic { flex: none; font-size: 1.1rem; }
+  .goal .k { font-weight: 700; color: var(--accent-ink); font-size: 1.02rem; }
+  .goal .d { color: var(--muted); font-size: .9rem; display: block; margin-top: 2px; line-height: 1.7; }
+
+  .read { margin-bottom: 26px; } .read p { margin: 0 0 16px; }
+  .term { font-weight: 700; color: var(--accent-ink); background: var(--chip); border-radius: 5px; padding: 0 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+  .figure { margin: 0 0 26px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+  .figure svg, .figure img { display: block; width: 100%; height: auto; max-width: 460px; margin: 0 auto; }
+  .figure img { border-radius: 8px; }
+  figure.figure { margin: 0 0 26px; }
+  .figcap { text-align: center; font-size: .85rem; color: var(--muted); margin-top: 8px; }
+  .figcap .cred { display: block; font-size: .72rem; opacity: .7; margin-top: 2px; }
+  .annowrap { position: relative; max-width: 460px; margin: 0 auto; }
+  .annowrap img { display: block; width: 100%; height: auto; border-radius: 8px; }
+  .anno-mark { position: absolute; transform: translate(-50%, -50%); width: 27px; height: 27px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: .82rem; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; border: 2px solid #fff; box-shadow: 0 0 0 2px var(--accent); }
+  .zukai { margin: 0 0 26px; border: 2px solid var(--accent); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+  .zukai-h { display: flex; align-items: center; gap: 8px; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-size: 1rem; color: #fff; background: var(--accent); padding: 9px 14px; }
+  .zukai-h .tag { margin-left: auto; font-size: .72rem; background: rgba(255,255,255,.22); border-radius: 999px; padding: 2px 10px; }
+  :root[data-theme="dark"] .zukai-h, :root:not([data-theme="light"]) .zukai-h { color: #131a1a; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .zukai-h { color: #fff; } }
+  .zukai img { display: block; width: 100%; height: auto; }
+  .zukai-cap { font-size: .82rem; color: var(--muted); padding: 9px 14px; }
+  .zukai-cap .cred { display: block; font-size: .72rem; opacity: .7; margin-top: 2px; }
+  .photo-slot { display: flex; gap: 12px; align-items: flex-start; border: 1.5px dashed var(--accent); border-radius: var(--radius); background: var(--accent-soft); padding: 13px 15px; margin: 0 0 12px; }
+  .photo-slot .pic { flex: none; font-size: 1.3rem; }
+  .photo-slot .pt { font-weight: 700; color: var(--accent-ink); font-size: .95rem; }
+  .photo-slot .pk { display: block; margin-top: 3px; font-size: .82rem; color: var(--muted); }
+  .photo-slot .pk code { background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; font-size: .92em; }
+
+  .progress { display: flex; align-items: center; gap: 10px; margin: 0 0 18px 40px; color: var(--muted); font-size: .88rem; }
+  .bar { flex: 1; height: 7px; background: var(--surface-2); border-radius: 999px; overflow: hidden; max-width: 200px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--good); border-radius: 999px; transition: width .4s ease; }
+  .count { font-weight: 700; color: var(--fg); font-variant-numeric: tabular-nums; }
+
+  .q-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 16px 15px; margin-bottom: 14px; }
+  .q-card .ask { font-weight: 700; font-size: 1.02rem; margin: 0 0 13px; }
+  .q-card .ask .qn { color: var(--accent-ink); margin-right: 6px; }
+  .ord-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }
+  .ord-item { position: relative; font: inherit; cursor: pointer; background: var(--bg); color: var(--fg); border: 2px solid var(--line); border-radius: 12px; padding: 6px 6px 22px; }
+  .ord-item svg { width: 100%; height: auto; display: block; }
+  .ord-item:disabled { cursor: default; }
+  .ord-num { position: absolute; top: 5px; left: 6px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: .95rem; display: grid; place-items: center; }
+  .ord-pick { position: absolute; left: 0; right: 0; bottom: 3px; text-align: center; font-size: .78rem; font-weight: 700; color: var(--accent-ink); min-height: 1em; }
+  .ord-item.picked { border-color: var(--accent); background: var(--accent-soft); }
+  .ord-item.ok { border-color: var(--good-line); background: var(--good-soft); } .ord-item.ok .ord-pick { color: var(--good); }
+  .ord-item.ng { border-color: var(--wrong-line); background: var(--wrong-soft); } .ord-item.ng .ord-pick { color: var(--wrong); }
+  .ord-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: .88rem; font-weight: 700; color: var(--accent-ink); }
+  .ord-reset { font: inherit; font-size: .82rem; cursor: pointer; border: 1.5px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 999px; padding: 5px 12px; }
+  .ord-reset:disabled { opacity: .4; cursor: default; }
+  .opts { display: grid; gap: 9px; }
+  .opt { font: inherit; text-align: left; cursor: pointer; background: var(--bg); color: var(--fg); border: 1.5px solid var(--line); border-radius: 10px;
+    padding: 11px 15px; line-height: 1.6; display: flex; align-items: center; gap: 10px; transition: border-color .15s, background .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:disabled { cursor: default; }
+  .opt .mk { flex: none; font-weight: 700; width: 1.3em; text-align: center; opacity: .5; font-size: .9rem; }
+  .opt.correct { border-color: var(--good-line); background: var(--good-soft); } .opt.correct .mk { opacity: 1; color: var(--good); }
+  .opt.wrong { border-color: var(--wrong-line); background: var(--wrong-soft); } .opt.wrong .mk { opacity: 1; color: var(--wrong); }
+  .opt.dim { opacity: .5; }
+  .explain { margin-top: 13px; padding: 13px 14px; border-radius: 10px; background: var(--surface-2); font-size: .92rem; line-height: 1.8; }
+  .explain .verdict { font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; }
+  .explain.ok .verdict { color: var(--good); } .explain.ng .verdict { color: var(--wrong); }
+  .explain p { margin: 6px 0 0; }
+  .ex-src { display: none; }
+
+  .done { margin-top: 30px; background: var(--accent-soft); border-radius: var(--radius); padding: 22px 20px; text-align: center; opacity: .5; transition: opacity .4s; }
+  .done.on { opacity: 1; }
+  .done-head { font-size: 1.3rem; font-weight: 700; margin: 0 0 4px; }
+  .done .score { font-size: 2rem; font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; color: var(--accent); display: block; margin: 4px 0; }
+  .done p { margin: 0; color: var(--accent-ink); font-size: .95rem; }
+
+  .secret { margin-top: 16px; background: var(--surface); border: 1.5px solid var(--accent); border-radius: var(--radius); padding: 20px 18px; opacity: .55; transition: opacity .45s; }
+  .secret.on { opacity: 1; }
+  .secret-head { display: flex; align-items: center; gap: 8px; font-size: 1.14rem; font-weight: 700; color: var(--accent-ink); margin: 0 0 4px; }
+  .secret-lead { margin: 0 0 18px; font-size: .9rem; color: var(--muted); }
+  .secret-item { display: flex; gap: 12px; margin-bottom: 18px; }
+  .si-no { flex: none; align-self: flex-start; white-space: nowrap; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-size: .8rem; color: var(--accent-ink); border: 1.5px solid var(--accent); border-radius: 999px; padding: 3px 11px; }
+  .si-body { min-width: 0; } .si-body p { margin: 0 0 8px; font-size: .95rem; }
+  .si-ttl { font-weight: 700; font-size: 1.04rem; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; }
+  .si-body .si-point { background: var(--chip); border-radius: 9px; padding: 9px 12px; font-size: .88rem; margin: 4px 0 0; }
+  .secret-foot { margin: 2px 0 0; text-align: center; font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; color: var(--accent-ink); font-size: .95rem; }
+
+  .nav-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-top: 24px; }
+  .nav-btn { font: inherit; font-weight: 700; cursor: pointer; border-radius: 999px; padding: 9px 16px; border: 1.5px solid var(--line); background: var(--surface); color: var(--fg); font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-size: .9rem; }
+  .nav-btn:hover:not(:disabled) { border-color: var(--accent); }
+  .nav-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .nav-btn:disabled { opacity: .4; cursor: default; }
+  .nav-btn.toc { border: none; background: none; color: var(--accent-ink); }
+
+  .meter { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin: 0 0 20px; }
+  .meter-h { font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; color: var(--accent-ink); margin-bottom: 12px; }
+  .meter-row { display: flex; gap: 12px; margin-bottom: 12px; }
+  .meter-stat { flex: 1; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; text-align: center; }
+  .meter-stat .num { display: block; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .meter-stat .lbl { display: block; font-size: .76rem; color: var(--muted); margin-top: 2px; }
+  .meter-bar { height: 9px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+  .meter-bar > i { display: block; height: 100%; background: var(--good); border-radius: 999px; transition: width .5s; }
+  .meter-msg { margin: 10px 0 0; font-size: .88rem; font-weight: 700; color: var(--accent-ink); text-align: center; }
+  .special-lc { margin-bottom: 26px; }
+  .lc.cleared .lc-no { background: var(--good); color: #fff; }
+  .lc.cleared .lc-tag { color: var(--good); }
+  .ondoku { margin-top: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 13px; }
+  .ondoku-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 9px; }
+  .ondoku-lbl { font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-size: .9rem; color: var(--accent-ink); }
+  .ondoku-sub { font-weight: 400; font-size: .74rem; color: var(--muted); margin-left: 5px; }
+  .ondoku-count { font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ondoku-dots { display: flex; gap: 7px; margin-bottom: 10px; }
+  .ondoku-dots .d { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); background: var(--bg); transition: background .15s, border-color .15s; }
+  .ondoku-dots .d.on { background: var(--accent); border-color: var(--accent); }
+  .ondoku-actions { display: flex; gap: 12px; align-items: center; }
+  .ondoku-btn { font: inherit; font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; cursor: pointer; background: var(--accent); color: #fff; border: none; border-radius: 999px; padding: 7px 16px; font-size: .88rem; }
+  .ondoku-btn:disabled { opacity: .45; cursor: default; }
+  .ondoku-reset { font: inherit; cursor: pointer; background: none; border: none; color: var(--muted); font-size: .8rem; text-decoration: underline; padding: 0; }
+  .ondoku-praise { margin: 9px 0 0; font-size: .85rem; font-weight: 700; color: var(--good); }
+  .special-grid { display: grid; gap: 9px; margin-bottom: 26px; }
+  .myth-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 15px 16px; margin-bottom: 12px; }
+  .myth { margin: 0 0 7px; font-size: .95rem; color: var(--muted); display: flex; gap: 8px; }
+  .myth .x { flex: none; color: var(--wrong); font-weight: 700; }
+  .truth { margin: 0 0 8px; font-size: 1.02rem; font-weight: 700; display: flex; gap: 8px; }
+  .truth .o { flex: none; color: var(--good); font-weight: 700; }
+  .myth-why { margin: 0; font-size: .88rem; color: var(--fg); background: var(--surface-2); border-radius: 9px; padding: 9px 12px; line-height: 1.75; }
+  .mistakes { background: var(--wrong-soft); border: 1px solid var(--wrong-line); border-radius: var(--radius); padding: 14px 16px; margin: 0 0 30px; }
+  .mistakes-h { font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; color: var(--wrong); margin-bottom: 11px; font-size: 1rem; }
+  .mistakes ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 13px; }
+  .mistakes .mx { margin: 0; font-size: .9rem; color: var(--muted); }
+  .mistakes .mo { margin: 3px 0 0; font-size: .95rem; font-weight: 700; color: var(--fg); }
+  .notebox { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 15px 16px; margin: 0 0 30px; }
+  .notebox-h { font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; color: var(--accent-ink); margin-bottom: 9px; font-size: 1rem; }
+  .notebox p { margin: 0 0 10px; font-size: .92rem; line-height: 1.85; }
+  .narabe { display: grid; gap: 9px; margin: 0 0 10px; }
+  .nb { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; font: inherit; background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; color: var(--fg); transition: border-color .15s, background .15s; }
+  .nb:hover:not(:disabled) { border-color: var(--accent); }
+  .nb .nb-order { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-size: .85rem; color: var(--muted); }
+  .nb .nb-t { font-weight: 700; font-size: .98rem; }
+  .nb.ok { background: var(--good-soft); border-color: var(--good-line); cursor: default; }
+  .nb.ok .nb-order { background: var(--good); border-color: var(--good); color: #fff; }
+  .nb.ng { animation: nbshake .4s; border-color: var(--wrong-line); background: var(--wrong-soft); }
+  @keyframes nbshake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  .narabe-msg { margin: 0 0 30px; font-size: .9rem; font-weight: 700; color: var(--muted); text-align: center; }
+  .narabe-msg.done { color: var(--good); }
+  .narabe-msg.bad { color: var(--wrong); }
+  .backlink { color: var(--accent-ink); font-weight: 700; cursor: pointer; text-decoration: underline; white-space: nowrap; }
+
+  /* ---------- 地図でおぼえる ---------- */
+  .modetabs { display: flex; gap: 6px; margin: 0 0 14px; }
+  .modebtn { flex: 1; font: inherit; font-weight: 700; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-size: .86rem; cursor: pointer; background: var(--surface); color: var(--muted); border: 1.5px solid var(--line); border-radius: 999px; padding: 8px 6px; }
+  .modebtn.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  :root[data-theme="dark"] .modebtn.on, :root:not([data-theme="light"]) .modebtn.on { color: #131a1a; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .modebtn.on { color: #fff; } }
+  .jpmap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; margin: 0 0 12px; }
+  .jpmap svg { width: 100%; height: auto; display: block; max-width: 100%; margin: 0 auto; }
+  .jpmap .area { fill: var(--surface-2); stroke: var(--line); stroke-width: .6; cursor: pointer; transition: fill .15s; }
+  .jpmap .area.reg { fill: var(--accent-soft); }
+  .jpmap .area:hover:not(.off) { fill: var(--chip); }
+  .jpmap .area.off { fill: var(--bg); opacity: .45; pointer-events: none; }
+  .jpmap .area.sel { fill: var(--accent); }
+  .jpmap .area.ok { fill: var(--good); }
+  .jpmap .area.ng { fill: var(--wrong); }
+  .jpmap .area.hint { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+  .jpmap .okhit { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; }
+  .jpmap .okshape { fill: var(--accent-ink); stroke: none; pointer-events: none; }
+  .jpmap .area.sel + .okshape, .jpmap .area.ok + .okshape { fill: #fff; }
+  .jpmap .oklabel { fill: var(--muted); font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-size: 11px; pointer-events: none; }
+  .maplabel { text-align: center; font-size: 1rem; font-weight: 700; color: var(--fg); background: var(--surface-2); border-radius: 10px; padding: 11px 12px; margin: 0 0 14px; min-height: 1.2em; line-height: 1.6; }
+  .maplabel b { color: var(--accent-ink); }
+  .mappanel { margin: 0 0 10px; }
+  .map-cards { display: flex; flex-wrap: wrap; gap: 7px; }
+  .mapcard { font: inherit; font-weight: 700; cursor: pointer; background: var(--surface); color: var(--fg); border: 1.5px solid var(--line); border-radius: 9px; padding: 8px 12px; font-size: .9rem; }
+  .mapcard:hover { border-color: var(--accent); }
+  .mapcard.sel { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .difftag { display: inline-block; margin-left: 7px; font-size: .72rem; font-weight: 700; color: #fff; background: var(--wrong); border-radius: 999px; padding: 1px 8px; }
+  .sametag { display: inline-block; margin-left: 7px; font-size: .72rem; font-weight: 700; color: var(--good); background: var(--good-soft); border: 1px solid var(--good-line); border-radius: 999px; padding: 1px 8px; }
+
+  /* 世界地図 */
+  .worldmap { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; margin: 0 0 12px; }
+  .worldmap svg { width: 100%; height: auto; display: block; }
+  .worldmap .warea { fill: var(--surface-2); stroke: var(--surface); stroke-width: .4; cursor: pointer; transition: fill .15s; }
+  .worldmap .warea:hover { fill: var(--chip); }
+  .worldmap .warea.sel { fill: var(--accent); }
+  .worldmap .warea.ok { fill: var(--good); }
+  .worldmap .warea.ng { fill: var(--wrong); }
+  .worldmap .warea.hint { fill: var(--accent); opacity: .55; }
+  .worldmap .warea.hl { fill: #d64545; }
+  .worldmap.colored .warea.wr0 { fill: #e8926b; }
+  .worldmap.colored .warea.wr1 { fill: #6f9fd8; }
+  .worldmap.colored .warea.wr2 { fill: #e3b74e; }
+  .worldmap.colored .warea.wr3 { fill: #6cbf99; }
+  .worldmap.colored .warea.wr4 { fill: #c88bc4; }
+  .worldmap.colored .warea.wr5 { fill: #d77a7a; }
+  .wlegend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 2px 0; }
+  .wlg { display: inline-flex; align-items: center; gap: 6px; font-size: .84rem; font-weight: 700; }
+  .wc { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+  .wc.wr0 { background: #e8926b; } .wc.wr1 { background: #6f9fd8; } .wc.wr2 { background: #e3b74e; }
+  .wc.wr3 { background: #6cbf99; } .wc.wr4 { background: #c88bc4; } .wc.wr5 { background: #d77a7a; }
+
+  :focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  /* 分野タグ：生物=緑 / 化学=橙 / 物理=青 / 地学=茶 */
+  :root { --bio:#2a6540; --bio-soft:#e4f1e3; --che:#9a4f12; --che-soft:#fbeadb; --phy:#235488; --phy-soft:#e4eff9; --ear:#6b4a2c; --ear-soft:#efe6da; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bio:#9ad6ac; --bio-soft:#22352b; --che:#f0b27a; --che-soft:#3b2d20; --phy:#8bbdeb; --phy-soft:#1f2d3f; --ear:#d9b48c; --ear-soft:#352b21; } }
+  :root[data-theme="dark"] { --bio:#9ad6ac; --bio-soft:#22352b; --che:#f0b27a; --che-soft:#3b2d20; --phy:#8bbdeb; --phy-soft:#1f2d3f; --ear:#d9b48c; --ear-soft:#352b21; }
+  .fld { display: inline-block; flex: none; font-size: .7rem; font-weight: 700; border-radius: 999px; padding: 1px 9px; line-height: 1.7; }
+  .fld.bio { background: var(--bio-soft); color: var(--bio); } .fld.che { background: var(--che-soft); color: var(--che); }
+  .fld.phy { background: var(--phy-soft); color: var(--phy); } .fld.ear { background: var(--ear-soft); color: var(--ear); }
+  .fld.gr { background: var(--surface-2); color: var(--muted); }
+  .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 1rem; margin: 4px 0 12px; }
+  .crumbs .fld { font-size: 1rem; padding: 3px 14px; line-height: 1.6; }
+  .crumbs .cr-no { font-size: 1.2rem; font-weight: 800; color: var(--accent-ink); margin-left: 4px; }
+  .crumbs .sep { display: none; }
+  .prac { border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px; margin: 10px 0; background: var(--surface-2); }
+  .prac summary { cursor: pointer; font-weight: 700; color: var(--accent-ink); }
+  .prac .figure { margin: 10px 0 4px; text-align: center; }
+  .prac .figure svg { max-width: 170px; margin: 0 auto; display: block; }
+  .lc-main { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .lc-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .ffilter { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 14px; }
+  .fbtn { font: inherit; font-weight: 700; font-size: .85rem; cursor: pointer; background: var(--surface); color: var(--muted); border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 14px; }
+  .fbtn.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .lv-h { display: flex; align-items: baseline; gap: 10px; margin: 0 0 4px; font-family: "OmegaFix", "Zen Maru Gothic", sans-serif; font-weight: 700; font-size: 1.12rem; }
+  .lv-h .w { font-size: .72rem; color: var(--accent-ink); background: var(--accent-soft); border-radius: 999px; padding: 2px 9px; }
+  .lv-sub { color: var(--muted); font-size: .85rem; margin: 0 0 12px; }
+  :root[data-theme="dark"] .fbtn.on, :root:not([data-theme="light"]) .fbtn.on,
+  :root[data-theme="dark"] .lc.ready .lc-no, :root:not([data-theme="light"]) .lc.ready .lc-no,
+  :root[data-theme="dark"] .nav-btn.primary, :root:not([data-theme="light"]) .nav-btn.primary { color: #131a1a; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .fbtn.on, :root:not([data-theme="dark"]) .lc.ready .lc-no, :root:not([data-theme="dark"]) .nav-btn.primary { color: #fff; } }
+  a.to-top { text-decoration: none; display: inline-block; }
+</style>
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="brand" type="button">中学 理科・レベル3</button>
+    <a class="theme-btn to-top" href="https://chugaku.senta1111.workers.dev/">← 中学トップへ</a>
+    <button class="theme-btn" id="themeBtn" type="button">🌙 よるモード</button>
+  </header>
+  <div id="home"></div>
+  <div id="stage" hidden></div>
+</div>
+<script>
+  (function () {
+    var btn = document.getElementById('themeBtn'), root = document.documentElement;
+    function sysDark(){ return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; }
+    function isDark(){ var t = root.getAttribute('data-theme'); return t === 'dark' || (t == null && sysDark()); }
+    function paint(){ btn.textContent = isDark() ? '☀️ ひるモード' : '🌙 よるモード'; }
+    try { var s = localStorage.getItem('rk3_theme'); if (s) root.setAttribute('data-theme', s); } catch(e){}
+    paint();
+    btn.addEventListener('click', function(){ var n = isDark() ? 'light' : 'dark'; root.setAttribute('data-theme', n); try{ localStorage.setItem('rk3_theme', n); }catch(e){} paint(); });
+  })();
+  var FNT = ' font-family="OmegaFix, Zen Maru Gothic, sans-serif"';
+  function T(x, y, s, size, anchor, fill, w) {
+    return '<text x="' + x + '" y="' + y + '" text-anchor="' + (anchor || 'start') + '" font-size="' + size + '" font-weight="' + (w || 700) + '" fill="' + (fill || 'var(--fg)') + '"' + FNT + '>' + s + '</text>';
+  }
+  function LD(x1, y1, x2, y2) {
+    return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="var(--muted)" stroke-width="1.2"/><circle cx="' + x2 + '" cy="' + y2 + '" r="2.4" fill="var(--muted)"/>';
+  }
+
+  function ARW(x, y, dx, dy, s, c) {
+    var l = Math.sqrt(dx * dx + dy * dy); dx /= l; dy /= l;
+    var bx = x - dx * s, by = y - dy * s, px = -dy * s * 0.5, py = dx * s * 0.5;
+    function f(v) { return v.toFixed(1); }
+    return '<polygon points="' + f(x) + ',' + f(y) + ' ' + f(bx + px) + ',' + f(by + py) + ' ' + f(bx - px) + ',' + f(by - py) + '" fill="' + c + '"/>';
+  }
+
+  /* ===== レベル2 の図 ===== */
+  function P(d, fill, stroke, sw, extra) {
+    return '<path d="' + d + '" fill="' + (fill || 'none') + '" stroke="' + (stroke || 'none') + '" stroke-width="' + (sw || 1.4) + '" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '/>';
+  }
+  function RC(x, y, w, h, r, fill, stroke, sw) {
+    return '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="' + (r || 0) + '" fill="' + (fill || 'none') + '" stroke="' + (stroke || 'none') + '" stroke-width="' + (sw || 1.4) + '"/>';
+  }
+  function CI(cx, cy, r, fill, stroke, sw) {
+    return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + (fill || 'none') + '" stroke="' + (stroke || 'none') + '" stroke-width="' + (sw || 1.4) + '"/>';
+  }
+  function LN(x1, y1, x2, y2, stroke, sw, extra) {
+    return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + (stroke || 'var(--muted)') + '" stroke-width="' + (sw || 1.4) + '" stroke-linecap="round"' + (extra || '') + '/>';
+  }
+  function EL(cx, cy, rx, ry, fill, stroke, sw, rot) {
+    return '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" fill="' + (fill || 'none') + '" stroke="' + (stroke || 'none') + '" stroke-width="' + (sw || 1.4) + '"' + (rot ? ' transform="rotate(' + rot + ' ' + cx + ' ' + cy + ')"' : '') + '/>';
+  }
+  function fx(v) { return Math.round(v * 10) / 10; }
+
+    /* ===== レベル3 の図 ===== */
+
+  /* 3-1 BTB実験（試験管A・B・C） */
+  var SVG_BTB = (function () {
+    var s = '<svg viewBox="0 0 460 330" role="img" aria-label="BTB溶液の実験の図：試験管A（水草・光）は青、B（水草・アルミ箔）は黄、C（水草なし・光）は緑">';
+    s += T(230, 24, 'はじめは、どれも「息をふきこんだ緑色のBTB溶液」', 12.5, 'middle', 'var(--muted)', 500);
+    function bulb(x) {
+      var o = CI(x, 62, 13, '#ffd84a', '#d9a21b', 1.6);
+      for (var k = 0; k < 8; k++) {
+        var a = k * Math.PI / 4;
+        o += LN(x + Math.cos(a) * 18, 62 + Math.sin(a) * 18, x + Math.cos(a) * 26, 62 + Math.sin(a) * 26, '#d9a21b', 2);
+      }
+      return o + T(x, 104, '光を当てる', 12, 'middle', 'var(--fg)', 700);
+    }
+    function tube(x, fill, plant, foil) {
+      var o = '<path d="M' + (x - 28) + ',120 L' + (x - 28) + ',226 A28,28 0 0 0 ' + (x + 28) + ',226 L' + (x + 28) + ',120 Z" fill="' + fill + '" fill-opacity=".55" stroke="var(--muted)" stroke-width="2"/>';
+      o += LN(x - 32, 120, x + 32, 120, 'var(--muted)', 2.4);
+      if (plant) {
+        o += P('M' + x + ',236 C' + (x - 10) + ',216 ' + (x + 10) + ',200 ' + x + ',176', 'none', '#3f8a46', 3);
+        o += P('M' + x + ',214 C' + (x - 16) + ',206 ' + (x - 20) + ',196 ' + (x - 14) + ',188', 'none', '#3f8a46', 3);
+        o += P('M' + x + ',200 C' + (x + 14) + ',194 ' + (x + 20) + ',184 ' + (x + 14) + ',176', 'none', '#3f8a46', 3);
+        o += P('M' + x + ',186 C' + (x - 10) + ',178 ' + (x - 12) + ',168 ' + (x - 6) + ',162', 'none', '#3f8a46', 3);
+      }
+      if (foil) {
+        o += RC(x - 34, 134, 68, 110, 6, '#c3c9d1', '#8a929c', 2);
+        for (var k = 0; k < 4; k++) o += LN(x - 28, 150 + k * 24, x + 28, 144 + k * 24, '#e8ecf1', 3);
+        o += T(x, 200, 'アルミ箔', 12.5, 'middle', '#4a525c', 700);
+        o += T(x, 216, 'で包む', 12.5, 'middle', '#4a525c', 700);
+      }
+      return o;
+    }
+    s += bulb(90) + tube(90, '#3b82c4', true, false);
+    s += T(230, 90, '光なし', 12, 'middle', 'var(--fg)', 700) + tube(230, '#e8c33a', true, true);
+    s += bulb(370) + tube(370, '#5aa469', false, false);
+    var names = [['A', 90, '水草あり・光あり'], ['B', 230, '水草あり・光なし'], ['C', 370, '水草なし・光あり']];
+    names.forEach(function (n) {
+      s += CI(n[1] - 52, 262, 11, 'var(--accent-soft)', 'var(--accent)', 1.6) + T(n[1] - 52, 267, n[0], 14, 'middle', 'var(--accent-ink)', 700);
+      s += T(n[1] + 8, 266, n[2], 11.5, 'middle', 'var(--fg)', 700);
+    });
+    s += T(90, 296, '青色になる', 14, 'middle', '#2c6aa8', 700) + T(90, 313, '二酸化炭素が減った', 11, 'middle', 'var(--muted)', 500);
+    s += T(230, 296, '黄色になる', 14, 'middle', '#a8861a', 700) + T(230, 313, '二酸化炭素がふえた', 11, 'middle', 'var(--muted)', 500);
+    s += T(370, 296, '緑色のまま', 14, 'middle', '#3f8a46', 700) + T(370, 313, '変化なし（対照）', 11, 'middle', 'var(--muted)', 500);
+    return s + '</svg>';
+  })();
+
+  /* 3-1 蒸散の実験グラフ */
+  var SVG_TRANS = (function () {
+    var s = '<svg viewBox="0 0 460 290" role="img" aria-label="蒸散の実験の棒グラフ：Aは8mL、Bは6mL、Cは3mL、Dは1mL減った">';
+    var x0 = 78, base = 218, per = 17, i;
+    s += T(16, 20, '水の減った量（mL）', 12, 'start', 'var(--muted)', 700);
+    for (i = 0; i <= 10; i += 2) {
+      var y = base - i * per;
+      s += LN(x0, y, 440, y, 'var(--line)', 1) + T(x0 - 8, y + 4, String(i), 12, 'end', 'var(--muted)', 500);
+    }
+    s += LN(x0, base - 10 * per, x0, base, 'var(--muted)', 1.6) + LN(x0, base, 440, base, 'var(--muted)', 1.6);
+    var data = [['A', 8, 'ぬらない', '#1f7f86'], ['B', 6, '表にぬる', '#5aa6ab'], ['C', 3, '裏にぬる', '#5aa6ab'], ['D', 1, '表と裏に', '#9ccdd0']];
+    data.forEach(function (d, k) {
+      var cx = 118 + k * 92, h = d[1] * per;
+      s += RC(cx - 26, base - h, 52, h, 4, d[3], 'none', 0);
+      s += T(cx, base - h - 7, d[1] + ' mL', 14, 'middle', 'var(--fg)', 700);
+      s += T(cx, base + 20, d[0], 15, 'middle', 'var(--accent-ink)', 700);
+      s += T(cx, base + 37, d[2], 11.5, 'middle', 'var(--muted)', 500);
+    });
+    s += T(260, 276, '※ぬる物はワセリン。ぬった所からは蒸散できない', 11.5, 'middle', 'var(--muted)', 500);
+    return s + '</svg>';
+  })();
+
+  /* 3-2 炭酸水素ナトリウムの加熱実験 */
+  var SVG_NAHCO3 = (function () {
+    var s = '<svg viewBox="0 0 460 290" role="img" aria-label="炭酸水素ナトリウムの加熱実験：試験管の口を少し下げて加熱し、出た気体を石灰水に通すと白くにごる。口に水がつく">';
+    s += T(230, 20, '炭酸水素ナトリウムを加熱する実験', 13, 'middle', 'var(--accent-ink)', 700);
+    s += '<g transform="rotate(10 50 100)">';
+    s += '<path d="M50,78 L190,78 L190,122 L72,122 A22,22 0 0 1 50,100 Z" fill="#eef6fb" fill-opacity=".8" stroke="var(--muted)" stroke-width="2.2"/>';
+    s += P('M52,100 A20,20 0 0 0 72,120 L100,120 L100,104 Z', '#ffffff', '#9aa6b2', 1.4);
+    s += '</g>';
+    s += P('M64,132 q-9,12 0,24 q9,-12 0,-24 z', '#ffb02e', '#e07b00', 1.4) + RC(54, 156, 20, 22, 3, '#9aa6b2', 'none', 0);
+    s += T(24, 62, '白い粉', 12, 'start', 'var(--fg)', 700) + T(24, 78, '（炭酸水素ナトリウム）', 10.5, 'start', 'var(--muted)', 500);
+    s += P('M186,138 q8,-1 12,6', 'none', 'var(--muted)', 1.4);
+    [[196, 150], [204, 160]].forEach(function (d) { s += P('M' + d[0] + ',' + (d[1] - 6) + ' c5,5 5,10 0,10 c-5,0 -5,-5 0,-10 z', '#bfe3f7', '#4b8fc2', 1.2); });
+    s += T(200, 186, '口についた液＝水', 11.5, 'middle', '#2c6aa8', 700);
+    s += T(200, 202, '塩化コバルト紙 青→赤', 11, 'middle', '#2c6aa8', 700);
+    s += T(20, 236, '口を少し下げる（水で試験管が割れないように）', 11.5, 'start', 'var(--wrong)', 700);
+    /* ガラス管 → 石灰水 */
+    s += P('M190,128 L330,150 L330,214', 'none', 'var(--muted)', 2.4);
+    s += P('M296,176 L296,240 Q296,252 308,252 L372,252 Q384,252 384,240 L384,176', '#f3f4f6', 'var(--muted)', 2.2);
+    s += RC(298, 196, 84, 54, 6, '#f7f7f4', 'none', 0);
+    [[330, 224], [342, 236], [322, 238]].forEach(function (b) { s += CI(b[0], b[1], 3.4, 'none', '#9aa6b2', 1.3); });
+    s += T(342, 196, '石灰水', 12, 'start', 'var(--fg)', 700);
+    s += T(340, 272, '白くにごる ＝ 二酸化炭素', 12, 'middle', '#a8861a', 700);
+    s += T(430, 110, '残る白い固体', 11.5, 'end', 'var(--fg)', 700) + T(430, 126, '＝炭酸ナトリウム', 11.5, 'end', 'var(--fg)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-2 酸化銀の加熱実験 */
+  var SVG_AG2O = (function () {
+    var s = '<svg viewBox="0 0 460 250" role="img" aria-label="酸化銀の加熱実験：黒色の酸化銀を加熱すると白色の銀と酸素ができる。酸素は火のついた線香が炎を上げて燃える">';
+    s += T(230, 20, '酸化銀を加熱する実験', 13, 'middle', 'var(--accent-ink)', 700);
+    function tube(x, fill, label, sub) {
+      var o = '<path d="M' + (x - 24) + ',60 L' + (x - 24) + ',150 A24,24 0 0 0 ' + (x + 24) + ',150 L' + (x + 24) + ',60 Z" fill="#eef6fb" fill-opacity=".8" stroke="var(--muted)" stroke-width="2.2"/>';
+      o += P('M' + (x - 22) + ',146 A22,22 0 0 0 ' + (x + 22) + ',146 L' + (x + 22) + ',122 Q' + x + ',130 ' + (x - 22) + ',122 Z', fill, '#555e68', 1.4);
+      o += T(x, 220, label, 14, 'middle', 'var(--fg)', 700) + T(x, 236, sub, 11, 'middle', 'var(--muted)', 500);
+      return o;
+    }
+    s += tube(80, '#2e2e33', '黒色', '酸化銀');
+    s += tube(300, '#e6e9ee', '白色', '銀（みがくと光る）');
+    s += P('M80,178 q-8,12 0,22 q8,-10 0,-22 z', '#ffb02e', '#e07b00', 1.2);
+    s += LN(120, 120, 230, 120, 'var(--accent-ink)', 2.6) + ARW(238, 120, 1, 0, 10, 'var(--accent-ink)') + T(178, 108, '加熱', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(178, 142, '＋ 酸素', 12.5, 'middle', 'var(--accent-ink)', 700);
+    /* 線香 */
+    s += LN(372, 150, 430, 96, '#8a5a2b', 4.2) + P('M430,96 q-6,-18 4,-32 q4,14 14,10 q-2,12 -10,22 z', '#ffb02e', '#e07b00', 1.4);
+    s += T(376, 52, '火のついた線香が', 11.5, 'middle', 'var(--fg)', 700) + T(376, 68, '炎を上げて燃える', 11.5, 'middle', 'var(--fg)', 700) + T(390, 176, '＝酸素', 12.5, 'middle', 'var(--wrong)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-3 オームの法則の円（カモメ・イカ・タコ） */
+  var SVG_OHMTRI = (function () {
+    var s = '<svg viewBox="0 0 460 266" role="img" aria-label="オームの法則の円：上にV（カモメ）、左下にA（イカ）、右下にΩ（タコ）。Vをかくすと Ω×A、Aをかくすと V÷Ω、Ωをかくすと V÷A">';
+    var PK = '#d6336c', cx = 110, cy = 118, r = 92;
+    s += '<defs><clipPath id="ohmclip"><circle cx="' + cx + '" cy="' + cy + '" r="' + r + '"/></clipPath></defs>';
+    s += '<g clip-path="url(#ohmclip)">' + RC(cx - r, cy - r, r * 2, r, 0, '#d7edf8', 'none', 0) + RC(cx - r, cy, r * 2, r, 0, '#8ec9e6', 'none', 0);
+    /* 雲・カモメ */
+    s += P('M32,70 q6,-8 14,-2 q6,-8 14,0 q8,0 6,8 l-36,0 z', '#ffffff', 'none', 0);
+    s += P('M150,62 q6,-7 13,-2 q6,-7 13,0 q8,0 5,7 l-33,0 z', '#ffffff', 'none', 0);
+    s += P('M54,96 q8,-9 16,0', 'none', '#33404d', 2.2) + P('M70,96 q8,-9 16,0', 'none', '#33404d', 2.2);
+    s += P('M138,92 q6,-7 12,0', 'none', '#33404d', 2) + P('M150,92 q6,-7 12,0', 'none', '#33404d', 2);
+    /* 海・波 */
+    s += P('M30,128 q6,-5 12,0 t12,0 t12,0', 'none', '#ffffff', 2) + P('M130,130 q6,-5 12,0 t12,0 t12,0', 'none', '#ffffff', 2);
+    /* 海そう・砂 */
+    s += P('M186,206 q-8,-14 0,-26 q8,-12 0,-24', 'none', '#3f8a46', 4);
+    s += P('M110,210 q20,-24 50,-16 q30,8 44,16 z', '#e9d3a0', 'none', 0) + '</g>';
+    s += CI(cx, cy, r, 'none', 'var(--accent)', 3);
+    s += LN(cx - r, cy, cx + r, cy, 'var(--accent)', 2.4) + LN(cx, cy, cx, cy + r, 'var(--accent)', 2.4);
+    /* V（カモメ） */
+    s += T(cx, 100, 'V', 44, 'middle', PK, 700);
+    /* A（イカ）：頭がA、下に足 */
+    s += T(64, 152, 'A', 34, 'middle', PK, 700);
+    s += CI(58, 164, 4, '#fff', '#33404d', 1.3) + CI(70, 164, 4, '#fff', '#33404d', 1.3) + CI(59, 165, 1.6, '#33404d', 'none', 0) + CI(71, 165, 1.6, '#33404d', 'none', 0);
+    [48, 56, 64, 72, 80].forEach(function (x) { s += P('M' + x + ',170 q-4,6 0,11 q4,5 0,8', 'none', '#b02a5a', 2.2); });
+    /* Ω（タコ）：頭がΩ、下に足 */
+    s += T(156, 150, 'Ω', 36, 'middle', PK, 700);
+    s += CI(149, 164, 4, '#fff', '#33404d', 1.3) + CI(163, 164, 4, '#fff', '#33404d', 1.3) + CI(150, 165, 1.6, '#33404d', 'none', 0) + CI(164, 165, 1.6, '#33404d', 'none', 0);
+    [138, 147, 156, 165, 174].forEach(function (x) { s += P('M' + x + ',170 q-5,6 0,10 q5,5 0,8', 'none', '#b02a5a', 2.4); });
+    s += T(cx, 252, 'V＝カモメ　A＝イカ　Ω＝タコ', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(250, 52, 'かくした文字が、答えの式', 12.5, 'start', 'var(--muted)', 700);
+    var f = [['V（カモメ）をかくす', 'V ＝ Ω × A'], ['A（イカ）をかくす', 'A ＝ V ÷ Ω'], ['Ω（タコ）をかくす', 'Ω ＝ V ÷ A']];
+    f.forEach(function (rw, k) {
+      var y = 64 + k * 50;
+      s += RC(228, y, 224, 42, 10, 'var(--surface)', 'var(--line)', 1.4);
+      s += T(238, y + 26, rw[0], 11.5, 'start', 'var(--muted)', 700) + T(442, y + 28, rw[1], 17, 'end');
+    });
+    s += T(340, 232, '電圧 V／電流 A／抵抗 Ω', 11.5, 'middle', 'var(--muted)', 500);
+    s += T(340, 250, '教科書では Ω＝R、A＝I と書くことも', 10.5, 'middle', 'var(--muted)', 500);
+    return s + '</svg>';
+  })();
+
+  /* 3-3 電圧と電流のグラフ（a, b） */
+  var SVG_OHMGRAPH = (function () {
+    var s = '<svg viewBox="0 0 460 290" role="img" aria-label="電圧と電流のグラフ：6Vのとき、aは1A、bは2A。原点を通る直線で、bのほうが急">';
+    var x0 = 74, x1 = 424, yb = 236, yt = 40, i;
+    var px = function (v) { return x0 + (x1 - x0) * v / 6; };
+    var py = function (a) { return yb - (yb - yt) * a / 3; };
+    s += T(14, 22, '電流（A）', 12, 'start', 'var(--muted)', 700);
+    for (i = 0; i <= 6; i++) {
+      s += LN(px(i), yb, px(i), yt, 'var(--line)', 1) + T(px(i), yb + 17, String(i), 12, 'middle', 'var(--muted)', 500);
+    }
+    for (i = 0; i <= 3; i++) {
+      s += LN(x0, py(i), x1, py(i), 'var(--line)', 1) + T(x0 - 8, py(i) + 4, String(i), 12, 'end', 'var(--muted)', 500);
+    }
+    s += LN(x0, yb, x1 + 8, yb, 'var(--muted)', 1.8) + LN(x0, yb, x0, yt - 8, 'var(--muted)', 1.8);
+    s += T(x1 + 6, yb + 34, '電圧（V）', 12, 'end', 'var(--muted)', 700);
+    s += LN(x0, yb, px(6), py(1), '#d9822b', 3.2) + LN(x0, yb, px(6), py(2), '#2f7dc4', 3.2);
+    s += LN(px(6), yb, px(6), py(2), 'var(--muted)', 1.2, ' stroke-dasharray="5 4"');
+    s += CI(px(6), py(1), 5, '#d9822b', '#fff', 1.4) + CI(px(6), py(2), 5, '#2f7dc4', '#fff', 1.4);
+    s += T(px(6) - 10, py(1) - 12, 'a', 17, 'end', '#b8631a', 700) + T(px(6) - 10, py(2) + 22, 'b', 17, 'end', '#245f9a', 700);
+    s += RC(86, 50, 150, 52, 8, 'var(--surface)', 'var(--line)', 1.2);
+    s += LN(98, 66, 120, 66, '#2f7dc4', 3.2) + T(128, 71, 'b：6Vで 2A', 13, 'start', '#245f9a', 700);
+    s += LN(98, 88, 120, 88, '#d9822b', 3.2) + T(128, 93, 'a：6Vで 1A', 13, 'start', '#b8631a', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-3 並列回路 */
+  var SVG_PARA = (function () {
+    var s = '<svg viewBox="0 0 460 270" role="img" aria-label="並列回路の図：電源6Vに、10Ωと20Ωの抵抗を並列につなぐ。それぞれ0.6Aと0.3Aが流れ、全体では0.9A">';
+    var W = 'var(--fg)', xL = 60, xA = 200, xB = 340, yT = 50, yB = 224;
+    s += LN(xL, yT, xB, yT, W, 2.4) + LN(xL, yB, xB, yB, W, 2.4);
+    s += LN(xL, yT, xL, 112, W, 2.4) + LN(xL, 128, xL, yB, W, 2.4);
+    s += LN(xL - 17, 112, xL + 17, 112, W, 3.4) + LN(xL - 9, 128, xL + 9, 128, W, 3.4);
+    s += T(xL - 24, 110, '＋', 15, 'end', 'var(--wrong)', 700) + T(xL - 24, 133, '−', 15, 'end', 'var(--accent-ink)', 700);
+    s += T(xL + 24, 124, '電源 6V', 13, 'start');
+    [[xA, '10Ω', '0.6A'], [xB, '20Ω', '0.3A']].forEach(function (b) {
+      s += LN(b[0], yT, b[0], 104, W, 2.4) + LN(b[0], 150, b[0], yB, W, 2.4);
+      s += RC(b[0] - 17, 104, 34, 46, 4, 'var(--surface)', W, 2.4);
+      s += T(b[0] + 28, 132, b[1], 15, 'start') + T(b[0] + 12, 82, b[2], 14, 'start', '#b8631a', 700);
+      s += ARW(b[0], 98 - 24, 0, 1, 9, '#b8631a');
+    });
+    s += LN(xA, yT, xA, yT, W, 1) + CI(xA, yT, 3.4, W, 'none', 0) + CI(xA, yB, 3.4, W, 'none', 0);
+    s += T(xL + 12, 38, '全体  0.9A', 14, 'start', '#245f9a', 700);
+    s += T(230, 256, '電圧は どちらも 6V ／ 電流は 足して 0.9A', 12.5, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-4 飽和水蒸気量曲線 */
+  var SVG_SAT = (function () {
+    var s = '<svg viewBox="0 0 460 300" role="img" aria-label="飽和水蒸気量のグラフ：気温が高いほど大きい。気温25℃・水蒸気量12.8g/m³の空気は、15℃まで冷やすと水滴が出はじめる（露点15℃）">';
+    var x0 = 64, x1 = 430, yb = 252, yt = 30, i;
+    var px = function (t) { return x0 + (x1 - x0) * t / 30; };
+    var py = function (g) { return yb - (yb - yt) * g / 35; };
+    s += T(12, 20, '1m³の空気にふくめる水蒸気（g）', 12, 'start', 'var(--muted)', 700);
+    for (i = 0; i <= 30; i += 5) s += LN(px(i), yb, px(i), yt, 'var(--line)', 1) + T(px(i), yb + 17, String(i), 12, 'middle', 'var(--muted)', 500);
+    for (i = 0; i <= 35; i += 5) s += LN(x0, py(i), x1, py(i), 'var(--line)', 1) + T(x0 - 8, py(i) + 4, String(i), 12, 'end', 'var(--muted)', 500);
+    s += LN(x0, yb, x1 + 6, yb, 'var(--muted)', 1.8) + LN(x0, yb, x0, yt - 6, 'var(--muted)', 1.8);
+    s += T(x1 + 6, yb + 34, '気温（℃）', 12, 'end', 'var(--muted)', 700);
+    var d = [[0, 4.8], [5, 6.8], [10, 9.4], [15, 12.8], [20, 17.3], [25, 23.1], [30, 30.4]];
+    var pts = d.map(function (p) { return fx(px(p[0])) + ',' + fx(py(p[1])); }).join(' ');
+    s += '<polyline points="' + pts + '" fill="none" stroke="#2f7dc4" stroke-width="3.2" stroke-linejoin="round"/>';
+    d.forEach(function (p) { s += CI(px(p[0]), py(p[1]), 3.4, '#2f7dc4', '#fff', 1); });
+    s += T(px(30) - 8, py(30.4) - 8, '飽和水蒸気量', 12.5, 'end', '#245f9a', 700);
+    s += T(px(21) - 6, py(30) + 4, 'これより上は', 11.5, 'end', 'var(--muted)', 500) + T(px(21) - 6, py(30) + 19, '水滴になる', 11.5, 'end', 'var(--muted)', 500);
+    /* いまの空気 P(25, 12.8) */
+    s += LN(px(25) - 6, py(12.8), px(15) + 7, py(12.8), '#d9822b', 2.4, ' stroke-dasharray="6 4"') + ARW(px(15) + 3, py(12.8), -1, 0, 9, '#d9822b');
+    s += LN(px(15), py(12.8) + 6, px(15), yb, '#d9822b', 1.6, ' stroke-dasharray="4 4"');
+    s += CI(px(25), py(12.8), 6, '#d9822b', '#fff', 1.6);
+    s += T(px(25) + 10, py(12.8) + 18, 'いまの空気', 12.5, 'start', '#b8631a', 700) + T(px(25) + 10, py(12.8) + 34, '25℃・12.8g', 12, 'start', '#b8631a', 700);
+    s += T(px(15) + 4, yb - 8, '露点 15℃', 13, 'start', '#b8631a', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-4 コップの水滴 */
+  var SVG_CUP = (function () {
+    var s = '<svg viewBox="0 0 460 250" role="img" aria-label="冷たい水を入れたコップの外側に、空気中の水蒸気が水滴になってつく図">';
+    s += P('M150,70 L290,70 L274,214 Q272,224 262,224 L178,224 Q168,224 166,214 Z', 'var(--surface-2)', 'var(--muted)', 2.4);
+    s += P('M156,112 L284,112 L274,214 Q272,224 262,224 L178,224 Q168,224 166,214 Z', '#a9d3ef', '#5b9bd0', 1.6);
+    s += RC(188, 130, 26, 26, 4, '#e4f2fb', '#8ab9dc', 1.4) + RC(224, 150, 24, 24, 4, '#e4f2fb', '#8ab9dc', 1.4) + RC(204, 172, 24, 24, 4, '#e4f2fb', '#8ab9dc', 1.4);
+    s += T(235, 106, '氷水', 12, 'middle', '#2c6aa8', 700);
+    var drops = [[146, 100], [141, 132], [150, 164], [157, 196], [294, 104], [291, 140], [286, 176], [281, 205]];
+    drops.forEach(function (p) { s += P('M' + p[0] + ',' + (p[1] - 7) + ' C' + (p[0] + 7) + ',' + (p[1] - 1) + ' ' + (p[0] + 6) + ',' + (p[1] + 6) + ' ' + p[0] + ',' + (p[1] + 6) + ' C' + (p[0] - 6) + ',' + (p[1] + 6) + ' ' + (p[0] - 7) + ',' + (p[1] - 1) + ' ' + p[0] + ',' + (p[1] - 7) + ' Z', '#bfe3f7', '#4b8fc2', 1.2); });
+    /* 空気中の水蒸気 */
+    [[60, 60], [90, 120], [56, 176], [372, 70], [400, 134], [366, 190]].forEach(function (p) { s += CI(p[0], p[1], 5, 'none', '#8a95a3', 1.6); });
+    s += ARW(128, 128, 1, 0.1, 10, '#8a95a3') + LN(76, 120, 124, 127, '#8a95a3', 1.8);
+    s += ARW(310, 146, -1, 0.1, 10, '#8a95a3') + LN(388, 138, 314, 145, '#8a95a3', 1.8);
+    s += T(70, 30, '空気中の水蒸気', 12.5, 'middle', 'var(--muted)', 700) + T(386, 38, '空気中の水蒸気', 12.5, 'middle', 'var(--muted)', 700);
+    s += T(230, 242, 'コップの表面が露点まで冷えると、水滴になって出てくる', 12.5, 'middle', 'var(--accent-ink)', 700);
+    s += T(236, 54, 'コップの外側がくもる！', 13, 'middle', 'var(--fg)', 700);
+    return s + '</svg>';
+  })();
+
+
+  /* ===== 第5〜8話の図 ===== */
+
+  /* 3-5 消化の流れ(器官・消化液・はたらき) */
+  var SVG_DIG = (function () {
+    var s = '<svg viewBox="0 0 460 312" role="img" aria-label="口・胃・すい臓・肝臓・小腸の、消化液とはたらきの一覧図">';
+    var rows = [
+      ['口', 'だ液（アミラーゼ）', 'デンプンを分解', '#fde9c8'],
+      ['胃', '胃液（ペプシン）', 'タンパク質を分解', '#fbd5d0'],
+      ['すい臓', 'すい液（いろいろ）', '3つとも分解', '#d9ecd0'],
+      ['肝臓', '胆汁（酵素なし）', '脂肪の分解を助ける', '#e6dcf3'],
+      ['小腸', '小腸の壁の酵素', '最後まで分解→吸収', '#d3e6f5']
+    ];
+    rows.forEach(function (r, i) {
+      var y = 8 + i * 60;
+      s += RC(8, y, 84, 50, 10, r[3], 'var(--muted)', 1.4) + T(50, y + 31, r[0], 16, 'middle', 'var(--fg)', 700);
+      s += ARW(110, y + 25, 1, 0, 10, 'var(--muted)') + LN(94, y + 25, 102, y + 25, 'var(--muted)', 1.6);
+      s += RC(112, y, 168, 50, 10, 'var(--surface)', 'var(--accent)', 1.8) + T(196, y + 31, r[1], 13.5, 'middle', 'var(--accent-ink)', 700);
+      s += ARW(298, y + 25, 1, 0, 10, 'var(--muted)') + LN(282, y + 25, 290, y + 25, 'var(--muted)', 1.6);
+      s += RC(300, y, 152, 50, 10, 'var(--surface-2)', 'var(--muted)', 1.4) + T(376, y + 31, r[2], 13, 'middle', 'var(--fg)', 700);
+    });
+    return s + '</svg>';
+  })();
+
+  /* 3-5 だ液の実験(試験管A・B) */
+  var SVG_SALIVA = (function () {
+    var s = '<svg viewBox="0 0 460 290" role="img" aria-label="デンプンのりに水を入れた試験管Aとだ液を入れた試験管Bで、ヨウ素液とベネジクト液の結果を比べる図">';
+    function tube(cx, fill, label, sub) {
+      var x1 = cx - 22, x2 = cx + 22;
+      var t = P('M' + x1 + ',20 L' + x1 + ',88 Q' + x1 + ',112 ' + cx + ',112 Q' + x2 + ',112 ' + x2 + ',88 L' + x2 + ',20', 'none', 'var(--muted)', 2.2);
+      t += P('M' + x1 + ',46 L' + x1 + ',88 Q' + x1 + ',110 ' + cx + ',110 Q' + x2 + ',110 ' + x2 + ',88 L' + x2 + ',46 Z', fill, 'none', 0);
+      t += T(cx, 134, label, 15, 'middle', 'var(--fg)', 700) + T(cx, 152, sub, 12, 'middle', 'var(--muted)', 700);
+      return t;
+    }
+    s += tube(115, '#efe3c0', 'A', 'デンプンのり＋水') + tube(345, '#efe3c0', 'B', 'デンプンのり＋だ液');
+    s += T(230, 66, 'ぬるま湯', 12, 'middle', 'var(--muted)', 700);
+    s += RC(10, 168, 440, 52, 10, 'var(--surface)', 'var(--line)', 1.2);
+    s += T(24, 190, 'ヨウ素液', 13, 'start', 'var(--accent-ink)', 700) + T(24, 208, '（デンプンがあるか）', 11, 'start', 'var(--muted)', 700);
+    s += CI(195, 194, 12, '#4b3f8f', 'none', 0) + T(213, 199, '青紫', 13, 'start', 'var(--fg)', 700);
+    s += CI(345, 194, 12, '#e8c46a', 'none', 0) + T(363, 199, '変化なし', 13, 'start', 'var(--fg)', 700);
+    s += RC(10, 228, 440, 52, 10, 'var(--surface)', 'var(--line)', 1.2);
+    s += T(24, 250, 'ベネジクト液', 13, 'start', 'var(--accent-ink)', 700) + T(24, 268, '（糖があるか・加熱）', 11, 'start', 'var(--muted)', 700);
+    s += CI(195, 254, 12, '#6fa8dc', 'none', 0) + T(213, 259, '変化なし', 13, 'start', 'var(--fg)', 700);
+    s += CI(345, 254, 12, '#b5532a', 'none', 0) + T(363, 259, '赤褐色', 13, 'start', 'var(--fg)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-6 質量保存(密閉と開放) */
+  var SVG_MASS = (function () {
+    var s = '<svg viewBox="0 0 460 262" role="img" aria-label="密閉した容器では反応の前後で質量が変わらず、ふたのない容器では気体が出て軽くなる図">';
+    function box(x, title, before, after, closed) {
+      var t = T(x + 105, 22, title, 14, 'middle', 'var(--accent-ink)', 700);
+      t += RC(x + 50, 80, 110, 90, 8, closed ? '#dbeaf6' : '#eef2f6', 'var(--muted)', 2.2);
+      t += RC(x + 40, closed ? 66 : 48, 130, 12, 4, closed ? 'var(--muted)' : 'none', closed ? 'none' : 'var(--line)', 1.2);
+      if (!closed) {
+        t += LN(x + 90, 70, x + 90, 40, '#8a95a3', 1.8) + ARW(x + 90, 36, 0, -1, 9, '#8a95a3');
+        t += LN(x + 125, 70, x + 125, 40, '#8a95a3', 1.8) + ARW(x + 125, 36, 0, -1, 9, '#8a95a3');
+        t += T(x + 105, 36, '', 1);
+      }
+      t += CI(x + 85, 125, 9, 'none', '#8a95a3', 1.6) + CI(x + 120, 140, 9, 'none', '#8a95a3', 1.6);
+      t += T(x + 105, 196, '反応前 ' + before, 14, 'middle', 'var(--fg)', 700);
+      t += T(x + 105, 218, '反応後 ' + after, 14, 'middle', closed ? 'var(--accent-ink)' : '#c0392b', 700);
+      return t;
+    }
+    s += box(0, '密閉した容器', '100 g', '100 g', true);
+    s += box(230, 'ふたのない容器', '100 g', '98 g', false);
+    s += LN(230, 40, 230, 236, 'var(--line)', 1.2);
+    s += T(105, 248, '変わらない', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(335, 248, '気体が出て、軽くなる', 13, 'middle', '#c0392b', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-6 質量の比(銅とマグネシウム) */
+  var SVG_RATIO = (function () {
+    var s = '<svg viewBox="0 0 460 236" role="img" aria-label="銅と酸素が4対1、マグネシウムと酸素が3対2で結びつくことを示す棒の図">';
+    var u = 44;
+    s += T(10, 24, '銅 ＋ 酸素 → 酸化銅', 14, 'start', 'var(--accent-ink)', 700);
+    s += RC(10, 36, 4 * u, 44, 6, '#e0a067', 'var(--muted)', 1.4) + T(10 + 2 * u, 64, '銅 4', 16, 'middle', 'var(--fg)', 700);
+    s += RC(10 + 4 * u, 36, 1 * u, 44, 6, '#a9d3ef', 'var(--muted)', 1.4) + T(10 + 4.5 * u, 64, '酸素1', 11.5, 'middle', 'var(--fg)', 700);
+    s += T(10 + 5 * u + 14, 64, '＝ 酸化銅 5', 15, 'start', 'var(--fg)', 700);
+    s += T(10, 120, 'マグネシウム ＋ 酸素 → 酸化マグネシウム', 14, 'start', 'var(--accent-ink)', 700);
+    s += RC(10, 132, 3 * u, 44, 6, '#cfd5dc', 'var(--muted)', 1.4) + T(10 + 1.5 * u, 160, 'Mg 3', 16, 'middle', 'var(--fg)', 700);
+    s += RC(10 + 3 * u, 132, 2 * u, 44, 6, '#a9d3ef', 'var(--muted)', 1.4) + T(10 + 4 * u, 160, '酸素 2', 15, 'middle', 'var(--fg)', 700);
+    s += T(10 + 5 * u + 14, 160, '＝ 酸化Mg 5', 15, 'start', 'var(--fg)', 700);
+    s += T(230, 214, '銅：酸素 ＝ 4：1　　マグネシウム：酸素 ＝ 3：2', 13.5, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-7 電力と熱量の式 */
+  var SVG_WATT = (function () {
+    var s = '<svg viewBox="0 0 460 250" role="img" aria-label="電力は電圧かける電流、熱量は電力かける時間という2つの式の図">';
+    function bx(x, y, w, a, b, c) {
+      return RC(x, y, w, 56, 10, c, 'var(--muted)', 1.6) + T(x + w / 2, y + 24, a, 17, 'middle', 'var(--fg)', 700) + T(x + w / 2, y + 44, b, 11.5, 'middle', 'var(--muted)', 700);
+    }
+    s += T(230, 22, '電力（W）の式', 14, 'middle', 'var(--accent-ink)', 700);
+    s += bx(10, 34, 124, 'W', '電力', '#fde9c8') + T(150, 70, '＝', 22, 'middle', 'var(--fg)', 700);
+    s += bx(166, 34, 124, 'V', '電圧（カモメ）', '#d3e6f5') + T(306, 70, '×', 22, 'middle', 'var(--fg)', 700);
+    s += bx(322, 34, 128, 'A', '電流（イカ）', '#d9ecd0');
+    s += T(230, 128, '熱量（J）の式', 14, 'middle', 'var(--accent-ink)', 700);
+    s += bx(10, 140, 124, 'J', '熱量', '#fbd5d0') + T(150, 176, '＝', 22, 'middle', 'var(--fg)', 700);
+    s += bx(166, 140, 124, 'W', '電力', '#fde9c8') + T(306, 176, '×', 22, 'middle', 'var(--fg)', 700);
+    s += bx(322, 140, 128, '秒', '時間（秒）', '#e6dcf3');
+    s += T(230, 232, '例：6V × 2A ＝ 12W　　12W × 10秒 ＝ 120J', 13.5, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-7 水を電熱線で温める */
+  var SVG_HEAT = (function () {
+    var s = '<svg viewBox="0 0 460 250" role="img" aria-label="ビーカーの水を電熱線で温める装置。電力が大きいほど、水の温度が早く上がる">';
+    s += P('M120,50 L120,190 Q120,206 136,206 L264,206 Q280,206 280,190 L280,50', 'none', 'var(--muted)', 2.4);
+    s += P('M122,92 L122,190 Q122,204 136,204 L264,204 Q278,204 278,190 L278,92 Z', '#bfe0f5', 'none', 0);
+    s += P('M150,92 L150,150 L162,170 L174,140 L186,170 L198,140 L210,170 L222,140 L234,170 L246,150 L246,92', 'none', '#c0392b', 3);
+    s += T(200, 184, '電熱線', 12.5, 'middle', '#c0392b', 700);
+    s += RC(296, 40, 12, 120, 6, 'var(--surface)', 'var(--muted)', 2) + RC(299, 90, 6, 66, 3, '#e74c3c', 'none', 0) + CI(302, 166, 10, '#e74c3c', 'var(--muted)', 2);
+    s += T(322, 98, '温度計', 12.5, 'start', 'var(--muted)', 700);
+    s += T(200, 120, '水', 13, 'middle', '#2c6aa8', 700);
+    s += LN(160, 30, 160, 92, 'var(--muted)', 2) + LN(240, 30, 240, 92, 'var(--muted)', 2);
+    s += T(200, 24, '電源につなぐ', 12.5, 'middle', 'var(--muted)', 700);
+    s += T(230, 238, '電力（W）が大きいほど、水の温度は早く上がる', 13.5, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-8 地震計の記録(初期微動と主要動) */
+  var SVG_QUAKE = (function () {
+    var s = '<svg viewBox="0 0 460 262" role="img" aria-label="地震計の記録。はじめに小さなゆれの初期微動、あとに大きなゆれの主要動がくる図">';
+    var pts = [], x, y, k;
+    for (x = 10; x <= 450; x += 3) {
+      if (x < 90) y = 0;
+      else if (x < 210) y = 9 * Math.sin((x - 90) * 0.7);
+      else y = 62 * Math.exp(-(x - 210) / 150) * Math.sin((x - 210) * 0.45);
+      pts.push(fx(x) + ',' + fx(130 - y));
+    }
+    s += LN(10, 130, 450, 130, 'var(--line)', 1.2);
+    s += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="var(--fg)" stroke-width="1.8" stroke-linejoin="round"/>';
+    s += LN(90, 40, 90, 200, '#2c6aa8', 1.8, ' stroke-dasharray="5 4"') + LN(210, 40, 210, 200, '#c0392b', 1.8, ' stroke-dasharray="5 4"');
+    s += T(90, 32, 'P波が着く', 13, 'middle', '#2c6aa8', 700) + T(210, 32, 'S波が着く', 13, 'middle', '#c0392b', 700);
+    s += T(150, 104, '初期微動', 13, 'middle', '#2c6aa8', 700) + T(150, 120, '（小さなゆれ）', 11, 'middle', '#2c6aa8', 700);
+    s += T(330, 70, '主要動', 14, 'middle', '#c0392b', 700) + T(330, 86, '（大きなゆれ）', 11, 'middle', '#c0392b', 700);
+    s += LN(90, 214, 210, 214, 'var(--accent-ink)', 2) + ARW(90, 214, -1, 0, 9, 'var(--accent-ink)') + ARW(210, 214, 1, 0, 9, 'var(--accent-ink)');
+    s += T(150, 238, '初期微動継続時間', 13.5, 'middle', 'var(--accent-ink)', 700);
+    s += T(150, 254, '＝ S波の時刻 － P波の時刻', 11.5, 'middle', 'var(--muted)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-8 震源・震央・震源距離 */
+  var SVG_FOCUS = (function () {
+    var s = '<svg viewBox="0 0 460 240" role="img" aria-label="震源、震央、震源距離、観測点を示す地面の断面図">';
+    s += RC(10, 60, 440, 160, 0, '#e9dcc8', 'none', 0) + LN(10, 60, 450, 60, 'var(--muted)', 2.2);
+    s += LN(120, 60, 120, 168, '#8a95a3', 1.6, ' stroke-dasharray="5 4"');
+    s += CI(120, 60, 6, '#c0392b', 'none', 0) + T(120, 46, '震央', 14, 'middle', '#c0392b', 700);
+    s += CI(120, 168, 11, '#e74c3c', '#7b241c', 2) + T(120, 196, '震源', 14, 'middle', '#c0392b', 700);
+    s += T(70, 118, '深さ', 12.5, 'middle', 'var(--muted)', 700);
+    s += LN(120, 168, 360, 60, 'var(--accent-ink)', 2.2);
+    s += ARW(360, 60, 1.2, -0.45, 10, 'var(--accent-ink)');
+    s += T(262, 130, '震源距離', 13.5, 'middle', 'var(--accent-ink)', 700);
+    s += P('M350,60 L370,60 L360,44 Z', '#2c6aa8', 'none', 0) + T(360, 34, '観測点', 13, 'middle', '#2c6aa8', 700);
+    s += P('M142,150 Q160,160 168,176', 'none', '#e74c3c', 1.6) + P('M156,138 Q184,152 196,184', 'none', '#e74c3c', 1.2);
+    s += T(340, 214, '震源から、ゆれが四方へ広がる', 12.5, 'middle', 'var(--muted)', 700);
+    return s + '</svg>';
+  })();
+
+
+  /* ===== 第9〜12話の図 ===== */
+
+  /* 3-9 刺激の伝わる順 */
+  var SVG_NERVE = (function () {
+    var s = '<svg viewBox="0 0 460 330" role="img" aria-label="刺激が感覚器官から感覚神経、せきずい、脳、運動神経、筋肉へ伝わる順と、反射の近道の図">';
+    var items = [
+      ['感覚器官', '目・耳・皮ふ', '#fde9c8'],
+      ['感覚神経', '', '#d3e6f5'],
+      ['せきずい', '', '#e6dcf3'],
+      ['脳', '判断・命令', '#fbd5d0'],
+      ['運動神経', '', '#d9ecd0'],
+      ['筋肉', 'うごく', '#fde9c8']
+    ];
+    function bx(x, y, i) { return RC(x, y, 124, 44, 10, items[i][2], 'var(--muted)', 1.6) + T(x + 62, y + (items[i][1] ? 20 : 28), items[i][0], 15, 'middle', 'var(--fg)', 700) + (items[i][1] ? T(x + 62, y + 36, items[i][1], 11, 'middle', 'var(--muted)', 700) : ''); }
+    s += bx(10, 20, 0) + bx(168, 20, 1) + bx(326, 20, 2);
+    s += ARW(166, 42, 1, 0, 9, 'var(--muted)') + LN(136, 42, 158, 42, 'var(--muted)', 1.8);
+    s += ARW(324, 42, 1, 0, 9, 'var(--muted)') + LN(294, 42, 316, 42, 'var(--muted)', 1.8);
+    s += T(230, 12, '', 1);
+    s += ARW(388, 116, 0, 1, 9, 'var(--muted)') + LN(388, 66, 388, 108, 'var(--muted)', 1.8);
+    s += bx(326, 124, 3);
+    s += ARW(294, 146, -1, 0, 9, 'var(--muted)') + LN(324, 146, 302, 146, 'var(--muted)', 1.8);
+    s += bx(168, 124, 4) + bx(10, 124, 5);
+    s += ARW(136, 146, -1, 0, 9, 'var(--muted)') + LN(166, 146, 144, 146, 'var(--muted)', 1.8);
+    s += T(230, 100, '意識して動く：全部を通る', 12.5, 'middle', 'var(--accent-ink)', 700);
+    s += RC(10, 206, 440, 112, 12, 'var(--surface)', '#c0392b', 1.8);
+    s += T(230, 230, '反射（無意識に、すばやく動く）', 14, 'middle', '#c0392b', 700);
+    s += T(230, 254, '感覚器官 → 感覚神経 → せきずい → 運動神経 → 筋肉', 12.5, 'middle', 'var(--fg)', 700);
+    s += T(230, 274, '脳を通らずに、せきずいから命令が出る', 13, 'middle', '#c0392b', 700);
+    s += T(230, 298, '例：熱いものにふれて、思わず手を引っこめる', 12, 'middle', 'var(--muted)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-9 腕の曲げのばし */
+  var SVG_ARM = (function () {
+    var s = '<svg viewBox="0 0 460 250" role="img" aria-label="うでを曲げるとき、内側の筋肉が縮み、外側の筋肉がゆるむ図">';
+    s += T(230, 20, 'うでを曲げるとき', 14, 'middle', 'var(--accent-ink)', 700);
+    s += P('M120,110 L250,110', 'none', '#bfa77a', 14);
+    s += P('M250,110 L330,60', 'none', '#bfa77a', 14);
+    s += CI(250, 110, 12, '#fff', '#bfa77a', 3);
+    s += EL(185, 88, 56, 14, '#e8a28f', '#b5532a', 1.8) + T(185, 92, '内側の筋肉', 12, 'middle', 'var(--fg)', 700) + T(185, 70, '縮む', 14, 'middle', '#c0392b', 700);
+    s += EL(185, 134, 56, 11, '#f3d6cc', '#b5532a', 1.4, 0) + T(185, 138, '外側の筋肉', 12, 'middle', 'var(--fg)', 700) + T(185, 160, 'ゆるむ', 14, 'middle', '#2c6aa8', 700);
+    s += T(250, 150, '関節', 12, 'start', 'var(--muted)', 700) + LD(262, 144, 252, 118);
+    s += T(80, 112, '骨', 13, 'middle', 'var(--muted)', 700);
+    s += T(230, 206, '筋肉と骨は「腱（けん）」でつながっている', 13.5, 'middle', 'var(--accent-ink)', 700);
+    s += T(230, 230, '曲げる＝内側が縮む　のばす＝外側が縮む', 12.5, 'middle', 'var(--muted)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-10 pHの目盛り */
+  var SVG_PH = (function () {
+    var s = '<svg viewBox="0 0 460 190" role="img" aria-label="pH0から14までの目盛り。7が中性、7より小さいと酸性、大きいとアルカリ性">';
+    var cols = ['#e8423f', '#ee5b3c', '#f27a3a', '#f59c3a', '#f7c33f', '#f1dd48', '#cfe04f', '#6fc36f', '#4fb7a5', '#3ea7c9', '#3d8fd0', '#3f73c9', '#4a5ab8', '#5a47a8', '#6a3a98'];
+    var x0 = 14, w = 28;
+    for (var i = 0; i <= 14; i++) {
+      s += RC(x0 + i * w, 56, w, 40, 0, cols[i], 'var(--surface)', 1.2) + T(x0 + i * w + w / 2, 82, i, 14, 'middle', i >= 3 && i <= 10 ? '#1a1a1a' : '#fff', 700);
+    }
+    s += T(x0 + 3.5 * w, 38, '酸性', 16, 'middle', '#c0392b', 700) + T(x0 + 7.5 * w, 38, '中性', 16, 'middle', '#3a8a3a', 700) + T(x0 + 11.5 * w, 38, 'アルカリ性', 16, 'middle', '#2c4fa8', 700);
+    s += T(x0 + 7.5 * w, 118, '↑ 7', 14, 'middle', '#3a8a3a', 700);
+    s += LN(x0, 128, x0 + 7 * w, 128, '#c0392b', 2) + T(x0 + 3.5 * w, 148, '7より小さい', 12.5, 'middle', '#c0392b', 700);
+    s += LN(x0 + 8 * w, 128, x0 + 15 * w, 128, '#2c4fa8', 2) + T(x0 + 11.5 * w, 148, '7より大きい', 12.5, 'middle', '#2c4fa8', 700);
+    s += T(230, 176, 'pH（ピーエイチ）＝酸性・アルカリ性の強さ', 13, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-10 指示薬の色 */
+  var SVG_INDI = (function () {
+    var s = '<svg viewBox="0 0 460 268" role="img" aria-label="リトマス紙、BTB溶液、フェノールフタレイン溶液の、酸性・アルカリ性での色の変化の表">';
+    s += T(150, 22, '酸性', 15, 'middle', '#c0392b', 700) + T(260, 22, '中性', 15, 'middle', '#3a8a3a', 700) + T(380, 22, 'アルカリ性', 15, 'middle', '#2c4fa8', 700);
+    var rows = [
+      ['青リトマス紙', ['#d94a4a', '赤に変わる'], ['#5b79d6', '変化なし'], ['#5b79d6', '青のまま']],
+      ['赤リトマス紙', ['#d94a4a', '赤のまま'], ['#d94a4a', '変化なし'], ['#5b79d6', '青に変わる']],
+      ['BTB溶液', ['#f1dd48', '黄'], ['#6fc36f', '緑'], ['#3f73c9', '青']],
+      ['フェノール\nフタレイン', ['#f5f5f5', '無色'], ['#f5f5f5', '無色'], ['#e0457b', '赤（こい赤）']]
+    ];
+    rows.forEach(function (r, i) {
+      var y = 34 + i * 56;
+      s += RC(6, y, 448, 50, 8, 'var(--surface)', 'var(--line)', 1.2);
+      var nm = r[0].split('\n');
+      if (nm.length > 1) { s += T(14, y + 22, nm[0], 12.5, 'start', 'var(--fg)', 700) + T(14, y + 38, nm[1], 12.5, 'start', 'var(--fg)', 700); }
+      else s += T(14, y + 30, nm[0], 13.5, 'start', 'var(--fg)', 700);
+      [150, 260, 380].forEach(function (cx, k) {
+        var c = r[k + 1];
+        s += CI(cx - 36, y + 25, 11, c[0], 'var(--muted)', 1.2) + T(cx - 20, y + 30, c[1], 12.5, 'start', 'var(--fg)', 700);
+      });
+    });
+    return s + '</svg>';
+  })();
+
+  /* 3-11 速さの式 */
+  var SVG_SPD = (function () {
+    var s = '<svg viewBox="0 0 460 236" role="img" aria-label="速さは距離わる時間、距離は速さかける時間、時間は距離わる速さの図">';
+    function bx(x, y, w, a, b, c) { return RC(x, y, w, 56, 10, c, 'var(--muted)', 1.6) + T(x + w / 2, y + 26, a, 17, 'middle', 'var(--fg)', 700) + T(x + w / 2, y + 46, b, 11.5, 'middle', 'var(--muted)', 700); }
+    s += bx(10, 16, 126, '速さ', 'm/秒・km/時', '#fde9c8') + T(152, 52, '＝', 22, 'middle', 'var(--fg)', 700);
+    s += bx(166, 16, 126, '距離', 'm・km', '#d3e6f5') + T(308, 52, '÷', 22, 'middle', 'var(--fg)', 700);
+    s += bx(324, 16, 126, '時間', '秒・時間', '#e6dcf3');
+    s += T(230, 104, '例：100 m を 20 秒で走った', 13, 'middle', 'var(--muted)', 700);
+    s += T(230, 128, '100 ÷ 20 ＝ 5 m/秒', 18, 'middle', 'var(--accent-ink)', 700);
+    s += RC(10, 148, 440, 76, 12, 'var(--surface)', 'var(--accent)', 1.8);
+    s += T(230, 174, '距離 ＝ 速さ × 時間　　（3 × 10 ＝ 30 m）', 14, 'middle', 'var(--fg)', 700);
+    s += T(230, 202, '時間 ＝ 距離 ÷ 速さ　　（60 ÷ 3 ＝ 20 秒）', 14, 'middle', 'var(--fg)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-11 慣性（電車の中） */
+  var SVG_INR = (function () {
+    var s = '<svg viewBox="0 0 460 262" role="img" aria-label="電車が急に止まると体が前に、急に発車すると体が後ろに倒れる図">';
+    function train(y, dir, pose, cap, col) {
+      var t = RC(70, y, 320, 70, 12, 'var(--surface-2)', 'var(--muted)', 2);
+      t += CI(120, y + 74, 9, '#6b7684', 'none', 0) + CI(340, y + 74, 9, '#6b7684', 'none', 0);
+      var px = 230;
+      t += CI(px + pose, y + 20, 9, '#f2c9a0', 'var(--muted)', 1.4);
+      t += P('M' + (px + pose * 0.4) + ',' + (y + 30) + ' L' + px + ',' + (y + 62), 'none', 'var(--fg)', 3.4);
+      t += LN(px, y + 62, px - 8, y + 62, 'var(--fg)', 3.4) + LN(px, y + 62, px + 8, y + 62, 'var(--fg)', 3.4);
+      t += ARW(dir > 0 ? 420 : 40, y + 35, dir, 0, 12, col) + LN(dir > 0 ? 396 : 64, y + 35, dir > 0 ? 410 : 50, y + 35, col, 3);
+      t += T(230, y + 100, cap, 13.5, 'middle', col, 700);
+      return t;
+    }
+    s += train(14, 1, 14, '急ブレーキ → 体は前へ倒れる', '#c0392b');
+    s += train(132, 1, -14, '急発車 → 体は後ろへ倒れる', '#2c6aa8');
+    return s + '</svg>';
+  })();
+
+  /* 3-12 地球の公転と季節 */
+  var SVG_SEASON = (function () {
+    var s = '<svg viewBox="0 0 460 290" role="img" aria-label="太陽のまわりを回る地球。地軸が傾いたまま公転するので、夏至・秋分・冬至・春分がある図">';
+    s += EL(230, 145, 170, 100, 'none', 'var(--line)', 1.6);
+    s += CI(230, 145, 26, '#f4b942', '#d98e0a', 2.4) + T(230, 150, '太陽', 12.5, 'middle', '#7a4a00', 700);
+    function earth(cx, cy, lab, sub, lx, ly, anc) {
+      var t = CI(cx, cy, 15, '#7db8e8', '#2c6aa8', 1.8);
+      t += LN(cx - 9, cy + 22, cx + 9, cy - 22, '#c0392b', 2.2);
+      t += T(lx, ly, lab, 14, anc, 'var(--accent-ink)', 700) + T(lx, ly + 15, sub, 11, anc, 'var(--muted)', 700);
+      return t;
+    }
+    s += earth(60, 145, '夏至', '（6月ごろ）', 28, 192, 'start');
+    s += earth(230, 245, '秋分', '（9月ごろ）', 262, 236, 'start');
+    s += earth(400, 145, '冬至', '（12月ごろ）', 432, 192, 'end');
+    s += earth(230, 45, '春分', '（3月ごろ）', 262, 38, 'start');
+    s += T(230, 14, '', 1);
+    s += T(230, 284, '地軸（赤い線）は、いつも同じ向きに傾いたまま', 12, 'middle', '#c0392b', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-12 太陽の通り道 */
+  var SVG_SUNP = (function () {
+    var s = '<svg viewBox="0 0 460 262" role="img" aria-label="夏至・春分と秋分・冬至の太陽の通り道。夏至は高く昼が長く、冬至は低く昼が短い図">';
+    s += RC(10, 220, 440, 28, 0, '#d8e8c8', 'none', 0) + LN(10, 220, 450, 220, 'var(--muted)', 2);
+    s += T(30, 244, '東', 14, 'middle', 'var(--fg)', 700) + T(230, 244, '南', 14, 'middle', 'var(--fg)', 700) + T(430, 244, '西', 14, 'middle', 'var(--fg)', 700);
+    function arc(x1, x2, peak, col, lab) {
+      var cy = 2 * peak - 220;
+      return P('M' + x1 + ',220 Q230,' + cy + ' ' + x2 + ',220', 'none', col, 3) + T(230, peak - 6, lab, 13, 'middle', col, 700);
+    }
+    s += arc(24, 436, 50, '#c0392b', '夏至（高い・昼が長い）');
+    s += arc(30, 430, 110, '#3a8a3a', '春分・秋分');
+    s += arc(70, 390, 170, '#2c6aa8', '冬至（低い・昼が短い）');
+    s += LN(230, 220, 230, 38, 'var(--muted)', 1.2, ' stroke-dasharray="4 4"');
+    s += T(236, 212, '南中', 12, 'start', 'var(--muted)', 700);
+    return s + '</svg>';
+  })();
+
+
+  /* ===== 第13〜16話の図 ===== */
+
+  /* 3-13 体細胞分裂の1コマ（植物の細胞）  viewBox 0 0 100 100 */
+  function CHX(x, y) { return LN(x - 4, y - 4, x + 4, y + 4, '#d0342c', 2.6) + LN(x + 4, y - 4, x - 4, y + 4, '#d0342c', 2.6); }
+  function CELLSTEP(k) {
+    var cell = function (y, h) { return RC(16, y, 68, h, 13, '#eef7e4', '#2f8a4c', 3.4); };
+    var t = '';
+    if (k === 5) {
+      t += cell(5, 42) + cell(53, 42) + CI(50, 26, 9, '#b8864b', '#7a5528', 1.6) + CI(50, 74, 9, '#b8864b', '#7a5528', 1.6);
+      return t;
+    }
+    t += cell(5, 90);
+    if (k === 0) t += CI(50, 50, 15, '#b8864b', '#7a5528', 2);
+    if (k === 1) { t += CI(50, 50, 20, 'none', '#9aa58a', 1.6) .replace('/>', ' stroke-dasharray="3 3"/>') + CHX(42, 42) + CHX(58, 44) + CHX(44, 58) + CHX(58, 58); }
+    if (k === 2) {
+      [30, 40, 50, 60, 70].forEach(function (x) { t += LN(50, 14, x, 50, '#8a95a3', 1, ' stroke-dasharray="2 2"') + LN(50, 86, x, 50, '#8a95a3', 1, ' stroke-dasharray="2 2"'); });
+      t += CHX(34, 50) + CHX(50, 50) + CHX(66, 50);
+    }
+    if (k === 3) {
+      [34, 50, 66].forEach(function (x) { t += LN(50, 14, x, 28, '#8a95a3', 1, ' stroke-dasharray="2 2"') + LN(50, 86, x, 72, '#8a95a3', 1, ' stroke-dasharray="2 2"'); });
+      t += CHX(36, 28) + CHX(50, 30) + CHX(64, 28) + CHX(36, 72) + CHX(50, 70) + CHX(64, 72);
+    }
+    if (k === 4) {
+      t += CI(50, 28, 13, '#f6e9d2', '#b8864b', 1.8) + CHX(44, 28) + CHX(56, 28) + CI(50, 72, 13, '#f6e9d2', '#b8864b', 1.8) + CHX(44, 72) + CHX(56, 72);
+      t += LN(18, 50, 82, 50, '#2f8a4c', 3, ' stroke-dasharray="5 3"');
+    }
+    return t;
+  }
+  function CELLPIC(k) { return '<svg viewBox="0 0 100 100" role="img" aria-label="細胞分裂の図">' + CELLSTEP(k) + '</svg>'; }
+
+  /* 3-13 体細胞分裂の順（6コマ） */
+  var CELLNAMES = ['核が見える', '染色体が見える', '中央に並ぶ', '両端に分かれる', 'しきりができる', '2つの細胞になる'];
+  var SVG_CELLDIV = (function () {
+    var s = '<svg viewBox="0 0 460 190" role="img" aria-label="体細胞分裂の順。核が見える、染色体が見える、中央に並ぶ、両端に分かれる、しきりができる、2つの細胞になる図">';
+    var w = 70, gap = 8, x0 = (460 - (6 * w + 5 * gap)) / 2;
+    for (var i = 0; i < 6; i++) {
+      var x = x0 + i * (w + gap);
+      s += '<g transform="translate(' + x + ',14) scale(' + (w / 100) + ')">' + CELLSTEP(i) + '</g>';
+      s += T(x + w / 2, 104, ['①', '②', '③', '④', '⑤', '⑥'][i], 15, 'middle', 'var(--accent-ink)', 700);
+      if (i < 5) s += ARW(x + w + gap - 1, 49, 1, 0, 6, 'var(--muted)');
+    }
+    [['核が', '見える'], ['染色体が', '見える'], ['中央に', '並ぶ'], ['両端に', '分かれる'], ['しきりが', 'できる'], ['2つの', '細胞に']].forEach(function (ln, i) {
+      var x = x0 + i * (w + gap) + w / 2;
+      s += T(x, 126, ln[0], 10.5, 'middle', 'var(--fg)', 700) + T(x, 139, ln[1], 10.5, 'middle', 'var(--fg)', 700);
+    });
+    s += T(230, 170, '染色体の数は、分裂の前と後で、変わらない', 13, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-13 有性生殖と染色体の数 */
+  var SVG_SEX = (function () {
+    var s = '<svg viewBox="0 0 460 230" role="img" aria-label="精子と卵の染色体はそれぞれ体細胞の半分で、受精すると受精卵で元の数にもどる図">';
+    function dots(cx, cy, n) { var t = ''; for (var i = 0; i < n; i++) t += CI(cx - (n - 1) * 7 + i * 14, cy, 4.5, '#b5532a', 'none', 0); return t; }
+    s += CI(70, 70, 34, '#d3e6f5', '#5b9bd0', 2) + T(70, 30, '精子（の核）', 12.5, 'middle', 'var(--fg)', 700) + dots(70, 72, 4) + T(70, 126, '染色体 4本', 12.5, 'middle', '#2c6aa8', 700);
+    s += CI(230, 70, 34, '#fbd5d0', '#d98a80', 2) + T(230, 30, '卵（の核）', 12.5, 'middle', 'var(--fg)', 700) + dots(230, 72, 4) + T(230, 126, '染色体 4本', 12.5, 'middle', '#c0392b', 700);
+    s += T(150, 76, '＋', 22, 'middle', 'var(--fg)', 700);
+    s += ARW(330, 76, 1, 0, 11, 'var(--muted)') + LN(290, 76, 322, 76, 'var(--muted)', 2.2) + T(310, 62, '受精', 12.5, 'middle', 'var(--accent-ink)', 700);
+    s += CI(404, 70, 38, '#e6dcf3', '#8b6fb8', 2) + T(404, 24, '受精卵', 12.5, 'middle', 'var(--fg)', 700) + dots(404, 70, 4) + dots(404, 86, 4) + T(404, 130, '染色体 8本', 12.5, 'middle', '#5b3f98', 700);
+    s += RC(10, 150, 440, 66, 12, 'var(--surface)', 'var(--accent)', 1.8);
+    s += T(230, 176, '生殖細胞は、染色体の数が「半分」', 14, 'middle', 'var(--accent-ink)', 700);
+    s += T(230, 200, '受精して、もとの数にもどる（4 ＋ 4 ＝ 8）', 13.5, 'middle', 'var(--fg)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-14 密度（浮く・沈む） */
+  var SVG_DENS = (function () {
+    var s = '<svg viewBox="0 0 460 250" role="img" aria-label="水の密度は1。水より密度が小さい物は浮き、大きい物は沈む図">';
+    s += RC(40, 70, 170, 130, 8, 'none', 'var(--muted)', 2.4);
+    s += RC(42, 100, 166, 98, 6, '#bfe0f5', 'none', 0);
+    s += RC(80, 94, 44, 28, 4, '#e8d9a8', '#a08a4a', 1.8) + T(102, 88, '氷（0.92）', 12, 'middle', 'var(--fg)', 700);
+    s += RC(86, 166, 44, 28, 4, '#a9b4c0', '#6b7684', 1.8) + T(108, 160, '鉄（7.9）', 12, 'middle', 'var(--fg)', 700);
+    s += T(125, 222, '水（1）', 13, 'middle', '#2c6aa8', 700);
+    s += T(325, 94, '密度', 15, 'middle', 'var(--accent-ink)', 700) + T(325, 118, '＝ 質量 ÷ 体積', 15, 'middle', 'var(--fg)', 700) + T(325, 138, '（g/cm³）', 12, 'middle', 'var(--muted)', 700);
+    s += RC(250, 156, 200, 70, 10, 'var(--surface)', 'var(--accent)', 1.8);
+    s += T(350, 182, '水より小さい → 浮く', 13.5, 'middle', '#2c6aa8', 700) + T(350, 208, '水より大きい → 沈む', 13.5, 'middle', '#c0392b', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-14 濃度（質量パーセント） */
+  var SVG_CONC = (function () {
+    var s = '<svg viewBox="0 0 460 236" role="img" aria-label="砂糖10gと水90gで砂糖水100g。濃度は10パーセントの図">';
+    var u = 3.8;
+    s += T(10, 22, '砂糖水（溶液）', 14, 'start', 'var(--accent-ink)', 700);
+    s += RC(10, 36, 10 * u, 46, 6, '#fde9c8', 'var(--muted)', 1.4) + T(10 + 5 * u, 64, '砂糖', 12, 'middle', 'var(--fg)', 700);
+    s += RC(10 + 10 * u, 36, 90 * u, 46, 6, '#bfe0f5', 'var(--muted)', 1.4) + T(10 + 55 * u, 64, '水 90 g', 14, 'middle', 'var(--fg)', 700);
+    s += T(10 + 5 * u, 100, '10 g', 12.5, 'middle', 'var(--fg)', 700);
+    s += T(10, 128, '溶質 ＋ 溶媒 ＝ 溶液', 14, 'start', 'var(--fg)', 700) + T(10, 148, '（砂糖）　（水）　（砂糖水）', 11.5, 'start', 'var(--muted)', 700);
+    s += RC(10, 162, 440, 62, 12, 'var(--surface)', 'var(--accent)', 1.8);
+    s += T(230, 186, '濃度（％）＝ 溶質 ÷ 溶液 × 100', 14.5, 'middle', 'var(--accent-ink)', 700);
+    s += T(230, 210, '例：10 ÷ 100 × 100 ＝ 10 ％', 14, 'middle', 'var(--fg)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-15 圧力（面積のちがい） */
+  var SVG_PRESS = (function () {
+    var s = '<svg viewBox="0 0 460 250" role="img" aria-label="同じ力でも、面積が小さいほど圧力が大きくなる図">';
+    function blk(x, w, lab, col) {
+      var t = RC(x, 90, w, 56, 4, '#e8d9a8', '#a08a4a', 2);
+      t += LN(x + w / 2, 30, x + w / 2, 82, col, 3) + ARW(x + w / 2, 88, 0, 1, 11, col) + T(x + w / 2, 24, '20 N', 13, 'middle', col, 700);
+      t += RC(x - 20, 146, w + 40, 18, 2, '#c9ccd2', 'none', 0);
+      t += T(x + w / 2, 184, lab, 13.5, 'middle', 'var(--fg)', 700);
+      return t;
+    }
+    s += blk(40, 130, '面積が大きい（広い面）', '#c0392b') + blk(270, 40, '面積が小さい（せまい面）', '#c0392b');
+    s += T(105, 204, '圧力は小さい', 14, 'middle', '#2c6aa8', 700) + T(290, 204, '圧力は大きい', 14, 'middle', '#c0392b', 700);
+    s += T(230, 236, '圧力（Pa）＝ 力（N）÷ 面積（m²）', 14, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-15 浮力（ばねばかり） */
+  var SVG_BUOY = (function () {
+    var s = '<svg viewBox="0 0 460 260" role="img" aria-label="ばねばかりで測ると、空気中で5N、水中で3N。そのちがいの2Nが浮力の図">';
+    function scale(cx, val, inwater) {
+      var t = RC(cx - 14, 14, 28, 66, 6, 'var(--surface-2)', 'var(--muted)', 2) + T(cx, 52, val, 13, 'middle', 'var(--fg)', 700);
+      t += LN(cx, 80, cx, 112, 'var(--muted)', 2.4);
+      t += RC(cx - 20, 112, 40, 34, 4, '#a9b4c0', '#6b7684', 2);
+      if (inwater) { t += RC(cx - 60, 100, 120, 100, 6, '#bfe0f5', '#5b9bd0', 1.6) + RC(cx - 20, 112, 40, 34, 4, '#a9b4c0', '#6b7684', 2); t += LN(cx + 34, 146, cx + 34, 112, '#2c6aa8', 3) + ARW(cx + 34, 108, 0, -1, 10, '#2c6aa8'); t += T(cx + 40, 132, '浮力', 12, 'start', '#2c6aa8', 700); }
+      return t;
+    }
+    s += scale(110, '5 N', false) + scale(330, '3 N', true);
+    s += T(110, 178, '空気中', 14, 'middle', 'var(--fg)', 700) + T(330, 218, '水中', 14, 'middle', 'var(--fg)', 700);
+    s += T(230, 250, '浮力 ＝ 空気中の値 － 水中の値 ＝ 5 － 3 ＝ 2 N', 14, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-16 月の満ち欠け */
+  function MOONSHAPE(cx, cy, r, ph) {
+    /* ph: 'new' | 'cres' | 'half' | 'gib' | 'full' ; 光は右側 */
+    var t = CI(cx, cy, r, '#3b4252', '#cfd6e0', 1.2);
+    if (ph === 'full') t += CI(cx, cy, r, '#fff3b0', '#cfd6e0', 1.2);
+    else if (ph === 'half') t += P('M' + cx + ',' + (cy - r) + ' A' + r + ',' + r + ' 0 0 1 ' + cx + ',' + (cy + r) + ' Z', '#fff3b0', 'none', 0);
+    else if (ph === 'cres') t += P('M' + cx + ',' + (cy - r) + ' A' + r + ',' + r + ' 0 0 1 ' + cx + ',' + (cy + r) + ' A' + (r * 0.55) + ',' + r + ' 0 0 0 ' + cx + ',' + (cy - r) + ' Z', '#fff3b0', 'none', 0);
+    else if (ph === 'gib') t += P('M' + cx + ',' + (cy - r) + ' A' + r + ',' + r + ' 0 0 1 ' + cx + ',' + (cy + r) + ' A' + (r * 0.55) + ',' + r + ' 0 0 1 ' + cx + ',' + (cy - r) + ' Z', '#fff3b0', 'none', 0);
+    return t;
+  }
+  var SVG_MOON = (function () {
+    var s = '<svg viewBox="0 0 460 330" role="img" aria-label="太陽の光と、地球のまわりを回る月の位置。新月・三日月・上弦・満月・下弦のときの形の図">';
+    s += CI(30, 150, 18, '#f4b942', '#d98e0a', 2) + T(30, 190, '太陽', 12, 'middle', '#7a4a00', 700);
+    s += ARW(110, 100, 1, 0, 10, '#d98e0a') + LN(52, 100, 102, 100, '#d98e0a', 2) + ARW(110, 200, 1, 0, 10, '#d98e0a') + LN(52, 200, 102, 200, '#d98e0a', 2) + T(76, 92, '光', 12, 'middle', '#d98e0a', 700);
+    s += CI(260, 150, 112, 'none', 'var(--line)', 1.6);
+    s += CI(260, 150, 22, '#7db8e8', '#2c6aa8', 2) + T(260, 155, '地球', 12, 'middle', 'var(--fg)', 700);
+    var names = ['新月', '三日月', '上弦の月', '', '満月', '', '下弦の月', ''];
+    var phs = ['new', 'cres', 'half', 'gib', 'full', 'gib', 'half', 'cres'];
+    for (var k = 0; k < 8; k++) {
+      var a = k * Math.PI / 4, x = 260 - 112 * Math.cos(a), y = 150 + 112 * Math.sin(a);
+      /* 軌道上の月：太陽側(左)の半分が光る */
+      s += CI(x, y, 12, '#3b4252', '#cfd6e0', 1.2);
+      var lit = (k === 4) ? '' : '';
+      s += P('M' + x + ',' + (y - 12) + ' A12,12 0 0 0 ' + x + ',' + (y + 12) + ' Z', '#fff3b0', 'none', 0);
+    }
+    /* 反時計まわりの矢印（軌道の上） */
+    [22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5].forEach(function (d) {
+      var r = d * Math.PI / 180, ax = 260 - 112 * Math.cos(r), ay = 150 + 112 * Math.sin(r);
+      s += ARW(ax + 7 * Math.sin(r), ay + 7 * Math.cos(r), Math.sin(r), Math.cos(r), 13, '#2c6aa8');
+    });
+    s += T(260, 196, '月は地球のまわりを', 11.5, 'middle', '#2c6aa8', 700) + T(260, 212, '反時計まわりに公転', 11.5, 'middle', '#2c6aa8', 700) + T(260, 228, '（約30日で1周）', 11, 'middle', '#2c6aa8', 700);
+    s += T(130, 128, '① 新月', 13, 'middle', 'var(--accent-ink)', 700) + T(130, 148, '', 1);
+    s += T(140, 254, '② 三日月', 12.5, 'middle', 'var(--accent-ink)', 700);
+    s += T(260, 300, '③ 上弦の月（右半分）', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(414, 156, '④ 満月', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(260, 26, '⑤ 下弦の月（左半分）', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(230, 322, '地球から見える形：新月→三日月→上弦→満月→下弦→新月（約30日）', 11.5, 'middle', 'var(--muted)', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-16 日食と月食 */
+  var SVG_ECL = (function () {
+    var s = '<svg viewBox="0 0 460 250" role="img" aria-label="日食は太陽・月・地球の順、月食は太陽・地球・月の順に一直線に並ぶ図">';
+    function row(y, a, b, c, ca, cb, cc, tt, sub) {
+      var t = T(10, y - 22, tt, 14, 'start', 'var(--accent-ink)', 700) + T(450, y - 22, sub, 12, 'end', 'var(--muted)', 700);
+      t += LN(40, y + 18, 420, y + 18, 'var(--line)', 1.2, ' stroke-dasharray="4 4"');
+      return t;
+    }
+    /* 日食: 太陽 月 地球 */
+    s += row(60, 0, 0, 0, 0, 0, 0, '日食', '新月のとき');
+    s += CI(60, 78, 26, '#f4b942', '#d98e0a', 2) + T(60, 120, '太陽', 12, 'middle', '#7a4a00', 700);
+    s += CI(250, 78, 10, '#3b4252', '#cfd6e0', 1.2) + T(250, 106, '月', 12, 'middle', 'var(--fg)', 700);
+    s += CI(390, 78, 20, '#7db8e8', '#2c6aa8', 2) + T(390, 114, '地球', 12, 'middle', 'var(--fg)', 700);
+    s += P('M258,72 L380,66 L380,90 L258,84 Z', 'rgba(60,60,80,.35)', 'none', 0);
+    s += T(230, 134, '月が、太陽をかくす', 12.5, 'middle', '#c0392b', 700);
+    /* 月食: 太陽 地球 月 */
+    s += row(180, 0, 0, 0, 0, 0, 0, '月食', '満月のとき');
+    s += CI(60, 198, 26, '#f4b942', '#d98e0a', 2) + T(60, 240, '太陽', 12, 'middle', '#7a4a00', 700);
+    s += CI(210, 198, 20, '#7db8e8', '#2c6aa8', 2) + T(210, 234, '地球', 12, 'middle', 'var(--fg)', 700);
+    s += P('M228,190 L400,184 L400,212 L228,206 Z', 'rgba(60,60,80,.35)', 'none', 0);
+    s += CI(390, 198, 10, '#fff3b0', '#cfd6e0', 1.2) + T(390, 226, '月', 12, 'middle', 'var(--fg)', 700);
+    s += T(310, 160, '月が、地球の影に入る', 12.5, 'middle', '#c0392b', 700);
+    return s + '</svg>';
+  })();
+
+  /* 3-16 金星の見え方 */
+  var SVG_VENUS = (function () {
+    var s = '<svg viewBox="0 0 460 210" role="img" aria-label="金星は地球から遠いと小さく丸く、近いと大きく細く欠けて見える図">';
+    s += T(230, 20, '金星の見え方', 14, 'middle', 'var(--accent-ink)', 700);
+    s += MOONSHAPE(60, 90, 12, 'full') + T(60, 126, '遠い', 13, 'middle', 'var(--fg)', 700) + T(60, 144, '小さく丸い', 12, 'middle', 'var(--muted)', 700);
+    s += MOONSHAPE(165, 90, 20, 'gib') + T(165, 126, 'やや近い', 13, 'middle', 'var(--fg)', 700) + T(165, 144, '少し欠ける', 12, 'middle', 'var(--muted)', 700);
+    s += MOONSHAPE(280, 90, 30, 'half') + T(280, 134, 'もっと近い', 13, 'middle', 'var(--fg)', 700) + T(280, 152, '半分', 12, 'middle', 'var(--muted)', 700);
+    s += MOONSHAPE(395, 90, 40, 'cres') + T(395, 144, '近い', 13, 'middle', 'var(--fg)', 700) + T(395, 162, '大きく細い', 12, 'middle', 'var(--muted)', 700);
+    s += T(230, 192, '地球に近いほど、大きく見えて、欠け方が大きい', 13, 'middle', 'var(--accent-ink)', 700);
+    return s + '</svg>';
+  })();
+
+  /* ===== 並べかえ問題用の絵カード ===== */
+  function TXTPIC(main, sub, fill) {
+    return '<svg viewBox="0 0 100 76" role="img" aria-label="' + main + '">' + RC(3, 3, 94, 70, 12, fill, 'var(--muted)', 2)
+      + T(50, sub ? 38 : 45, main, main.length > 4 ? 14 : 17, 'middle', 'var(--fg)', 700) + (sub ? T(50, 58, sub, 10, 'middle', 'var(--muted)', 700) : '') + '</svg>';
+  }
+  function MOONPIC(ph, flip) {
+    var m = MOONSHAPE(50, 50, 30, ph);
+    return '<svg viewBox="0 0 100 100" role="img" aria-label="月の形">' + RC(2, 2, 96, 96, 12, '#142036', 'none', 0)
+      + (flip ? '<g transform="translate(100,0) scale(-1,1)">' + m + '</g>' : m) + '</svg>';
+  }
+
+  /* 3-16 月の満ち欠け（太陽が右にあるとき） */
+  var SVG_MOON2 = (function () {
+    var s = '<svg viewBox="0 0 460 330" role="img" aria-label="太陽が右にあるときの、月の位置と満ち欠け。月は地球のまわりを反時計まわりに回る図">';
+    var cx = 190, cy = 150, R = 112;
+    s += CI(432, 150, 18, '#f4b942', '#d98e0a', 2) + T(432, 190, '太陽', 12, 'middle', '#7a4a00', 700);
+    s += ARW(344, 96, -1, 0, 10, '#d98e0a') + LN(412, 96, 352, 96, '#d98e0a', 2) + ARW(344, 204, -1, 0, 10, '#d98e0a') + LN(412, 204, 352, 204, '#d98e0a', 2) + T(380, 88, '光', 12, 'middle', '#d98e0a', 700);
+    s += CI(cx, cy, R, 'none', 'var(--line)', 1.6);
+    s += CI(cx, cy, 22, '#7db8e8', '#2c6aa8', 2) + T(cx, cy + 5, '地球', 12, 'middle', 'var(--fg)', 700);
+    [22.5, 67.5, 112.5, 157.5, 202.5, 247.5, 292.5, 337.5].forEach(function (d) {
+      var r = d * Math.PI / 180, ax = cx + R * Math.cos(r), ay = cy - R * Math.sin(r);
+      s += ARW(ax - 7 * Math.sin(r), ay - 7 * Math.cos(r), -Math.sin(r), -Math.cos(r), 13, '#2c6aa8');
+    });
+    for (var k = 0; k < 8; k++) {
+      var a = k * Math.PI / 4, x = cx + R * Math.cos(a), y = cy - R * Math.sin(a);
+      s += CI(x, y, 12, '#3b4252', '#cfd6e0', 1.2);
+      s += P('M' + x + ',' + (y - 12) + ' A12,12 0 0 1 ' + x + ',' + (y + 12) + ' Z', '#fff3b0', 'none', 0);
+    }
+    s += T(322, 154, '① 新月', 13, 'start', 'var(--accent-ink)', 700);
+    s += T(292, 52, '② 三日月', 12.5, 'start', 'var(--accent-ink)', 700);
+    s += T(cx, 22, '③ 上弦の月（右半分）', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(62, 178, '④ 満月', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(cx, 292, '⑤ 下弦の月（左半分）', 13, 'middle', 'var(--accent-ink)', 700);
+    s += T(cx, 196, '反時計まわり', 11.5, 'middle', '#2c6aa8', 700);
+    s += T(230, 318, '太陽が右にあっても、ルールは同じ（月は反時計まわり）', 11.5, 'middle', 'var(--muted)', 700);
+    return s + '</svg>';
+  })();
+
+
+function QQ(ask, ok, ngs, vo, vn, why) {
+    return { ask: ask, opts: [{ t: ok, ok: true }].concat(ngs.map(function (t) { return { t: t, ok: false }; })), vo: vo, vn: vn, why: why };
+  }
+  function R(k, y) { return '<ruby>' + k + '<rt>' + y + '</rt></ruby>'; }
+  function TM(k, y) { return '<span class="term">' + (y ? R(k, y) : k) + '</span>'; }
+
+    function TBL(head, rows) {
+    var st = 'border:1px solid var(--line);padding:5px 6px;text-align:center;font-size:.85rem;';
+    var h = '<div style="overflow-x:auto;margin:0 0 12px"><table style="border-collapse:collapse;width:100%;min-width:420px;background:var(--surface)"><tr>';
+    head.forEach(function (c) { h += '<th style="' + st + 'background:var(--accent-soft);color:var(--accent-ink)">' + c + '</th>'; });
+    h += '</tr>';
+    rows.forEach(function (r) { h += '<tr>'; r.forEach(function (c) { h += '<td style="' + st + '">' + c + '</td>'; }); h += '</tr>'; });
+    return h + '</table></div>';
+  }
+
+  function FC(ttl, word, formula, chant) {
+    return '<div style="border:2px solid var(--accent);border-radius:14px;background:var(--surface);padding:12px 14px;margin:14px 0">'
+      + '<div style="font-family:OmegaFix,Zen Maru Gothic,sans-serif;font-weight:700;color:var(--accent-ink);font-size:.95rem">' + ttl + '</div>'
+      + '<div style="font-size:.88rem;color:var(--muted);margin:2px 0 6px">ことばの式：' + word + '</div>'
+      + '<div style="font-size:1.12rem;font-weight:700;line-height:1.8;overflow-wrap:anywhere">' + formula + '</div>'
+      + '<div style="font-size:.82rem;color:var(--muted);margin-top:6px">🗣️ 声に出す読み：' + chant + '</div></div>';
+  }
+
+  var LESSONS_A = [
+    /* ===================== 第1話 生物（暗記） ===================== */
+    {
+      id: 'l3-1', era: '生物', grade: '中2', no: 1, title: '光合成・呼吸・蒸散の実験（対照実験）',
+      frame: '<p>理科の実験は、<b>結果が決まっています</b>。何度も出る実験ほど、結果を<b>丸ごと覚えた人が勝ち</b>です。この話では、<b>BTB溶液の色</b>と、<b>蒸散の実験</b>を、そのまま覚えます。</p>'
+        + '<p>計算は、ありません。グラフも、<b>多い・少ない</b>を見るだけ。声に出して唱えながら、いこう。</p>',
+      goals: [
+        { ic: '⚖️', k: '対照実験', d: TM('対照実験', 'たいしょうじっけん') + '＝調べたい条件<b>だけ</b>をちがえ、ほかは<b>全部同じ</b>にして比べる。' },
+        { ic: '🎨', k: 'BTB溶液の色（唱える！）', d: '<b>「酸性は黄、中性は緑、アルカリ性は青」</b>。二酸化炭素がふえると<b>黄</b>の方へ、減ると<b>青</b>の方へ。' },
+        { ic: '🧪', k: '実験の結果（A・B・C）', d: '<b>A 水草＋光 → 青</b>（二酸化炭素が減る）／<b>B 水草＋光なし → 黄</b>（ふえる）／<b>C 水草なし → 緑のまま</b>（変化なし）。' },
+        { ic: '💧', k: '蒸散', d: '水が<b>気孔</b>から水蒸気になって出ていくこと。気孔は葉の<b>裏に多い</b>。ワセリンをぬった所からは、蒸散<b>できない</b>。' }
+      ],
+      mistakes: [
+        { x: '「植物は、昼は光合成、夜は呼吸」と思う', o: '呼吸は<b>昼も夜も</b>している。昼は光合成のほうが多いので、二酸化炭素が減って見えるだけ' },
+        { x: 'BTB溶液の「黄＝アルカリ性」と、逆に覚える', o: '<b>酸性＝黄、中性＝緑、アルカリ性＝青</b>。二酸化炭素がふえる（酸性）と黄色' },
+        { x: '対照実験で、条件をいくつも同時に変える', o: '変えるのは<b>1つだけ</b>。そうすれば、結果のちがいは「その1つのせい」と言える' },
+        { x: '「蒸散は、葉の裏だけで起こる」と思う', o: '葉の<b>表</b>や<b>茎</b>からも、少し出る。気孔が多い<b>裏</b>がいちばん多いだけ' }
+      ],
+      body: '<p>まず、考え方を1つ。実験の結果を、「どれのせいで変わったのか」が分かるように比べる。これが' + TM('対照実験', 'たいしょうじっけん') + 'です。光の影響を調べたいなら、<b>光を当てる／当てない</b>だけをちがえて、水草の量・水の量・温度は同じにします。<b>変えるのは、1つだけ</b>。</p>'
+        + '<p>つぎは、色で調べる薬、' + TM('BTB溶液', 'ビーティービーようえき') + '。これは<b>丸暗記</b>です。声に出して3回。</p>'
+        + '<p style="font-size:1.1rem;font-weight:700;color:var(--accent-ink)">「酸性は黄、中性は緑、アルカリ性は青」</p>'
+        + '<p>' + TM('二酸化炭素', 'にさんかたんそ') + 'は、水にとけると酸性になります。だから、二酸化炭素が<b>ふえる</b>と黄色の方へ、<b>減る</b>と青色の方へ変わります。実験では、はじめに<b>息をふきこんで緑色</b>にしておきます。</p>'
+        + '<div class="figure">' + SVG_BTB + '<div class="figcap">BTB溶液を使った実験（A・B・C）</div></div>'
+        + '<p>結果は、この3つをセットで覚えます。</p>'
+        + '<p><b>A（水草あり・光あり）→ 青色</b>。光が当たると' + TM('光合成', 'こうごうせい') + 'で二酸化炭素が使われ、<b>減る</b>から。<br><b>B（水草あり・光なし）→ 黄色</b>。光がないと光合成できず、' + TM('呼吸', 'こきゅう') + 'で二酸化炭素が<b>ふえる</b>から。<br><b>C（水草なし）→ 緑のまま</b>。これが「対照」。色が変わったのは、<b>水草のはたらき</b>だと分かる。</p>'
+        + '<p>つぎに、もう1つの実験、' + TM('蒸散', 'じょうさん') + 'です。根からすい上げた水が、葉の' + TM('気孔', 'きこう') + 'から水蒸気になって出ていきます。気孔は、葉の<b>裏</b>に多い。これも覚えます。</p>'
+        + '<p>実験では、同じ大きさの枝を4本用意して、ワセリン（水を通さない油）を、図のようにぬります。<b>ぬった所からは、蒸散できません</b>。</p>'
+        + '<div class="figure">' + SVG_TRANS + '<div class="figcap">蒸散の実験：水の減った量</div></div>'
+        + '<p>グラフは、<b>高い棒ほど、水がたくさん減った</b>という意味です。ぬらないAが、いちばん多い。両面にぬったDが、いちばん少ない。そして、B（表にぬる）のほうが、C（裏にぬる）より多く減っています。<b>裏が残っているBのほうが、水が出ていく</b>から。「裏は気孔が多い」の証拠です。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div><p><b>BTB</b>：酸性＝黄／中性＝緑／アルカリ性＝青</p><p><b>実験</b>：A（水草＋光）＝青／B（水草＋光なし）＝黄／C（水草なし）＝緑</p><p><b>蒸散</b>：気孔から。裏に多い。ワセリンをぬった所は出ない</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('BTB溶液は、<b>酸性</b>のとき何色になる?', '黄色', ['青色', '緑色', '赤色'], 'バッチリ!', 'もう一回、唱えよう', '<b>「酸性は黄、中性は緑、アルカリ性は青」</b>。二酸化炭素がふえると、酸性の方へ向かいます。'),
+        QQ('BTB溶液は、<b>アルカリ性</b>のとき何色になる?', '青色', ['黄色', '緑色', '赤色'], 'そう、これ!', 'もう一回だけ', '<b>アルカリ性は青</b>。二酸化炭素が減ると、青の方へ向かいます。'),
+        QQ('対照実験で、条件のあつかい方として<b>正しい</b>ものは?', '調べたい条件だけを変えて、ほかは同じにする', ['調べたい条件を、いくつも同時に変える', '全部の条件を同じにして、何も変えない', '毎回ちがう条件で、たくさんやる'], 'その通り!', 'あと少し', '変えるのは<b>調べたい条件1つだけ</b>。そうすれば、結果のちがいは「その条件のせい」と言えます。'),
+        QQ('水草を入れ、光を当てた試験管Aは、何色になる?', '青色', ['黄色', '緑色のまま', '赤色'], 'おぼえてたね!', 'ここでふり返ろう', 'Aは<b>青</b>。光合成で二酸化炭素が使われて、減るからです。（A＝青、と唱えよう）'),
+        QQ('水草を入れ、アルミ箔で包んだ試験管Bは、何色になる?', '黄色', ['青色', '緑色のまま', '赤色'], '完ぺき!', 'ここだけ', 'Bは<b>黄</b>。光がないので光合成できず、呼吸だけで、二酸化炭素がふえるからです。'),
+        QQ('水草を入れない試験管Cをつくったのは、なんのため?', '色の変化が、水草のはたらきによると確かめるため', ['光のあるなしを比べるため', 'BTB溶液の量を比べるため', '水草が光合成をしないことを確かめるため'], 'いい感じ!', 'もう少し', 'AとCのちがいは「水草があるか」だけ。Cが変化しなければ、Aの変化は<b>水草のはたらき</b>。これが対照実験です。'),
+        QQ('植物が<b>呼吸</b>をするのは、いつ?', '昼も夜も', ['昼だけ', '夜だけ', '光が当たっているときだけ'], '計算いらず、バッチリ!', 'ここでふり返ろう', '呼吸は<b>昼も夜も</b>、いつもしています。光合成は、光が当たるときだけです。'),
+        QQ('蒸散で、水蒸気が出ていく小さな穴を、何という?', '気孔', ['葉脈', '根毛', '胚珠'], 'ラスト1つ前!', 'もう一回だけ', '水は<b>気孔</b>から水蒸気になって出ていきます。気孔は、葉の<b>裏</b>に多い。'),
+        QQ('蒸散の実験で、グラフを見ると、水の減った量がいちばん多いのは?', 'A（ワセリンをぬらない）', ['B（表にぬる）', 'C（裏にぬる）', 'D（表と裏にぬる）'], 'グラフ、読めてる!', 'グラフをもう一度', 'ぬらないAは、全部の場所から蒸散できるので、<b>いちばん多く</b>減ります。'),
+        QQ('BとC、水の減りが多いのは、どちら?（Bは葉の表にぬる、Cは葉の裏にぬる）', 'B（裏が残っているから）', ['C（表が残っているから）', 'どちらも同じ', '葉にぬっても関係ない'], 'ラスト、決まった!', 'ラスト、ここだけ', '気孔は<b>裏に多い</b>。裏を残したBのほうが、水がたくさん出ていきます。だから、Bのほうが多く減ります。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: 'ふーっと息をふくと、BTB溶液が黄色くなるわけ', body: '空気にふくまれる二酸化炭素は、約0.04%。ところが、人がはく息には<b>約4%</b>、つまり空気の<b>約100倍</b>もふくまれています。だから、青色のBTB溶液にストローで息をふきこむと、二酸化炭素がとけて、<b>青 → 緑 → 黄</b>と変わっていきます。', point: '実験の「息をふきこんで緑色にする」は、この性質を使っている。' },
+        { no: '其の二', ttl: '大きな木は、1日に何百リットルも水を蒸散する', body: '根からすい上げた水の<b>ほとんど（9割以上）</b>は、蒸散で空気中に出ていくといわれます。晴れた日に、大きな木は<b>1日で数百リットル</b>も蒸散するといわれ、ドラム缶（約200 L）が何本も必要なほど。蒸散は、水が水蒸気になるときに熱をうばうので、葉の温度を下げる効果もあります。夏の木かげが涼しいのは、日がさえぎられるだけでなく、このおかげもあります。', point: '植物は「天然のクーラー」でもある。' }
+      ],
+      secretFoot: 'この2つ、言えるクラスメイトはほとんどいない。今日からキミの“持ちネタ”です。'
+    },
+
+    /* ===================== 第2話 化学（丸暗記スタイル） ===================== */
+    {
+      id: 'l3-2', era: '化学', grade: '中2', no: 2, title: '化学反応式（丸暗記）',
+      frame: '<p>先に言います。この話は<b>丸暗記</b>です。理屈は、分からなくてOK。化学反応式は、テストに出る式が<b>ほぼ決まっています</b>。だから、<b>覚えた人の勝ち</b>です。</p>'
+        + '<p>やり方は、たった3つ。<b>① 声に出して唱える　② 紙に書く　③ 見ないで書く</b>。覚えるまで、何回でもくり返そう。1回で覚えられなくて、当たり前です。</p>',
+      goals: [
+        { ic: '🥇', k: '炭酸水素ナトリウムの分解（最重要）', d: '<b>2NaHCO<sub>3</sub> → Na<sub>2</sub>CO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub></b>' },
+        { ic: '🥈', k: '酸化銀の分解（最重要）', d: '<b>2Ag<sub>2</sub>O → 4Ag ＋ O<sub>2</sub></b>' },
+        { ic: '💧', k: '水の電気分解', d: '<b>2H<sub>2</sub>O → 2H<sub>2</sub> ＋ O<sub>2</sub></b>' },
+        { ic: '🔥', k: '水素の燃焼', d: '<b>2H<sub>2</sub> ＋ O<sub>2</sub> → 2H<sub>2</sub>O</b>' },
+        { ic: '🟤', k: '銅の酸化', d: '<b>2Cu ＋ O<sub>2</sub> → 2CuO</b>' },
+        { ic: '✨', k: 'マグネシウムの燃焼', d: '<b>2Mg ＋ O<sub>2</sub> → 2MgO</b>' },
+        { ic: '⚫', k: '酸化銅と炭素（還元）', d: '<b>2CuO ＋ C → 2Cu ＋ CO<sub>2</sub></b>' }
+      ],
+      mistakes: [
+        { x: '前の数字（2や4）を、書き忘れる', o: '前の数字も<b>式の一部</b>。2NaHCO<sub>3</sub>、2Ag<sub>2</sub>O → <b>4</b>Ag のように、数字ごと覚える' },
+        { x: 'NaHCO<sub>3</sub> と Na<sub>2</sub>CO<sub>3</sub> を、入れかえる', o: '<b>加熱前</b>は「H」がある NaHCO<sub>3</sub>。<b>加熱後</b>に残るのは「H」がない Na<sub>2</sub>CO<sub>3</sub>' },
+        { x: '酸化銀の色を、白から黒だと思う', o: '加熱前の酸化銀は<b>黒</b>、加熱後の銀が<b>白</b>。「黒が白に変わる」' },
+        { x: '石灰水が「青くなる」と書く', o: '二酸化炭素を通すと<b>白くにごる</b>。青や赤にはならない' }
+      ],
+      body: '<p>まず、<b>声に出して3回</b>。つぎに、<b>紙に3回</b>書く。最後に、<b>見ないで1回</b>書く。ここから始めます。式は、1つずつ覚えよう。いちばん出る2つから。</p>'
+        + '<div class="figure">' + SVG_NAHCO3 + '<div class="figcap">炭酸水素ナトリウムの加熱</div></div>'
+        + FC('★ 炭酸水素ナトリウムの分解', '炭酸水素ナトリウム → 炭酸ナトリウム ＋ 水 ＋ 二酸化炭素', '2NaHCO<sub>3</sub> → Na<sub>2</sub>CO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub>', 'ツー・エヌエー・エイチ・シー・オー・スリー、ヤジルシ、エヌエー・ツー・シー・オー・スリー、プラス、エイチ・ツー・オー、プラス、シー・オー・ツー')
+        + '<p>この実験は、式だけでなく、<b>結果もセットで出ます</b>。ぜんぶ丸暗記！</p>'
+        + '<p>● 出てくる液は<b>水</b>。確かめるのは<b>塩化コバルト紙</b>（<b>青 → 赤</b>に変わる）。<br>● 出てくる気体は<b>二酸化炭素</b>。<b>石灰水が白くにごる</b>。<br>● 残る白い固体は<b>炭酸ナトリウム</b>。水にとけやすく、<b>フェノールフタレイン液で濃い赤色</b>（強いアルカリ性）。加熱前の炭酸水素ナトリウムは<b>うすい赤色</b>。<br>● 加熱するとき、試験管の口は<b>少し下げる</b>（出た水が、熱い所に流れて割れるのを防ぐため）。</p>'
+        + '<div class="figure">' + SVG_AG2O + '<div class="figcap">酸化銀の加熱</div></div>'
+        + FC('★ 酸化銀の分解', '酸化銀 → 銀 ＋ 酸素', '2Ag<sub>2</sub>O → 4Ag ＋ O<sub>2</sub>', 'ツー・エージー・ツー・オー、ヤジルシ、フォー・エージー、プラス、オー・ツー')
+        + '<p>結果も丸暗記。<b>黒い酸化銀 → 白い銀</b>になる。銀は、みがくと<b>光る</b>（金属光沢）。できる気体は<b>酸素</b>で、<b>火のついた線香を入れると、炎を上げて燃える</b>。</p>'
+        + FC('水の電気分解', '水 → 水素 ＋ 酸素', '2H<sub>2</sub>O → 2H<sub>2</sub> ＋ O<sub>2</sub>', 'ツー・エイチ・ツー・オー、ヤジルシ、ツー・エイチ・ツー、プラス、オー・ツー')
+        + '<p>結果：<b>陰極（−）</b>から<b>水素</b>、<b>陽極（＋）</b>から<b>酸素</b>。体積の比は、<b>水素：酸素 ＝ 2：1</b>。水素は、マッチの火を近づけると<b>ポンと音を立てて燃える</b>。</p>'
+        + '<p>つぎは、ものが<b>酸素と結びつく</b>式です。これも、そのまま覚えます。</p>'
+        + FC('水素の燃焼', '水素 ＋ 酸素 → 水', '2H<sub>2</sub> ＋ O<sub>2</sub> → 2H<sub>2</sub>O', 'ツー・エイチ・ツー、プラス、オー・ツー、ヤジルシ、ツー・エイチ・ツー・オー')
+        + FC('銅の酸化', '銅 ＋ 酸素 → 酸化銅', '2Cu ＋ O<sub>2</sub> → 2CuO', 'ツー・シーユー、プラス、オー・ツー、ヤジルシ、ツー・シーユー・オー')
+        + FC('マグネシウムの燃焼', 'マグネシウム ＋ 酸素 → 酸化マグネシウム', '2Mg ＋ O<sub>2</sub> → 2MgO', 'ツー・エムジー、プラス、オー・ツー、ヤジルシ、ツー・エムジー・オー')
+        + FC('酸化銅と炭素（還元）', '酸化銅 ＋ 炭素 → 銅 ＋ 二酸化炭素', '2CuO ＋ C → 2Cu ＋ CO<sub>2</sub>', 'ツー・シーユー・オー、プラス、シー、ヤジルシ、ツー・シーユー、プラス、シー・オー・ツー')
+        + '<p>結果：黒い酸化銅が、<b>赤茶色の銅</b>に変わる。できる気体は<b>二酸化炭素</b>で、<b>石灰水が白くにごる</b>。</p>'
+        + '<p>最後に、もう1回。<b>見ないで、紙に書けますか？</b> 書けなかった式は、もう一度、声に出して3回から。</p>',
+      note: '<div class="notebox-h">📌 出る式（これを全部、見ないで書けたら合格）</div>'
+        + '<p>① 2NaHCO<sub>3</sub> → Na<sub>2</sub>CO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub></p>'
+        + '<p>② 2Ag<sub>2</sub>O → 4Ag ＋ O<sub>2</sub></p>'
+        + '<p>③ 2H<sub>2</sub>O → 2H<sub>2</sub> ＋ O<sub>2</sub></p>'
+        + '<p>④ 2H<sub>2</sub> ＋ O<sub>2</sub> → 2H<sub>2</sub>O</p>'
+        + '<p>⑤ 2Cu ＋ O<sub>2</sub> → 2CuO</p>'
+        + '<p>⑥ 2Mg ＋ O<sub>2</sub> → 2MgO</p>'
+        + '<p>⑦ 2CuO ＋ C → 2Cu ＋ CO<sub>2</sub></p>'
+        + '<p>おまけ：C ＋ O<sub>2</sub> → CO<sub>2</sub>（炭素の燃焼）／Fe ＋ S → FeS（鉄と硫黄）</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('炭酸水素ナトリウムを加熱したときの、化学反応式は?', '2NaHCO<sub>3</sub> → Na<sub>2</sub>CO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub>', ['NaHCO<sub>3</sub> → Na<sub>2</sub>CO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub>', '2NaHCO<sub>3</sub> → 2NaCO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub>', '2Na<sub>2</sub>CO<sub>3</sub> → NaHCO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub>'], 'そう、これ!', 'おしい、ちがうよ', '<b>2NaHCO<sub>3</sub> → Na<sub>2</sub>CO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub></b>。前の「2」と、右の「Na<sub>2</sub>CO<sub>3</sub>」の形ごと覚えよう。'),
+        QQ('炭酸水素ナトリウムを加熱したあと、試験管に<b>残る白い固体</b>は?', '炭酸ナトリウム', ['炭酸水素ナトリウム', '塩化ナトリウム', '水酸化ナトリウム'], 'バッチリ!', 'もう一回だけ', '残るのは<b>炭酸ナトリウム</b>（Na<sub>2</sub>CO<sub>3</sub>）。水素（H）がなくなった形です。'),
+        QQ('炭酸水素ナトリウムを加熱して出た気体を、石灰水に通すと?', '白くにごる', ['青くなる', '赤くなる', '変化しない'], 'その通り!', 'あと少し', '出る気体は<b>二酸化炭素</b>。石灰水は<b>白くにごる</b>。'),
+        QQ('試験管の口についた液体が<b>水</b>だと確かめる紙と、その色の変化は?', '塩化コバルト紙が、青色から赤色に変わる', ['塩化コバルト紙が、赤色から青色に変わる', 'リトマス紙が、赤色から青色に変わる', 'ろ紙が、白色から黒色に変わる'], 'おぼえてたね!', 'ここでふり返ろう', '水に反応して、塩化コバルト紙は<b>青 → 赤</b>。「青が赤に」と唱えよう。'),
+        QQ('炭酸水素ナトリウムを加熱するとき、試験管の口を<b>少し下げる</b>のはなぜ?', '出てきた水が、熱い底に流れて、試験管が割れるのを防ぐため', ['気体を、早く出すため', '火を、強くするため', '粉を、混ぜやすくするため'], '完ぺき!', 'ここだけ', '出た水が底に流れると、<b>試験管が割れる</b>から。口を下げるのは、そのためです。'),
+        QQ('水にとかして、フェノールフタレイン液を加えたとき、<b>濃い赤色</b>になるのは?', '加熱後に残った炭酸ナトリウム', ['加熱前の炭酸水素ナトリウム', 'どちらも同じ色', 'どちらも色がつかない'], 'いい感じ!', 'もう少し', '<b>炭酸ナトリウム</b>のほうが強いアルカリ性で、<b>濃い赤</b>。炭酸水素ナトリウムは<b>うすい赤</b>です。'),
+        QQ('酸化銀を加熱したときの、化学反応式は?', '2Ag<sub>2</sub>O → 4Ag ＋ O<sub>2</sub>', ['Ag<sub>2</sub>O → 2Ag ＋ O<sub>2</sub>', '2Ag<sub>2</sub>O → 2Ag ＋ O<sub>2</sub>', '2AgO → 2Ag ＋ O<sub>2</sub>'], '計算じゃなく、暗記で勝った!', '式をもう一度唱えよう', '<b>2Ag<sub>2</sub>O → 4Ag ＋ O<sub>2</sub></b>。「2」と「4」を、セットで覚えよう。'),
+        QQ('酸化銀を加熱すると、色はどう変わる?', '黒色から、白色（銀色）に変わる', ['白色から、黒色に変わる', '赤色から、青色に変わる', '変わらない'], 'ばっちり!', 'もう一回だけ', '黒い酸化銀が、<b>白い銀</b>になります。「黒が白に」。'),
+        QQ('酸化銀の加熱で出た気体が<b>酸素</b>だと確かめる方法は?', '火のついた線香を入れると、炎を上げて燃える', ['石灰水が、白くにごる', 'マッチの火を近づけると、ポンと音がする', '塩化コバルト紙が、青から赤に変わる'], 'その通り!', 'あと少し', '酸素は、<b>火のついた線香が炎を上げて燃える</b>。ポンと音がするのは水素、石灰水が白くにごるのは二酸化炭素です。'),
+        QQ('水の電気分解を表す化学反応式は?', '2H<sub>2</sub>O → 2H<sub>2</sub> ＋ O<sub>2</sub>', ['H<sub>2</sub>O → H<sub>2</sub> ＋ O<sub>2</sub>', '2H<sub>2</sub>O → H<sub>2</sub> ＋ 2O<sub>2</sub>', '2H<sub>2</sub>O → 2H<sub>2</sub> ＋ 2O<sub>2</sub>'], '完ぺき!', 'ここだけ', '<b>2H<sub>2</sub>O → 2H<sub>2</sub> ＋ O<sub>2</sub></b>。水素が2つ、酸素が1つ。'),
+        QQ('水の電気分解で、<b>陰極（−）</b>から出る気体と、体積の比は?', '水素が出て、水素：酸素 ＝ 2：1', ['酸素が出て、水素：酸素 ＝ 2：1', '水素が出て、水素：酸素 ＝ 1：2', '酸素が出て、水素：酸素 ＝ 1：2'], 'おぼえてたね!', 'ここでふり返ろう', '陰極から<b>水素</b>。体積は<b>水素が酸素の2倍</b>（2：1）。「マイナスは水素」と唱えよう。'),
+        QQ('酸化銅と炭素を加熱して、銅ができる化学反応式は?', '2CuO ＋ C → 2Cu ＋ CO<sub>2</sub>', ['CuO ＋ C → Cu ＋ CO<sub>2</sub>', '2CuO ＋ 2C → 2Cu ＋ CO<sub>2</sub>', '2Cu ＋ C → 2CuO ＋ CO<sub>2</sub>'], 'いい感じ!', 'もう少し', '<b>2CuO ＋ C → 2Cu ＋ CO<sub>2</sub></b>。黒い酸化銅が赤茶色の銅になり、石灰水が白くにごります。'),
+        QQ('マグネシウムが燃えて、酸化マグネシウムになる式は?', '2Mg ＋ O<sub>2</sub> → 2MgO', ['Mg ＋ O<sub>2</sub> → MgO', 'Mg ＋ O<sub>2</sub> → 2MgO', '2Mg ＋ 2O<sub>2</sub> → 2MgO'], 'ラスト、決まった!', 'ラスト、ここだけ', '<b>2Mg ＋ O<sub>2</sub> → 2MgO</b>。銅の酸化「2Cu ＋ O<sub>2</sub> → 2CuO」と、同じ形です。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: 'ロウソクが燃えると、「水」ができている', body: 'ロウソクのロウは、<b>炭素</b>と<b>水素</b>からできています。燃えると、空気中の酸素と結びついて、<b>二酸化炭素</b>と<b>水</b>（水蒸気）に変わります。炎の上に冷たいコップをさかさにかざすと、内側がくもるのは、できた水蒸気が冷やされて水滴になるからです。', point: '「燃えて消えたロウ」は、気体になって、空気中に出ていった。' },
+        { no: '其の二', ttl: '使い捨てカイロは、「鉄がさびる」あたたかさ', body: 'カイロの中身は<b>鉄の粉</b>。鉄が空気中の酸素とゆっくり結びつく（さびる）ときに出る<b>熱</b>を使っています。袋を開けるまであたたかくならないのは、外袋が空気（酸素）をさえぎっているから。水や食塩、活性炭なども入っていて、反応を速めています。', point: '「さびる」は、ふつうは嫌われ者。でもカイロでは、主役。' }
+      ],
+      secretFoot: 'この2つ、言えるクラスメイトはほとんどいない。今日からキミの“持ちネタ”です。'
+    },
+
+    /* ===================== 第3話 物理（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-3', era: '物理', grade: '中2', no: 3, title: 'オームの法則',
+      frame: '<p>電気の計算は、<b>たった1つの式</b>を覚えれば大丈夫です。しかも、その式は<b>絵で覚えられます</b>。<b>V は カモメ、A は イカ、Ω は タコ</b>。</p>'
+        + '<p>この話でやる計算は、<b>わり算かかけ算を1回だけ</b>。数字も、割り切れるものしか出ません。式を覚えて、当てはめるだけです。</p>',
+      goals: [
+        { ic: '📐', k: 'オームの法則（唱える！）', d: '<b>V ＝ Ω × A</b>。「ブイは、オームかける、エー」。V＝電圧（ボルト）、Ω＝抵抗（オーム）、A＝電流（アンペア）。' },
+        { ic: '🦑', k: '円で式をつくる', d: '求めたい文字を指で<b>かくす</b>。V（カモメ）をかくすと <b>Ω × A</b>、A（イカ）をかくすと <b>V ÷ Ω</b>、Ω（タコ）をかくすと <b>V ÷ A</b>。' },
+        { ic: '🔄', k: 'mA は 1000 でわる', d: '<b>mA（ミリアンペア）を A に直す</b>ときは、1000でわる。500 mA ＝ <b>0.5 A</b>（小数点を3つ左へ）。' },
+        { ic: '📈', k: 'グラフ', d: '電圧と電流は<b>比例</b>（原点を通る直線）。<b>急な線ほど、電流が流れやすい</b>＝抵抗が<b>小さい</b>。' }
+      ],
+      mistakes: [
+        { x: 'mA の数字を、そのまま式に入れる', o: '式に入れる前に、<b>mA → A</b>（1000でわる）。500 mA は 0.5 A' },
+        { x: '「抵抗が大きいほど、電流が流れやすい」と思う', o: '抵抗は<b>流れにくさ</b>。大きいほど、電流は<b>流れにくい</b>' },
+        { x: 'グラフが急（立っている）ほど、抵抗が大きいと思う', o: '急な線ほど電流が<b>大きい</b>。つまり抵抗は<b>小さい</b>' },
+        { x: 'Ω ＝ A ÷ V と、わる順番を逆にする', o: '<b>Ω ＝ V ÷ A</b>。円の図で、Ω（タコ）をかくすと「V ÷ A」になる' }
+      ],
+      body: '<p>電気には、3つの名前があります。' + TM('電圧', 'でんあつ') + '（V、ボルト）は、電流を流そうとする<b>押す力</b>。' + TM('電流', 'でんりゅう') + '（A、アンペア）は、流れる電気の<b>量</b>。' + TM('抵抗', 'ていこう') + '（Ω、オーム）は、電流の<b>流れにくさ</b>です。</p>'
+        + '<p>この3つをつなぐ式が' + TM('オームの法則', 'オームのほうそく') + 'です。丸暗記しましょう。声に出して3回。</p>'
+        + '<p style="font-size:1.1rem;font-weight:700;color:var(--accent-ink)">「ブイは、オームかける、エー」（V ＝ Ω × A）</p>'
+        + '<div class="figure">' + SVG_OHMTRI + '<div class="figcap">オームの法則の円</div></div>'
+        + '<p>覚え方は、図の<b>円</b>。求めたい文字を指でかくすと、残りが式になります。Vをかくすと「Ω × A」、Aをかくすと「V ÷ Ω」、Ωをかくすと「V ÷ A」です。V は<b>カモメ</b>、A は<b>イカ</b>、Ω は<b>タコ</b>、と形で覚えましょう。（教科書では、Ω を R、A を I と書くこともあります。同じ意味です）</p>'
+        + '<p>やってみます。計算は<b>1回だけ</b>です。</p>'
+        + '<p>例1：6 V の電池に、2 Ω の抵抗。電流は? A ＝ V ÷ Ω ＝ 6 ÷ 2 ＝ <b>3 A</b>。<br>例2：5 Ω の抵抗に、2 A が流れている。電圧は? V ＝ Ω × A ＝ 5 × 2 ＝ <b>10 V</b>。<br>例3：12 V で、3 A が流れた。抵抗は? Ω ＝ V ÷ A ＝ 12 ÷ 3 ＝ <b>4 Ω</b>。</p>'
+        + '<p>もう1つ、<b>丸暗記</b>。電流が mA（ミリアンペア）で出てきたら、式に入れる前に、<b>1000でわって A</b> に直します。500 mA ＝ <b>0.5 A</b>。「ミリは、1000分の1」と唱えよう。</p>'
+        + '<p>最後に、<b>グラフ</b>です。横に電圧、縦に電流をとります。電熱線 a、b は、どちらも原点を通る直線（<b>比例</b>）になります。</p>'
+        + '<div class="figure">' + SVG_OHMGRAPH + '<div class="figcap">電熱線 a、b の電圧と電流</div></div>'
+        + '<p>同じ 6 V のとき、a は 1 A、b は 2 A。b のほうが電流が<b>流れやすい</b>、つまり抵抗が小さいということです。計算すると、a ＝ 6 ÷ 1 ＝ <b>6 Ω</b>、b ＝ 6 ÷ 2 ＝ <b>3 Ω</b>。「急な線は、抵抗が小さい」と唱えて覚えよう。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div><p><b>V ＝ Ω × A</b>（ブイは、オームかける、エー）</p><p><b>A ＝ V ÷ Ω　／　Ω ＝ V ÷ A</b>（円で、かくして出す）</p><p><b>mA → A</b>：1000でわる（500 mA ＝ 0.5 A）</p><p><b>グラフ</b>：急な線ほど、電流が流れやすい＝抵抗が小さい</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('オームの法則の式で、<b>電流（A）</b>を求める式は?', 'A ＝ V ÷ Ω', ['A ＝ V × Ω', 'A ＝ Ω ÷ V', 'A ＝ V ＋ Ω'], 'そう、これ!', 'おしい、ちがうよ', 'V ＝ Ω × A の式から、<b>A ＝ V ÷ Ω</b>。円で、A（イカ）をかくすと「V ÷ Ω」です。'),
+        QQ('6 V の電池に、2 Ω の抵抗をつないだ。流れる電流は?', '3 A', ['12 A', '4 A', '8 A'], 'バッチリ!', 'もう一回だけ', 'A ＝ V ÷ Ω ＝ 6 ÷ 2 ＝ <b>3 A</b>。わり算を1回だけ。'),
+        QQ('5 Ω の抵抗に、2 A の電流が流れている。かかっている電圧は?', '10 V', ['2.5 V', '7 V', '3 V'], 'その通り!', 'あと少し', 'V ＝ Ω × A ＝ 5 × 2 ＝ <b>10 V</b>。電圧を求めるときは、かけ算です。'),
+        QQ('12 V の電圧で、3 A の電流が流れた。抵抗は?', '4 Ω', ['36 Ω', '9 Ω', '0.25 Ω'], 'おぼえてたね!', 'ここでふり返ろう', 'Ω ＝ V ÷ A ＝ 12 ÷ 3 ＝ <b>4 Ω</b>。円で、Ω（タコ）をかくすと「V ÷ A」。'),
+        QQ('電流が 500 mA。式に入れるときは、何 A に直す?', '0.5 A', ['5 A', '50 A', '0.05 A'], '完ぺき!', 'ここだけ', 'mA は<b>1000でわって</b> A に直します。500 ÷ 1000 ＝ <b>0.5 A</b>。'),
+        QQ('グラフの電熱線 a（6 V で 1 A）と b（6 V で 2 A）。<b>電流が流れやすい</b>のは?', 'b（同じ電圧で、電流が大きい）', ['a（同じ電圧で、電流が小さい）', 'どちらも同じ', 'グラフからは分からない'], 'いい感じ!', 'もう少し', '同じ電圧のとき、電流が大きい b のほうが<b>流れやすい</b>（抵抗が小さい）。グラフでは、急な線がそれです。'),
+        QQ('グラフの電熱線 <b>a</b>（6 V で 1 A）の抵抗は?', '6 Ω', ['1 Ω', '7 Ω', '0.17 Ω'], '計算、バッチリ!', '式をもう一度', 'Ω ＝ V ÷ A ＝ 6 ÷ 1 ＝ <b>6 Ω</b>。'),
+        QQ('グラフの電熱線 <b>b</b>（6 V で 2 A）の抵抗は?', '3 Ω', ['12 Ω', '8 Ω', '2 Ω'], 'ラスト、決まった!', 'ラスト、ここだけ', 'Ω ＝ V ÷ A ＝ 6 ÷ 2 ＝ <b>3 Ω</b>。a（6 Ω）より小さいので、b のほうが流れやすい、とも分かります。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: '電線にとまった鳥が、感電しないわけ', body: '鳥は、<b>1本の電線</b>に、両足をそろえてとまります。両足のあいだの電圧は、ほぼ<b>0 V</b>。V ＝ Ω × A で、電圧がほぼ0なら、鳥の体に流れる電流もほぼ0です。だから平気。ただし、別々の電線に同時にふれると、2本のあいだの電圧がかかり、大きな電流が流れて危険です。大きな鳥が羽を広げて、事故になることもあります。', point: '人が電線にふれるのは、もちろん絶対ダメ。' },
+        { no: '其の二', ttl: '法則を見つけたオームは、最初は信じてもらえなかった', body: 'ドイツの学校の先生、<b>ゲオルク・オーム</b>は、1827年ごろにこの法則を発表しました。ところが、当時は<b>あまり評価されず</b>、苦しい時期を過ごしたといわれます。のちに高く評価され、抵抗の単位に、名前（<b>Ω</b>）が残りました。', point: '今あたりまえの式も、最初は認められなかった。' }
+      ],
+      secretFoot: 'この2つ、言えるクラスメイトはほとんどいない。今日からキミの“持ちネタ”です。'
+    },
+
+    /* ===================== 第4話 地学（表を読むだけ） ===================== */
+    {
+      id: 'l3-4', era: '地学', grade: '中2', no: 4, title: '湿度と露点（表を読むだけ）',
+      frame: '<p>夏の朝、冷たい麦茶を入れたコップの外側が、びっしょりぬれていた。コップに穴は、あいていません。この水は、いったいどこから来たのでしょう。</p>'
+        + '<p>じつは、<b>空気中の水蒸気</b>が水に変わったのです。この話は、<b>計算なし</b>。言葉を覚えて、<b>表から探す</b>だけです。</p>',
+      goals: [
+        { ic: '🧊', k: '飽和水蒸気量', d: TM('飽和水蒸気量', 'ほうわすいじょうきりょう') + '＝空気<b>1 m³</b>がふくむことのできる水蒸気の<b>最大の量</b>（g/m³）。<b>気温が高いほど大きい</b>。' },
+        { ic: '💧', k: '露点（唱える！）', d: TM('露点', 'ろてん') + '＝空気を冷やして、<b>水滴が出はじめる温度</b>。そのとき<b>湿度は100％</b>。' },
+        { ic: '🔍', k: '表で露点を探す', d: 'いまの水蒸気量（g/m³）と<b>同じ数字</b>を、表の飽和水蒸気量から探す。その<b>気温が露点</b>。' },
+        { ic: '📉', k: '気温と湿度', d: '水蒸気の量が同じなら、気温が<b>上がる</b>と湿度は<b>下がる</b>。気温が露点と<b>同じ</b>になると、湿度は<b>100％</b>。' }
+      ],
+      mistakes: [
+        { x: '「気温が上がると、湿度も上がる」と思う', o: '水蒸気量が同じなら、気温が上がると湿度は<b>下がる</b>。飽和水蒸気量が大きくなるから' },
+        { x: '「露点は、気温と同じ」と思う', o: '露点は気温<b>以下</b>。気温と露点が<b>同じときだけ</b>、湿度が100％' },
+        { x: '露点を、「水蒸気が消える温度」と思う', o: '露点は、水蒸気が<b>水滴に変わりはじめる</b>温度。水蒸気が消えるのではなく、水に変わる' }
+      ],
+      body: '<p>空気には、目に見えない' + TM('水蒸気', 'すいじょうき') + 'が、ふくまれています。でも、ふくめる量には<b>限度</b>があります。空気<b>1 m³</b>がふくめる水蒸気の最大の量を、' + TM('飽和水蒸気量', 'ほうわすいじょうきりょう') + '（単位 g/m³）といいます。この量は、<b>気温が高いほど大きく</b>なります。グラフが右上がりなのは、そのためです。</p>'
+        + '<div class="figure">' + SVG_SAT + '<div class="figcap">気温と飽和水蒸気量のグラフ</div></div>'
+        + '<p>つぎに、いちばん大事な言葉、' + TM('露点', 'ろてん') + '。丸暗記です。声に出して3回。</p>'
+        + '<p style="font-size:1.1rem;font-weight:700;color:var(--accent-ink)">「露点は、水滴が出はじめる温度」</p>'
+        + '<p>空気を冷やすと、飽和水蒸気量がだんだん小さくなります。そして、いまの水蒸気の量と<b>ちょうど同じ</b>になった温度が、露点です。それ以上冷やすと、入りきらない水蒸気が<b>水滴</b>になります。露点では、湿度が<b>100％</b>です。</p>'
+        + '<p>露点は、<b>表から探します</b>。いまの空気の水蒸気量が 12.8 g/m³ なら、表で「12.8」になっている気温を探す。それは <b>15 ℃</b>。だから、露点は <b>15 ℃</b>です。（図の例も、同じです）</p>'
+        + TBL(['気温（℃）', '0', '5', '10', '15', '20', '25', '30'], [['飽和水蒸気量（g/m³）', '4.8', '6.8', '9.4', '12.8', '17.3', '23.1', '30.4']])
+        + '<div class="figure">' + SVG_CUP + '<div class="figcap">冷たいコップの外側がくもるしくみ</div></div>'
+        + '<p>コップの外側がくもるのは、コップの表面で、まわりの空気が<b>露点より冷やされる</b>から。くもりはじめたときの、コップの表面温度が、その空気の露点です。</p>'
+        + '<p>最後に、湿度の動きを1つ。<b>水蒸気量が同じまま、気温が上がる</b>と、湿度は<b>下がります</b>（飽和水蒸気量が大きくなるから）。朝より昼のほうが、湿度が低くなりやすいのは、このためです。反対に、気温が露点まで下がると、湿度は100％です。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>飽和水蒸気量</b>：空気1m³がふくめる水蒸気の最大量。気温が高いほど大きい</p>'
+        + '<p><b>露点</b>：水滴が出はじめる温度。そのとき湿度100％</p>'
+        + '<p><b>露点の探し方</b>：いまの水蒸気量と同じ数字を、表で探す → その気温</p>'
+        + '<p><b>湿度</b>：水蒸気量が同じなら、気温が上がると下がる</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('空気1 m³がふくむことのできる水蒸気の<b>最大の量</b>を、何という?', '飽和水蒸気量', ['露点', '湿度', '気圧'], 'そう、これ!', 'おしい、ちがうよ', '「これ以上は入らない量」が<b>飽和水蒸気量</b>です。単位は g/m³。'),
+        QQ('気温が高くなると、飽和水蒸気量は?', '大きくなる', ['小さくなる', '変わらない', '0になる'], 'バッチリ!', 'もう一回だけ', '気温が高いほど、空気はたくさんの水蒸気をふくめます。<b>高い → 大きい</b>。'),
+        QQ('露点とは、何の温度?', '空気を冷やして、水滴が出はじめる温度', ['空気が、いちばん熱くなる温度', '水が、ふっとうする温度', '水蒸気が、全部なくなる温度'], 'その通り!', 'あと少し', '<b>「露点は、水滴が出はじめる温度」</b>。唱えよう。'),
+        QQ('水蒸気量が 12.8 g/m³ の空気がある。下の表を見て、<b>露点</b>は?<div style="margin-top:8px">'+TBL(['気温（℃）', '0', '5', '10', '15', '20', '25', '30'], [['飽和水蒸気量（g/m³）', '4.8', '6.8', '9.4', '12.8', '17.3', '23.1', '30.4']])+'</div>', '15 ℃', ['10 ℃', '20 ℃', '25 ℃'], '表、読めてる!', '表をもう一度', '表で飽和水蒸気量が「12.8」になっている気温は、<b>15 ℃</b>。それが露点です。'),
+        QQ('水蒸気量が 9.4 g/m³ の空気の<b>露点</b>は?（下の表を見てね）<div style="margin-top:8px">'+TBL(['気温（℃）', '0', '5', '10', '15', '20', '25', '30'], [['飽和水蒸気量（g/m³）', '4.8', '6.8', '9.4', '12.8', '17.3', '23.1', '30.4']])+'</div>', '10 ℃', ['5 ℃', '15 ℃', '20 ℃'], 'おぼえてたね!', 'ここでふり返ろう', '表で「9.4」になっている気温は、<b>10 ℃</b>。それが露点です。'),
+        QQ('気温が露点と<b>同じ</b>になったとき、湿度は?', '100 ％', ['50 ％', '0 ％', '露点の数字と同じ'], '完ぺき!', 'ここだけ', '露点では、いまの水蒸気量が、その気温の飽和水蒸気量と<b>ぴったり同じ</b>。だから湿度は<b>100 ％</b>です。'),
+        QQ('水蒸気量が同じまま、気温が<b>上がる</b>と、湿度はどうなる?', '下がる', ['上がる', '変わらない', '100 ％になる'], 'いい感じ!', 'もう少し', '気温が上がると飽和水蒸気量が大きくなるので、湿度は<b>下がります</b>。'),
+        QQ('冷たい水を入れたコップの表面が 14 ℃になったとき、外側がくもりはじめた。まわりの空気の<b>露点</b>は?', '14 ℃', ['14 ℃より高い温度', '14 ℃より低い温度', '気温と同じ'], 'その通り!', '考えなおそう', '水滴になりはじめる温度が露点。くもりはじめたときの表面温度、<b>14 ℃</b>が露点です。'),
+        QQ('空気を、露点より<b>さらに冷やす</b>と、どうなる?', '入りきらない水蒸気が、水滴になる', ['水蒸気が、ふえる', '水蒸気が、全部ふっとうする', '何も起こらない'], 'ラスト、決まった!', 'ラスト、ここだけ', '露点より冷えると、空気が持てる水蒸気の量が減り、入りきらない分が<b>水滴</b>になります。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: '雨がふっていないのに、朝、草が水でぬれているわけ', body: '雲のない、よく晴れた夜は、地面の熱が空へにげて、地面の近くの空気が<b>ぐんぐん冷えます</b>（放射冷却）。空気が露点より冷えると、水蒸気が草の葉の上で水滴になります。これが<b>朝つゆ</b>です。コップの水滴と、まったく同じしくみ。', point: '朝つゆは、「空が降らせた」のではなく、「空気が置いていった」水。' },
+        { no: '其の二', ttl: 'エアコンの「ドライ」で、水が出てくるしくみ', body: 'エアコンの除湿は、空気を<b>露点より冷やして</b>、水蒸気を水に変えて取り出しています。夏にエアコンの室外にのびるホースから、ポタポタ水が落ちるのは、そのため。部屋の空気からしぼり取った水です。', point: '部屋の湿気は、ホースから外へ出ていっている。' }
+      ],
+      secretFoot: 'この2つ、言えるクラスメイトはほとんどいない。今日からキミの“持ちネタ”です。'
+    }
+  ];
+
+  var LESSONS_B = [
+    /* ===================== 第5話 生物（暗記） ===================== */
+    {
+      id: 'l3-5', era: '生物', grade: '中2', no: 5, title: '消化酵素と栄養分の吸収',
+      frame: '<p>ごはんを、よくかんでいると、だんだん<b>あまく</b>なってきます。口の中で、ごはんの<b>デンプン</b>が、べつのものに変わっているからです。</p>'
+        + '<p>この話は、<b>だれが・何を・何に変えるか</b>の丸暗記です。計算は、ありません。表のとおりに、声に出して覚えよう。</p>',
+      goals: [
+        { ic: '👄', k: '消化液と酵素（唱える！）', d: '<b>だ液＝アミラーゼ（デンプン）</b>／<b>胃液＝ペプシン（タンパク質）</b>／<b>すい液＝3つとも</b>。' },
+        { ic: '🟢', k: '胆汁（たんじゅう）', d: '肝臓でつくられる。<b>消化酵素は、ふくまない</b>。脂肪の消化を<b>助ける</b>。' },
+        { ic: '🧪', k: 'だ液の実験の結果', d: 'ヨウ素液：<b>A青紫</b>／<b>B変化なし</b>。ベネジクト液（加熱）：<b>A変化なし</b>／<b>B赤褐色</b>。' },
+        { ic: '🌿', k: '吸収', d: '<b>小腸の柔毛</b>から吸収。ブドウ糖・アミノ酸は<b>毛細血管</b>へ。脂肪は<b>リンパ管</b>へ。' }
+      ],
+      mistakes: [
+        { x: '「胆汁にも、消化酵素がある」と思う', o: '胆汁には<b>酵素がない</b>。脂肪を細かくして、消化を助けるだけ' },
+        { x: '「ヨウ素液は、糖があると色が変わる」と思う', o: 'ヨウ素液は<b>デンプン</b>を見つける薬（青紫）。<b>糖</b>を見つけるのはベネジクト液' },
+        { x: '「脂肪も、毛細血管から吸収される」と思う', o: '脂肪は<b>リンパ管</b>へ。ブドウ糖・アミノ酸が毛細血管' }
+      ],
+      body: '<p>食べ物は、そのままでは大きすぎて、体に取りこめません。そこで、<b>小さく分解</b>します。これが' + TM('消化', 'しょうか') + 'です。分解するのは' + TM('消化酵素', 'しょうかこうそ') + 'で、消化酵素をふくむ液が、消化液です。</p>'
+        + '<div class="figure">' + SVG_DIG + '<div class="figcap">消化液と、そのはたらき</div></div>'
+        + '<p>まず、この3つを丸暗記。声に出して3回。</p>'
+        + '<p style="font-size:1.1rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「だ液は アミラーゼ、デンプンを分解」<br>「胃液は ペプシン、タンパク質を分解」<br>「胆汁は 酵素なし、脂肪を助ける」</p>'
+        + '<p>3大栄養分は、最後に、つぎの形まで分解されます。</p>'
+        + TBL(['栄養分', '最後の形'], [['デンプン', '<b>ブドウ糖</b>'], ['タンパク質', '<b>アミノ酸</b>'], ['脂肪', '<b>脂肪酸 と モノグリセリド</b>']])
+        + '<p>つぎは、よく出る<b>だ液の実験</b>。デンプンのりに、水を入れたAと、だ液を入れたBを、ぬるま湯であたためてから、2つの薬で調べます。結果は決まっているので、そのまま覚えましょう。</p>'
+        + '<div class="figure">' + SVG_SALIVA + '<div class="figcap">だ液の実験の結果</div></div>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「ヨウ素液は デンプンを見つける（青紫）」<br>「ベネジクト液は 糖を見つける（加熱して赤褐色）」</p>'
+        + '<p>Bでは、だ液が<b>デンプンを分解</b>したので、ヨウ素液は変化なし、ベネジクト液は赤褐色になります。Aは、その反対です。</p>'
+        + '<p>最後は<b>吸収</b>。分解された栄養分は、' + TM('小腸', 'しょうちょう') + 'の壁にある、たくさんの' + TM('柔毛', 'じゅうもう') + 'から吸収されます。ブドウ糖とアミノ酸は<b>毛細血管</b>へ。脂肪酸とモノグリセリドは、柔毛の中で脂肪にもどり、<b>リンパ管</b>へ入ります。柔毛があると、表面積が大きくなり、<b>効率よく吸収</b>できます。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>だ液</b>：アミラーゼ → デンプンを分解</p>'
+        + '<p><b>胃液</b>：ペプシン → タンパク質を分解</p>'
+        + '<p><b>すい液</b>：3大栄養分すべてを分解</p>'
+        + '<p><b>胆汁</b>：酵素なし。脂肪の消化を助ける</p>'
+        + '<p><b>最後の形</b>：デンプン→ブドウ糖／タンパク質→アミノ酸／脂肪→脂肪酸とモノグリセリド</p>'
+        + '<p><b>吸収</b>：小腸の柔毛。ブドウ糖・アミノ酸＝毛細血管／脂肪＝リンパ管</p>'
+        + '<p><b>ヨウ素液</b>：デンプン→青紫　<b>ベネジクト液</b>：糖→赤褐色（加熱）</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('だ液にふくまれる消化酵素の名前は?', 'アミラーゼ', ['ペプシン', 'リパーゼ', 'トリプシン'], 'そう、これ!', 'もう一回', 'だ液＝<b>アミラーゼ</b>。デンプンを分解します。'),
+        QQ('胃液にふくまれ、タンパク質を分解する消化酵素は?', 'ペプシン', ['アミラーゼ', 'リパーゼ', '胆汁'], 'バッチリ!', 'ここだけ', '胃液＝<b>ペプシン</b>。タンパク質を分解します。'),
+        QQ('消化酵素を<b>ふくまない</b>消化液は?', '胆汁', ['だ液', '胃液', 'すい液'], '完ぺき!', 'ここが大事', '胆汁は肝臓でつくられ、<b>酵素をふくみません</b>。脂肪の消化を助けます。'),
+        QQ('デンプンは、最後に何に分解される?', 'ブドウ糖', ['アミノ酸', '脂肪酸', 'モノグリセリド'], 'おぼえてる!', 'もう少し', 'デンプン→<b>ブドウ糖</b>。'),
+        QQ('タンパク質は、最後に何に分解される?', 'アミノ酸', ['ブドウ糖', '脂肪酸', 'デンプン'], 'いい感じ!', 'もう一回だけ', 'タンパク質→<b>アミノ酸</b>。'),
+        QQ('だ液の実験で、デンプンのりにだ液を入れた試験管Bに<b>ヨウ素液</b>を入れると?', '変化なし（青紫にならない）', ['青紫になる', '赤褐色になる', '白くにごる'], '結果、言えた!', '結果をもう一度', 'だ液がデンプンを分解したので、ヨウ素液は<b>変化なし</b>。青紫になるのは、水を入れたAです。'),
+        QQ('だ液の実験で、試験管Bに<b>ベネジクト液</b>を入れて加熱すると?', '赤褐色になる', ['青紫になる', '変化なし', '白くにごる'], 'その通り!', '考えなおそう', 'デンプンが分解されて<b>糖</b>ができたので、赤褐色になります。'),
+        QQ('ヨウ素液は、何があると青紫になる?', 'デンプン', ['糖', 'タンパク質', '脂肪'], 'バッチリ!', 'ここだけ', 'ヨウ素液＝<b>デンプン</b>を見つける薬。'),
+        QQ('小腸の壁にある、栄養分を吸収する小さな突起を何という?', '柔毛', ['気孔', '肺胞', '赤血球'], '柔毛、言えた!', 'もう一回', '<b>柔毛</b>。表面積が大きくなり、効率よく吸収できます。'),
+        QQ('ブドウ糖とアミノ酸は、小腸の柔毛から、何に入る?', '毛細血管', ['リンパ管', '気管', '胃'], '吸収もバッチリ!', 'ラスト、ここだけ', 'ブドウ糖とアミノ酸＝<b>毛細血管</b>。脂肪はリンパ管です。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: 'ごはんをかむと、あまくなるわけ', body: 'ごはんのデンプンは、だ液のアミラーゼで<b>麦芽糖</b>などに分解されます。これは、あまい糖です。だから、よくかむほど、だんだんあまくなるのです。', point: 'あまさの正体は、だ液が作った糖。' },
+        { no: '其の二', ttl: '小腸の長さは、ふつうの大人で約6メートル', body: '小腸は、長いだけでなく、内側が<b>柔毛でびっしり</b>です。広げると、テニスコートほどの広さになるともいわれます。栄養分を、ぜんぶ取りこむための、すごい仕組みです。', point: '長さと柔毛のおかげで、ほとんど吸収できる。' }
+      ],
+      secretFoot: 'この2つ、友だちに言うと「へえ！」と言われます。'
+    },
+
+    /* ===================== 第6話 化学（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-6', era: '化学', grade: '中2', no: 6, title: '質量保存と質量の比',
+      frame: '<p>炭酸飲料のふたをあけると、シュワーッと泡が出て、少し軽くなります。でも、ふたをしめたままなら、重さは<b>変わりません</b>。</p>'
+        + '<p>この話は、<b>質量保存の法則</b>と、<b>質量の比</b>の2つ。計算は、<b>ひき算かかけ算を1回</b>だけです。</p>',
+      goals: [
+        { ic: '⚖️', k: '質量保存の法則（唱える！）', d: '化学変化の前後で、全体の質量は<b>変わらない</b>。' },
+        { ic: '🫧', k: '気体が出るとき', d: 'ふたのない容器では、気体が出て<b>軽くなる</b>。減った分＝<b>出ていった気体の質量</b>。' },
+        { ic: '🟠', k: '銅と酸素', d: '<b>銅：酸素：酸化銅 ＝ 4：1：5</b>' },
+        { ic: '⚪', k: 'マグネシウムと酸素', d: '<b>マグネシウム：酸素：酸化マグネシウム ＝ 3：2：5</b>' }
+      ],
+      mistakes: [
+        { x: '「気体が出ると、質量保存の法則は成り立たない」と思う', o: '成り立つ。軽くなったのは、<b>気体が空気中へ出ていった</b>から。密閉すれば変わらない' },
+        { x: '銅と酸素の比を「4：5」と思う', o: '<b>銅：酸素 ＝ 4：1</b>。5は、できた酸化銅の質量' },
+        { x: '「加熱した銅は、軽くなる」と思う', o: '酸素が結びつくので、<b>重くなる</b>' }
+      ],
+      body: '<p>化学変化の前と後で、全体の質量は、<b>変わりません</b>。これが' + TM('質量保存の法則', 'しつりょうほぞんのほうそく') + 'です。原子の組み合わせが変わるだけで、なくなったり、ふえたりしないからです。</p>'
+        + '<p style="font-size:1.1rem;font-weight:700;color:var(--accent-ink)">「化学変化の前後で、質量は変わらない」</p>'
+        + '<p>でも、ふたのない容器で気体が出る実験（炭酸水素ナトリウムに塩酸など）では、反応後に<b>軽く</b>なります。これは、気体が空気中へ出ていったから。法則がくずれたのではありません。ふたをしめれば、変わりません。</p>'
+        + '<div class="figure">' + SVG_MASS + '<div class="figcap">密閉する／しないで、質量はどうなる?</div></div>'
+        + '<p>ここで、<b>ひき算を1回</b>。反応前が100 g、反応後が98 g なら、<b>100 － 98 ＝ 2 g</b>。これが、出ていった気体の質量です。</p>'
+        + '<p>つぎは、金属を熱して酸素と結びつける実験。結びつく質量の比は、決まっています。丸暗記。</p>'
+        + '<div class="figure">' + SVG_RATIO + '<div class="figcap">金属と酸素が結びつく質量の比</div></div>'
+        + '<p style="font-size:1.1rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「銅：酸素：酸化銅 ＝ 4：1：5」<br>「マグネシウム：酸素：酸化マグネシウム ＝ 3：2：5」</p>'
+        + '<p>計算は、<b>倍をかけるだけ</b>。銅が<b>8 g</b>なら、4の<b>2倍</b>だから、酸化銅は 5 × 2 ＝ <b>10 g</b>。結びついた酸素は、1 × 2 ＝ <b>2 g</b>です。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>質量保存の法則</b>：化学変化の前後で、全体の質量は変わらない</p>'
+        + '<p><b>軽くなったとき</b>：減った分＝出ていった気体（ひき算）</p>'
+        + '<p><b>銅：酸素：酸化銅</b> ＝ 4：1：5</p>'
+        + '<p><b>マグネシウム：酸素：酸化マグネシウム</b> ＝ 3：2：5</p>'
+        + '<p><b>金属を熱す</b>：酸素が結びつくので、重くなる</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('化学変化の前後で、全体の質量は変わらない。この法則の名前は?', '質量保存の法則', ['オームの法則', '慣性の法則', '作用・反作用の法則'], 'そう、これ!', 'もう一回', '<b>質量保存の法則</b>。'),
+        QQ('密閉した容器で化学変化が起きた。反応の前後で、全体の質量は?', '変わらない', ['軽くなる', '重くなる', 'ゼロになる'], 'バッチリ!', 'ここだけ', '密閉すれば、気体も逃げないので、<b>変わりません</b>。'),
+        QQ('ふたのない容器で気体が出る反応をした。反応後に軽くなったのは、なぜ?', '気体が空気中へ出ていったから', ['質量がなくなったから', '法則が成り立たないから', '水が蒸発したから'], '理由、言えた!', '理由をもう一度', '軽くなったのは、<b>気体が出ていった</b>から。法則はくずれていません。'),
+        QQ('反応前が 100 g、ふたのない容器で反応させた後が 98 g。出ていった気体は何 g?（100 － 98）', '2 g', ['98 g', '198 g', '0 g'], 'ひき算、できた!', 'ひき算をもう一度', '<b>100 － 98 ＝ 2 g</b>。'),
+        QQ('銅と酸素が結びつく質量の比（銅：酸素）は?', '4：1', ['4：5', '3：2', '1：4'], '比、言えた!', '比をもう一度', '銅：酸素 ＝ <b>4：1</b>。できる酸化銅は5です。'),
+        QQ('銅 4 g を熱すると、何 g の酸化銅ができる?', '5 g', ['4 g', '1 g', '8 g'], '覚えてた!', 'ここだけ', '銅：酸素：酸化銅 ＝ 4：1：5 なので、<b>5 g</b>。'),
+        QQ('銅 8 g を熱すると、酸化銅は何 g できる?（4：1：5 の2倍）', '10 g', ['5 g', '8 g', '13 g'], 'かけ算、ばっちり!', 'もう一回', '8 g は 4 g の2倍。5 × 2 ＝ <b>10 g</b>。'),
+        QQ('マグネシウムと酸素が結びつく質量の比（マグネシウム：酸素）は?', '3：2', ['4：1', '3：5', '2：3'], '完ぺき!', 'もう一度', 'マグネシウム：酸素：酸化マグネシウム ＝ <b>3：2：5</b>。'),
+        QQ('マグネシウム 3 g を熱すると、酸化マグネシウムは何 g できる?', '5 g', ['3 g', '2 g', '6 g'], 'いい感じ!', 'ここだけ', '3：2：5 なので、<b>5 g</b>。'),
+        QQ('銅を空気中で加熱したあと、質量はどうなる?', '重くなる（酸素が結びつく）', ['軽くなる', '変わらない', 'ゼロになる'], 'ラスト、決まった!', 'ラスト、ここだけ', '酸素が結びつくので、<b>重く</b>なります。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: 'スチールウールは、燃やすと重くなる', body: '鉄のかたまりのスチールウールを燃やすと、酸素と結びついて、<b>もとより重く</b>なります。燃えて灰になるイメージの反対で、意外です。', point: '燃えて、軽くなるとは限らない。' },
+        { no: '其の二', ttl: 'この法則を見つけたのは、フランスのラボアジエ', body: '18世紀の科学者<b>ラボアジエ</b>が、密閉して重さをはかる実験で、確かめました。「物は、燃えると消える」という、それまでの考え方が、ここで変わったのです。', point: '「はかる」ことで、科学は進んだ。' }
+      ],
+      secretFoot: 'はかって確かめる。テストの実験も、同じです。'
+    },
+
+    /* ===================== 第7話 物理（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-7', era: '物理', grade: '中2', no: 7, title: '電力と熱量',
+      frame: '<p>家電には、<b>「100W」「1200W」</b>と書かれています。この数字は、その家電が、<b>1秒間にどれだけ電気を使うか</b>を表します。ドライヤーが大きいのは、すぐ熱を出すからです。</p>'
+        + '<p>この話は、<b>2つの式の丸暗記</b>と、<b>かけ算1回</b>だけです。</p>',
+      goals: [
+        { ic: '⚡', k: '電力（唱える！）', d: TM('電力', 'でんりょく') + '（W）＝<b>電圧（V）× 電流（A）</b>。単位は<b>ワット</b>。' },
+        { ic: '🔥', k: '熱量（唱える！）', d: TM('熱量', 'ねつりょう') + '（J）＝<b>電力（W）× 時間（秒）</b>。単位は<b>ジュール</b>。' },
+        { ic: '🌡️', k: '水の温度', d: '電力が<b>大きい</b>ほど、水の温度は<b>早く</b>上がる。' },
+        { ic: '⏱️', k: '時間の単位', d: '熱量の式の時間は<b>秒</b>。1分＝<b>60秒</b>。' }
+      ],
+      mistakes: [
+        { x: '電力の式を「V ÷ A」と思う', o: '電力は<b>かけ算</b>。W ＝ V × A' },
+        { x: '熱量の式の時間に、「分」をそのまま入れる', o: '時間は<b>秒</b>。分なら、60をかけて秒にする' },
+        { x: '「電力が大きいほど、温度の上がり方がゆるやか」と思う', o: '電力が大きいほど、<b>早く温まる</b>' }
+      ],
+      body: '<p>電気が1秒間にする仕事の量を、' + TM('電力', 'でんりょく') + 'といいます。単位は' + TM('ワット', '') + '（記号 W）。式は、<b>電圧 × 電流</b>。オームの法則の仲間のカモメ（V）とイカ（A）を、<b>かけるだけ</b>です。</p>'
+        + FC('電力の式', '電力（W）＝電圧（V）× 電流（A）', 'W ＝ V × A', 'ワットは、ブイ かける エー')
+        + '<p>やってみましょう。<b>6 V</b>の電源に、<b>2 A</b>の電流が流れたら、電力は 6 × 2 ＝ <b>12 W</b>。かけ算1回です。</p>'
+        + '<p>つぎは、' + TM('熱量', 'ねつりょう') + '（電熱線が出す熱の量）。単位は' + TM('ジュール', '') + '（記号 J）。式は、<b>電力 × 時間（秒）</b>。</p>'
+        + FC('熱量の式', '熱量（J）＝電力（W）× 時間（秒）', 'J ＝ W × 秒', 'ジュールは、ワット かける びょう')
+        + '<div class="figure">' + SVG_WATT + '<div class="figcap">電力と熱量の、2つの式</div></div>'
+        + '<p>例：<b>12 W</b>の電熱線に、<b>10秒</b>電流を流したら、12 × 10 ＝ <b>120 J</b>。時間が<b>分</b>のときは、<b>60をかけて秒</b>に直してから使います。（2分なら 120秒）</p>'
+        + '<p>水を電熱線で温める実験では、電力が大きい電熱線ほど、<b>水の温度が早く上がります</b>。同じ時間なら、熱量が大きいからです。</p>'
+        + '<div class="figure">' + SVG_HEAT + '<div class="figcap">電熱線で水を温める</div></div>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>電力（W）</b> ＝ 電圧（V）× 電流（A）</p>'
+        + '<p><b>熱量（J）</b> ＝ 電力（W）× 時間（秒）</p>'
+        + '<p><b>例</b>：6V × 2A ＝ 12W　12W × 10秒 ＝ 120J</p>'
+        + '<p><b>分→秒</b>：60をかける</p>'
+        + '<p><b>電力が大きい</b>ほど、水の温度は早く上がる</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('電力の単位は?', 'W（ワット）', ['V（ボルト）', 'A（アンペア）', 'J（ジュール）'], 'そう、これ!', 'もう一回', '電力の単位は<b>W（ワット）</b>。'),
+        QQ('熱量の単位は?', 'J（ジュール）', ['W（ワット）', 'Ω（オーム）', 'V（ボルト）'], 'バッチリ!', 'ここだけ', '熱量の単位は<b>J（ジュール）</b>。'),
+        QQ('電力を求める式は?', '電圧 × 電流', ['電圧 ÷ 電流', '電圧 ＋ 電流', '電流 ÷ 電圧'], '式、言えた!', '式をもう一度', '電力（W）＝ 電圧（V）× 電流（A）。<b>かけ算</b>です。'),
+        QQ('6 V の電源で、2 A の電流が流れた。電力は?', '12 W', ['3 W', '8 W', '4 W'], 'かけ算、できた!', 'かけ算をもう一度', '<b>6 × 2 ＝ 12 W</b>。'),
+        QQ('100 V で、3 A の電流が流れる家電の電力は?', '300 W', ['33 W', '103 W', '97 W'], 'ばっちり!', 'もう一回', '<b>100 × 3 ＝ 300 W</b>。'),
+        QQ('熱量を求める式は?', '電力 × 時間（秒）', ['電力 ÷ 時間', '電力 ＋ 時間', '電圧 × 時間'], '式、言えた!', '式をもう一度', '熱量（J）＝ 電力（W）× 時間（秒）。'),
+        QQ('12 W の電熱線に、10秒間電流を流した。発生した熱量は?', '120 J', ['22 J', '1.2 J', '2 J'], 'かけ算、ばっちり!', 'もう一回', '<b>12 × 10 ＝ 120 J</b>。'),
+        QQ('熱量の式で使う時間の単位は?', '秒', ['分', '時間', '日'], 'いい感じ!', 'ここだけ', '時間は<b>秒</b>。分なら60をかけて秒に直します。'),
+        QQ('電熱線で水を温める。電力が<b>大きい</b>電熱線ほど、水の温度は?', '早く上がる', ['ゆっくり上がる', '下がる', '変わらない'], '覚えてた!', 'もう一度', '電力が大きいほど、<b>早く上がる</b>。'),
+        QQ('電力 ＝ ？ × ？ の、？に入る2つの組み合わせは?', '電圧 と 電流', ['電流 と 抵抗', '電圧 と 時間', '電流 と 時間'], 'ラスト、決まった!', 'ラスト、ここだけ', 'W ＝ <b>V × A</b>。カモメ × イカ。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: 'ワットは、蒸気機関を改良した人の名前', body: '単位のW（ワット）は、蒸気機関を大きく改良したイギリスの<b>ジェームズ・ワット</b>にちなんでいます。J（ジュール）も、熱の研究をした<b>ジュール</b>さんの名前です。', point: '単位には、科学者の名前が残っている。' },
+        { no: '其の二', ttl: 'ドライヤーが大きな音を出すわけ', body: 'ドライヤーは、<b>1000W以上</b>と、電力がとても大きい家電です。短い時間で髪を乾かせるのは、電力が大きいから。そのぶん、電気も多く使います。', point: '電力が大きい＝強い。でも電気代も、かかる。' }
+      ],
+      secretFoot: '家のドライヤーの「W」、見てみると面白いですよ。'
+    },
+
+    /* ===================== 第8話 地学（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-8', era: '地学', grade: '中1', no: 8, title: '地震波（P波・S波）',
+      frame: '<p>地震のとき、最初に<b>カタカタ</b>と小さくゆれ、そのあと<b>ガタガタ</b>と大きくゆれることがあります。この2つのゆれは、<b>別の波</b>が運んでいます。</p>'
+        + '<p>この話は、<b>波の名前とゆれの名前</b>の丸暗記と、<b>ひき算・わり算1回</b>だけです。</p>',
+      goals: [
+        { ic: '🌊', k: 'P波とS波（唱える！）', d: '<b>P波＝はやい・初期微動（小さなゆれ）</b>／<b>S波＝おそい・主要動（大きなゆれ）</b>。' },
+        { ic: '⏱️', k: '初期微動継続時間', d: '<b>S波が着く時刻 － P波が着く時刻</b>。震源から<b>遠いほど長い</b>。' },
+        { ic: '📍', k: '震源と震央', d: '<b>震源</b>＝地下の、地震が起きた場所。<b>震央</b>＝その真上の地表の地点。' },
+        { ic: '🔢', k: '震度とマグニチュード', d: '<b>震度</b>＝その場所のゆれの大きさ。<b>マグニチュード（M）</b>＝地震そのものの規模。' }
+      ],
+      mistakes: [
+        { x: '「S波のほうが速い」と思う', o: '速いのは<b>P波</b>（先に来る）。S波は遅い' },
+        { x: '震度とマグニチュードを同じだと思う', o: '震度は<b>場所ごと</b>のゆれ、マグニチュードは<b>地震そのもの</b>の大きさ' },
+        { x: '震源と震央を逆に覚える', o: '<b>震源</b>が地下の場所、<b>震央</b>がその真上の地表' }
+      ],
+      body: '<p>地震が起きると、2種類の波が、震源から伝わります。先に来るのが' + TM('P波', 'ピーは') + '、あとから来るのが' + TM('S波', 'エスは') + 'です。P波は<b>速く</b>、S波は<b>遅い</b>。だから、P波のゆれが先に来ます。</p>'
+        + '<p style="font-size:1.1rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「P波は はやくて 初期微動」<br>「S波は おそくて 主要動」</p>'
+        + '<div class="figure">' + SVG_QUAKE + '<div class="figcap">地震計の記録</div></div>'
+        + '<p>はじめの小さなゆれが' + TM('初期微動', 'しょきびどう') + '、あとの大きなゆれが' + TM('主要動', 'しゅようどう') + 'です。初期微動が続く時間を、' + TM('初期微動継続時間', 'しょきびどうけいぞくじかん') + 'といい、<b>S波の時刻 － P波の時刻</b>で求めます。</p>'
+        + '<p>やってみましょう。P波が<b>10時00分10秒</b>、S波が<b>10時00分18秒</b>に着いたなら、18 － 10 ＝ <b>8秒</b>。ひき算1回です。震源から<b>遠いほど</b>、この時間は<b>長く</b>なります。</p>'
+        + '<div class="figure">' + SVG_FOCUS + '<div class="figcap">震源・震央・震源距離</div></div>'
+        + '<p>地下で地震が起きた場所が' + TM('震源', 'しんげん') + '、その真上の地表が' + TM('震央', 'しんおう') + 'です。</p>'
+        + '<p>最後に、よく混ざる2つ。<b>震度</b>は、その場所の<b>ゆれの大きさ</b>（0〜7、10段階）。場所によって変わります。<b>マグニチュード（M）</b>は、地震そのものの<b>規模</b>で、1つの地震に1つです。</p>'
+        + '<p>わり算を1回。震源から<b>60 km</b>の地点に、P波が<b>10秒</b>で着いたなら、速さは 60 ÷ 10 ＝ <b>6 km/秒</b>です。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>P波</b>：はやい。初期微動（小さなゆれ）</p>'
+        + '<p><b>S波</b>：おそい。主要動（大きなゆれ）</p>'
+        + '<p><b>初期微動継続時間</b> ＝ S波の時刻 － P波の時刻。遠いほど長い</p>'
+        + '<p><b>震源</b>：地下の場所　<b>震央</b>：その真上の地表</p>'
+        + '<p><b>震度</b>：場所のゆれの大きさ　<b>マグニチュード</b>：地震の規模</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('はじめに来る、小さなゆれを何という?', '初期微動', ['主要動', '余震', '津波'], 'そう、これ!', 'もう一回', '<b>初期微動</b>。P波が伝えます。'),
+        QQ('あとから来る、大きなゆれを何という?', '主要動', ['初期微動', '余震', '震度'], 'バッチリ!', 'ここだけ', '<b>主要動</b>。S波が伝えます。'),
+        QQ('初期微動を伝える波は?', 'P波', ['S波', 'L波', 'Q波'], '覚えてた!', 'もう一回', '初期微動＝<b>P波</b>。'),
+        QQ('P波とS波、速いのはどっち?', 'P波', ['S波', '同じ', '場合による'], '完ぺき!', 'ここが大事', '速いのは<b>P波</b>。だから先に着きます。'),
+        QQ('初期微動継続時間は、どうやって求める?', 'S波の時刻 － P波の時刻', ['P波の時刻 － S波の時刻', 'S波の時刻 ＋ P波の時刻', 'S波の時刻 × P波の時刻'], '式、言えた!', '式をもう一度', '<b>S波が着いた時刻 － P波が着いた時刻</b>。'),
+        QQ('P波が 10時00分10秒、S波が 10時00分18秒に着いた。初期微動継続時間は?', '8秒', ['28秒', '10秒', '18秒'], 'ひき算、できた!', 'ひき算をもう一度', '<b>18 － 10 ＝ 8秒</b>。'),
+        QQ('震源から遠い場所ほど、初期微動継続時間は?', '長くなる', ['短くなる', '変わらない', 'ゼロになる'], '覚えてた!', 'もう一回', '遠いほど、P波とS波の差が開くので、<b>長く</b>なります。'),
+        QQ('地下の、地震が起きた場所を何という?', '震源', ['震央', '震度', '観測点'], '震源、言えた!', 'もう一度', '地下＝<b>震源</b>。その真上の地表が震央です。'),
+        QQ('震源の真上の、地表の地点を何という?', '震央', ['震源', '震度', 'マグニチュード'], 'バッチリ!', 'ここだけ', '真上の地表＝<b>震央</b>。'),
+        QQ('震源から 60 km の地点に、P波が 10秒で着いた。P波の速さは?（60 ÷ 10）', '6 km/秒', ['600 km/秒', '70 km/秒', '0.6 km/秒'], 'わり算、ばっちり!', 'わり算をもう一度', '<b>60 ÷ 10 ＝ 6 km/秒</b>。'),
+        QQ('その場所のゆれの大きさを表すのは?', '震度', ['マグニチュード', '震源', '震央'], 'ラスト、決まった!', 'ラスト、ここだけ', '場所ごとのゆれ＝<b>震度</b>。地震の規模はマグニチュードです。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: '緊急地震速報は、P波とS波の速さの差を使っている', body: '先に来るP波をキャッチして、大きなゆれのS波が来る<b>前</b>に知らせる。これが緊急地震速報です。速さの差があるから、できる技です。', point: '「P波は速い」が、命を守っている。' },
+        { no: '其の二', ttl: '日本の震度は、いま10段階', body: '震度は、0・1・2・3・4・<b>5弱・5強・6弱・6強</b>・7の、<b>10段階</b>です。5と6が、それぞれ「弱」「強」に分かれています。', point: '10段階の中身は、よく出る。' }
+      ],
+      secretFoot: '地震が来たとき、役に立つ知識です。'
+    }
+  ];
+
+  var LESSONS_C = [
+    /* ===================== 第9話 生物（暗記） ===================== */
+    {
+      id: 'l3-9', era: '生物', grade: '中2', no: 9, title: '感覚と神経・運動',
+      frame: '<p>熱いやかんにさわると、「熱い！」と思うより先に、<b>手が勝手に引っこみます</b>。これは、脳より前に、体が動いているからです。</p>'
+        + '<p>この話は、<b>刺激が伝わる順番</b>と、<b>反射</b>の丸暗記です。計算は、ありません。</p>',
+      goals: [
+        { ic: '➡️', k: '刺激の伝わる順（唱える！）', d: '<b>感覚器官 → 感覚神経 → せきずい → 脳 → せきずい → 運動神経 → 筋肉</b>' },
+        { ic: '⚡', k: '反射', d: '<b>脳を通らず</b>、せきずいから命令が出る。<b>無意識</b>で、<b>すばやい</b>。' },
+        { ic: '👁️', k: '感覚器官', d: '目＝<b>光</b>（<b>網膜</b>で受けとる）／耳＝<b>音</b>（<b>うずまき管</b>で受けとる）／皮ふ＝<b>痛み・温度</b>。' },
+        { ic: '💪', k: '運動', d: 'うでを曲げる：<b>内側の筋肉が縮み、外側がゆるむ</b>。筋肉と骨は<b>腱</b>でつながる。' }
+      ],
+      mistakes: [
+        { x: '「反射も、脳が命令している」と思う', o: '反射は、<b>せきずい</b>が命令する。脳は通らない' },
+        { x: '感覚神経と運動神経を逆に覚える', o: '<b>感覚神経</b>＝刺激を脳へ向かって伝える／<b>運動神経</b>＝命令を筋肉へ伝える' },
+        { x: '「うでを曲げると、外側の筋肉が縮む」と思う', o: '曲げるとき縮むのは<b>内側</b>。外側はゆるむ' }
+      ],
+      body: '<p>目や耳など、刺激を受けとる部分を' + TM('感覚器官', 'かんかくきかん') + 'といいます。ここで受けとった刺激は、神経を通って、脳へ伝わり、脳が判断して、また神経を通って、筋肉へ命令が届きます。順番を、そのまま丸暗記しましょう。</p>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「感覚器官 → 感覚神経 → せきずい → 脳 → せきずい → 運動神経 → 筋肉」</p>'
+        + '<p>脳とせきずいをあわせて' + TM('中枢神経', 'ちゅうすうしんけい') + 'といい、そこから体じゅうへのびる神経を' + TM('末しょう神経', 'まっしょうしんけい') + 'といいます。末しょう神経には、<b>感覚神経</b>と<b>運動神経</b>があります。</p>'
+        + '<div class="figure">' + SVG_NERVE + '<div class="figcap">刺激の伝わる順と、反射の近道</div></div>'
+        + '<p>つぎは' + TM('反射', 'はんしゃ') + '。熱いものにふれたとき、考える前に手を引くのは、<b>脳を通らず、せきずいから命令</b>が出るからです。そのぶん、<b>早く</b>動けて、体を守れます。</p>'
+        + '<p style="font-size:1.1rem;font-weight:700;color:var(--accent-ink)">「反射は、脳を通らない。せきずいが命令」</p>'
+        + '<p>感覚器官は、つぎのとおり。目は、光を<b>網膜</b>で受けとり、<b>虹彩</b>でひとみの大きさを変えます。耳は、音を<b>うずまき管</b>で受けとります。</p>'
+        + '<p>最後に、筋肉の動き。うでを曲げるときは、<b>内側の筋肉が縮み</b>、<b>外側の筋肉がゆるみ</b>ます。のばすときは、反対です。筋肉と骨は、' + TM('腱', 'けん') + 'でつながり、骨と骨のつなぎ目が' + TM('関節', 'かんせつ') + 'です。</p>'
+        + '<div class="figure">' + SVG_ARM + '<div class="figcap">うでを曲げるときの筋肉</div></div>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>伝わる順</b>：感覚器官→感覚神経→せきずい→脳→せきずい→運動神経→筋肉</p>'
+        + '<p><b>反射</b>：脳を通らない。せきずいが命令。無意識ですばやい</p>'
+        + '<p><b>中枢神経</b>：脳＋せきずい　<b>末しょう神経</b>：感覚神経・運動神経</p>'
+        + '<p><b>目</b>：光を網膜で受ける　<b>耳</b>：音をうずまき管で受ける</p>'
+        + '<p><b>うでを曲げる</b>：内側が縮み、外側がゆるむ。骨と筋肉は腱でつながる</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('目で、光を受けとる部分は?', '網膜', ['うずまき管', '鼓膜', '虹彩'], 'そう、これ!', 'もう一回', '光を受けとるのは<b>網膜</b>。'),
+        QQ('耳で、音を受けとる部分は?', 'うずまき管', ['網膜', '虹彩', '水晶体'], 'バッチリ!', 'ここだけ', '音を受けとるのは<b>うずまき管</b>。'),
+        QQ('目のひとみの大きさを変える部分は?', '虹彩', ['網膜', 'うずまき管', '鼓膜'], '覚えてた!', 'もう一回', '<b>虹彩</b>が、ひとみの大きさを変えます。'),
+        QQ('脳とせきずいをあわせて、何という?', '中枢神経', ['末しょう神経', '感覚神経', '運動神経'], '完ぺき!', 'ここが大事', '脳＋せきずい＝<b>中枢神経</b>。'),
+        QQ('刺激を、感覚器官から脳へ向かって伝える神経は?', '感覚神経', ['運動神経', '中枢神経', '腱'], '順番、言えた!', '順番をもう一度', '感覚器官から伝えるのは<b>感覚神経</b>。筋肉へ命令を伝えるのが運動神経です。'),
+        QQ('刺激が伝わる順で、「せきずい」の次に来るのは?（反射ではない、意識して動くとき）', '脳', ['筋肉', '感覚器官', '感覚神経'], 'その通り!', 'もう一度', '感覚器官→感覚神経→せきずい→<b>脳</b>→せきずい→運動神経→筋肉。'),
+        QQ('熱いものにふれて、思わず手を引っこめた。このような反応を何という?', '反射', ['記憶', '判断', '成長'], 'そう、これ!', 'もう一回', '<b>反射</b>。意識せずに起こる反応です。'),
+        QQ('反射で、命令を出すのは?', 'せきずい', ['脳', '筋肉', '目'], 'バッチリ!', 'ここだけ', '反射は、脳を通らず、<b>せきずい</b>が命令を出します。'),
+        QQ('うでを曲げるとき、縮む筋肉は?', '内側の筋肉', ['外側の筋肉', '両方', '縮まない'], '筋肉、言えた!', 'もう一度', '曲げるとき縮むのは<b>内側</b>。外側はゆるみます。'),
+        QQ('筋肉と骨をつなぐ部分は?', '腱', ['関節', '神経', '血管'], 'ラスト、決まった!', 'ラスト、ここだけ', '筋肉と骨は<b>腱</b>でつながっています。'),
+        { order: true, ask: '「ボールが飛んできたので、手でキャッチした」。刺激が伝わる<b>順</b>に、カードをタップしよう（1番目→6番目）。', items: [TXTPIC('感覚器官', '目・耳・皮ふ', '#fde9c8'), TXTPIC('感覚神経', '', '#d3e6f5'), TXTPIC('せきずい', '', '#e6dcf3'), TXTPIC('脳', '判断・命令', '#fbd5d0'), TXTPIC('運動神経', '', '#d9ecd0'), TXTPIC('筋肉', 'うごく', '#fde9c8')], names: ['感覚器官（目・耳・皮ふ）', '感覚神経', 'せきずい', '脳（判断・命令）', '運動神経', '筋肉（動く）'], vo: '順番、完ぺき!', vn: 'もう一回、順番を唱えよう', why: '<b>感覚器官 → 感覚神経 → せきずい → 脳 → 運動神経 → 筋肉</b>。（くわしくは、脳のあと、もう一度せきずいを通ります）' },
+        { order: true, ask: '「熱いやかんにさわって、思わず手を引っこめた」（<b>反射</b>）。伝わる順に、カードをタップしよう（1番目→5番目）。', items: [TXTPIC('感覚器官', '皮ふ', '#fde9c8'), TXTPIC('感覚神経', '', '#d3e6f5'), TXTPIC('せきずい', '命令を出す', '#e6dcf3'), TXTPIC('運動神経', '', '#d9ecd0'), TXTPIC('筋肉', '手を引く', '#fde9c8')], names: ['感覚器官（皮ふ）', '感覚神経', 'せきずい（命令を出す）', '運動神経', '筋肉（手を引く）'], vo: '反射の順、完ぺき!', vn: '反射は、脳を通らないよ', why: '反射は<b>感覚器官 → 感覚神経 → せきずい → 運動神経 → 筋肉</b>。<b>脳を通らない</b>から、すばやく動けます。' }
+      ],
+      secrets: [
+        { no: '其の一', ttl: 'ひざの下を、軽くたたくと、足が上がるわけ', body: '病院の検査で、ひざの下をたたくと、足がぴょんと上がります。これも<b>反射</b>。脳を通らないので、わざと止めようとしても、なかなか止まりません。', point: '体は、脳の指令より先に動くことがある。' },
+        { no: '其の二', ttl: '「ひとみ」が、明るさで大きさを変えるわけ', body: '暗いところでは、ひとみが<b>大きく</b>なって、光をたくさん取り入れます。明るいところでは、<b>小さく</b>なって、まぶしさを防ぎます。これも、反射です。', point: '目の中でも、反射が働いている。' }
+      ],
+      secretFoot: '反射は、体を守る仕組みでした。'
+    },
+
+    /* ===================== 第10話 化学（暗記） ===================== */
+    {
+      id: 'l3-10', era: '化学', grade: '中3', no: 10, title: '酸・アルカリと中和',
+      frame: '<p>レモンは<b>すっぱく</b>、せっけんは、ぬるぬるします。すっぱいものは<b>酸性</b>、ぬるぬるするものは、<b>アルカリ性</b>の仲間です。</p>'
+        + '<p>この話は、<b>色の変化</b>と<b>中和の式</b>の丸暗記です。計算は、ありません。</p>',
+      goals: [
+        { ic: '🎨', k: '指示薬の色（唱える！）', d: '<b>青リトマス→赤は酸性</b>／<b>赤リトマス→青はアルカリ性</b>。BTBは<b>黄・緑・青</b>。' },
+        { ic: '🔴', k: 'フェノールフタレイン', d: '<b>アルカリ性で、赤</b>（酸性・中性は無色）。' },
+        { ic: '🔢', k: 'pH', d: '<b>7が中性</b>。<b>7より小さい＝酸性</b>、<b>7より大きい＝アルカリ性</b>。' },
+        { ic: '🤝', k: '中和', d: '<b>酸 ＋ アルカリ → 塩 ＋ 水</b>。<b>HCl ＋ NaOH → NaCl ＋ H₂O</b>' }
+      ],
+      mistakes: [
+        { x: '「リトマス紙の色は、BTBと同じ」と思う', o: '<b>別の薬</b>。リトマス紙は赤・青、BTBは黄・緑・青' },
+        { x: '「フェノールフタレインは、酸性で赤」と思う', o: '<b>アルカリ性で赤</b>。酸性と中性は無色' },
+        { x: '「中和すると、必ず中性になる」と思う', o: '<b>ちょうどよい量</b>で混ぜたときだけ中性になる。どちらかが多ければ、酸性かアルカリ性のまま' }
+      ],
+      body: '<p>水にとかしたとき、<b>酸性</b>になるものと、<b>アルカリ性</b>になるものがあります。それを調べる薬が、指示薬です。色の変化は、決まっているので、丸暗記しましょう。</p>'
+        + '<div class="figure">' + SVG_INDI + '<div class="figcap">指示薬の色の変化</div></div>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「青リトマスが赤に変わる → 酸性」<br>「赤リトマスが青に変わる → アルカリ性」<br>「BTBは 酸性 黄・中性 緑・アルカリ性 青」<br>「フェノールフタレインは アルカリ性で 赤」</p>'
+        + '<p>つぎは' + TM('pH', 'ピーエイチ') + '。強さを、数字で表したものです。<b>7が中性</b>、7より小さいと<b>酸性</b>、大きいと<b>アルカリ性</b>。7からはなれるほど、強くなります。</p>'
+        + '<div class="figure">' + SVG_PH + '<div class="figcap">pHの目盛り</div></div>'
+        + '<p>最後に' + TM('中和', 'ちゅうわ') + '。<b>酸</b>と<b>アルカリ</b>を混ぜると、おたがいの性質を打ち消しあい、<b>塩</b>と<b>水</b>ができます。式は、丸暗記。</p>'
+        + FC('中和の式', '酸（塩酸）＋ アルカリ（水酸化ナトリウム）→ 塩（塩化ナトリウム）＋ 水', 'HCl ＋ NaOH → NaCl ＋ H<sub>2</sub>O', 'エイチシーエル ＋ エヌエーオーエイチ → エヌエーシーエル ＋ 水')
+        + '<p>ちょうど中和したとき、pHは<b>7</b>（中性）になります。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>青リトマス→赤</b>：酸性　<b>赤リトマス→青</b>：アルカリ性</p>'
+        + '<p><b>BTB</b>：酸性＝黄、中性＝緑、アルカリ性＝青</p>'
+        + '<p><b>フェノールフタレイン</b>：アルカリ性で赤</p>'
+        + '<p><b>pH</b>：7が中性。7より小さい＝酸性、大きい＝アルカリ性</p>'
+        + '<p><b>中和</b>：酸＋アルカリ→塩＋水　HCl＋NaOH→NaCl＋H<sub>2</sub>O</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('酸性の水溶液に、<b>青リトマス紙</b>をつけると?', '赤に変わる', ['青のまま', '白になる', '緑に変わる'], 'そう、これ!', 'もう一回', '青リトマス紙→<b>赤</b>は、酸性。'),
+        QQ('アルカリ性の水溶液に、<b>赤リトマス紙</b>をつけると?', '青に変わる', ['赤のまま', '黄に変わる', '無色になる'], 'バッチリ!', 'ここだけ', '赤リトマス紙→<b>青</b>は、アルカリ性。'),
+        QQ('BTB溶液は、酸性で何色?', '黄', ['青', '緑', '赤'], '覚えてた!', 'もう一回', '酸性は<b>黄</b>。中性は緑、アルカリ性は青。'),
+        QQ('BTB溶液は、アルカリ性で何色?', '青', ['黄', '緑', '赤'], '完ぺき!', 'ここだけ', 'アルカリ性は<b>青</b>。'),
+        QQ('フェノールフタレイン溶液は、アルカリ性で何色?', '赤', ['青', '黄', '緑'], 'いい感じ!', 'もう一回', 'アルカリ性で<b>赤</b>。酸性と中性では無色です。'),
+        QQ('pHが 7 のとき、水溶液の性質は?', '中性', ['酸性', 'アルカリ性', '強い酸性'], 'その通り!', 'もう一度', 'pH <b>7</b>＝中性。'),
+        QQ('pHが 3 の水溶液の性質は?', '酸性', ['中性', 'アルカリ性', '強いアルカリ性'], 'バッチリ!', 'ここだけ', '7より小さいので<b>酸性</b>。'),
+        QQ('酸とアルカリを混ぜて、おたがいの性質を打ち消しあう反応を何という?', '中和', ['分解', '燃焼', '酸化'], 'そう、これ!', 'もう一回', '<b>中和</b>。'),
+        QQ('中和で、できるものは?', '塩 と 水', ['酸素 と 水素', '二酸化炭素 と 水', '鉄 と 水'], '式、言えた!', '式をもう一度', '酸＋アルカリ→<b>塩＋水</b>。'),
+        QQ('塩酸と水酸化ナトリウム水溶液の中和を表す式は?', 'HCl ＋ NaOH → NaCl ＋ H<sub>2</sub>O', ['HCl ＋ NaOH → NaOH ＋ HCl', 'HCl ＋ NaOH → NaCl ＋ O<sub>2</sub>', 'H<sub>2</sub>O → H<sub>2</sub> ＋ O<sub>2</sub>'], 'ラスト、決まった!', 'ラスト、ここだけ', '<b>HCl ＋ NaOH → NaCl ＋ H<sub>2</sub>O</b>。塩化ナトリウムと水ができます。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: 'ムラサキキャベツで、色の実験ができる', body: 'ムラサキキャベツの汁は、<b>酸性で赤、中性で紫、アルカリ性で青〜緑</b>になります。家で、すっぱいものと、せっけん水で試せます。', point: '野菜も、指示薬になる。' },
+        { no: '其の二', ttl: '虫に刺されたときの薬は、アルカリ性', body: 'ハチやアリの毒は、<b>酸性</b>のものが多く、虫さされの薬には、アルカリ性のものがあります。酸性の毒を、アルカリ性でやわらげる。これも、中和の考え方です。', point: '中和は、身近なところで使われている。' }
+      ],
+      secretFoot: '色の変化は、そのまま覚えるのが、いちばん早いです。'
+    },
+
+    /* ===================== 第11話 物理（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-11', era: '物理', grade: '中3', no: 11, title: '速さと慣性',
+      frame: '<p>電車が、急に止まると、体が<b>前へつんのめります</b>。電車が急に動き出すと、体は<b>後ろへ倒れそう</b>になります。</p>'
+        + '<p>この話は、<b>速さの式</b>と<b>慣性の法則</b>です。計算は、<b>わり算かかけ算を1回</b>だけ。</p>',
+      goals: [
+        { ic: '🏃', k: '速さ（唱える！）', d: '速さ ＝ <b>距離 ÷ 時間</b>。単位は<b>m/秒</b>、<b>km/時</b>。' },
+        { ic: '📏', k: '距離と時間', d: '距離 ＝ <b>速さ × 時間</b>／時間 ＝ <b>距離 ÷ 速さ</b>。' },
+        { ic: '🚃', k: '慣性の法則', d: '力がはたらかない（つり合っている）とき、<b>止まっている物は止まり続け</b>、<b>動いている物は等速直線運動</b>を続ける。' },
+        { ic: '🤜', k: '作用・反作用', d: '力をおすと、同じ大きさで、<b>反対向き</b>に、<b>別の物体</b>から力を受ける。' }
+      ],
+      mistakes: [
+        { x: '速さの式を「時間 ÷ 距離」と思う', o: '<b>距離 ÷ 時間</b>。「きょり わる じかん」' },
+        { x: '「物は、力がないと止まる」と思う', o: '力がなければ、<b>動き続ける</b>（等速直線運動）。止まるのは、まさつなどの力があるから' },
+        { x: '作用と反作用を、「同じ物体にはたらく」と思う', o: '<b>別の物体</b>にはたらく。だから、つり合いとは、ちがう' }
+      ],
+      body: '<p>' + TM('速さ', 'はやさ') + 'は、<b>1秒（または1時間）に進む距離</b>です。式は、<b>距離 ÷ 時間</b>。丸暗記しましょう。</p>'
+        + FC('速さの式', '速さ ＝ 距離 ÷ 時間', '速さ ＝ 距離 ÷ 時間', 'はやさは、きょり わる じかん')
+        + '<p>例：<b>100 m</b>を<b>20秒</b>で走ったら、100 ÷ 20 ＝ <b>5 m/秒</b>。わり算1回です。式を、かえると、距離と時間も出せます。</p>'
+        + '<div class="figure">' + SVG_SPD + '<div class="figcap">速さ・距離・時間の式</div></div>'
+        + '<p>つぎは' + TM('慣性の法則', 'かんせいのほうそく') + '。丸暗記です。</p>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「力がはたらかないと、止まっている物は止まり続け、動いている物は、同じ速さで、まっすぐ動き続ける」</p>'
+        + '<p>電車が<b>急ブレーキ</b>をかけると、体は、そのまま動き続けようとして、<b>前へ倒れます</b>。<b>急発車</b>すると、体は止まったままでいようとして、<b>後ろへ倒れます</b>。どちらも、慣性です。</p>'
+        + '<div class="figure">' + SVG_INR + '<div class="figcap">電車の中の、慣性</div></div>'
+        + '<p>最後に' + TM('作用・反作用', 'さようはんさよう') + '。壁をおすと、壁からも、同じ大きさで、反対向きに、おし返されます。この2つの力は、<b>別の物体</b>にはたらきます。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>速さ</b> ＝ 距離 ÷ 時間（100 ÷ 20 ＝ 5 m/秒）</p>'
+        + '<p><b>距離</b> ＝ 速さ × 時間　<b>時間</b> ＝ 距離 ÷ 速さ</p>'
+        + '<p><b>慣性の法則</b>：力がなければ、止まっている物は止まり続け、動いている物は等速直線運動</p>'
+        + '<p><b>急ブレーキ</b>→前へ　<b>急発車</b>→後ろへ</p>'
+        + '<p><b>作用・反作用</b>：同じ大きさ、反対向き、別の物体</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('速さを求める式は?', '距離 ÷ 時間', ['時間 ÷ 距離', '距離 × 時間', '距離 ＋ 時間'], 'そう、これ!', 'もう一回', '速さ ＝ <b>距離 ÷ 時間</b>。'),
+        QQ('100 m を 20秒で走った。速さは?', '5 m/秒', ['2000 m/秒', '80 m/秒', '0.2 m/秒'], 'わり算、できた!', 'わり算をもう一度', '<b>100 ÷ 20 ＝ 5 m/秒</b>。'),
+        QQ('速さ 3 m/秒で、10秒間進んだ。進んだ距離は?', '30 m', ['13 m', '0.3 m', '7 m'], 'かけ算、ばっちり!', 'もう一回', '距離 ＝ 速さ × 時間。<b>3 × 10 ＝ 30 m</b>。'),
+        QQ('60 m の道を、速さ 3 m/秒で進むと、かかる時間は?', '20秒', ['180秒', '57秒', '0.05秒'], 'いい感じ!', 'もう一度', '時間 ＝ 距離 ÷ 速さ。<b>60 ÷ 3 ＝ 20秒</b>。'),
+        QQ('速さの単位で、正しいのは?', 'm/秒', ['m×秒', 'kg', 'N'], '覚えてた!', 'ここだけ', '速さの単位は<b>m/秒</b>（メートル毎秒）など。'),
+        QQ('力がはたらかないとき、動いている物は?', 'そのままの速さで、まっすぐ動き続ける', ['だんだん止まる', 'だんだん速くなる', 'すぐ止まる'], '法則、言えた!', '法則をもう一度', '<b>慣性の法則</b>。等速直線運動を続けます。'),
+        QQ('走っている電車が急ブレーキをかけると、乗っている人は?', '前へ倒れそうになる', ['後ろへ倒れそうになる', '変わらない', '上へ浮く'], 'その通り!', '考えなおそう', '体は、動き続けようとして、<b>前へ</b>倒れます。慣性です。'),
+        QQ('止まっていた電車が急に動き出すと、乗っている人は?', '後ろへ倒れそうになる', ['前へ倒れそうになる', '変わらない', '上へ浮く'], 'バッチリ!', 'ここだけ', '体は、止まり続けようとして、<b>後ろへ</b>倒れます。'),
+        QQ('「力がはたらかないと、止まっている物は止まり続ける」。この法則の名前は?', '慣性の法則', ['オームの法則', '質量保存の法則', 'フックの法則'], 'そう、これ!', 'もう一回', '<b>慣性の法則</b>。'),
+        QQ('作用と反作用の2つの力は、どんな関係?', '同じ大きさで、反対向き（別の物体にはたらく）', ['同じ向き', '大きさが、ちがう', '同じ物体にはたらく'], 'ラスト、決まった!', 'ラスト、ここだけ', '作用・反作用は、<b>同じ大きさ・反対向き</b>で、別の物体にはたらきます。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: '宇宙では、一度おすと、ずっと動き続ける', body: '宇宙のように、まさつがほとんどない場所では、一度押された物は、<b>止まらずに</b>動き続けます。これが、慣性の法則の、いちばんわかりやすい例です。', point: '地球で物が止まるのは、まさつのせい。' },
+        { no: '其の二', ttl: 'ロケットが飛ぶのも、作用・反作用', body: 'ロケットは、ガスを<b>後ろへふき出す</b>ことで、同じ大きさの力を<b>前向き</b>に受けて飛びます。空気がない宇宙でも飛べるのは、このためです。', point: '押す力と、押される力は、いつもセット。' }
+      ],
+      secretFoot: '電車の中で、思い出してみてください。'
+    },
+
+    /* ===================== 第12話 地学（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-12', era: '地学', grade: '中3', no: 12, title: '天体の1年の動きと季節',
+      frame: '<p>夏は暑く、冬は寒い。夏は昼が長く、冬は昼が短い。この季節の変化は、<b>地球が傾いている</b>から起こります。</p>'
+        + '<p>この話は、<b>地球の動き</b>と<b>太陽の高さ</b>の丸暗記です。計算は、<b>ひき算1回</b>だけ。</p>',
+      goals: [
+        { ic: '🌍', k: '自転と公転', d: '<b>自転</b>＝1日に1回転（西→東）／<b>公転</b>＝1年に1周。' },
+        { ic: '📐', k: '地軸の傾き', d: '地軸は、公転面に垂直な向きから、<b>約23.4°傾いている</b>。このせいで、季節ができる。' },
+        { ic: '☀️', k: '夏至・冬至（唱える！）', d: '<b>夏至</b>＝太陽の高さが<b>最大</b>、昼が<b>最長</b>。<b>冬至</b>＝高さが<b>最小</b>、昼が<b>最短</b>。' },
+        { ic: '🔢', k: '春分・秋分の南中高度', d: '<b>90° － 緯度</b>。（ひき算1回）' }
+      ],
+      mistakes: [
+        { x: '「夏は、地球が太陽に近いから暑い」と思う', o: '近い・遠いは関係ない。<b>地軸が傾いている</b>から' },
+        { x: '太陽が動いていると思う', o: '地球が<b>自転</b>しているので、太陽が動いて見えるだけ' },
+        { x: '「春分・秋分は、昼が長い」と思う', o: '春分・秋分は、<b>昼と夜がほぼ同じ</b>長さ' }
+      ],
+      body: '<p>地球は、1日に1回、' + TM('自転', 'じてん') + 'しています。向きは、<b>西から東</b>。だから、太陽は<b>東から昇り、西へ沈む</b>ように見えます（日周運動）。また、地球は、1年かけて太陽のまわりを1周します。これが' + TM('公転', 'こうてん') + 'です。</p>'
+        + '<p>そして、地球の地軸は、約<b>23.4°</b>傾いたまま、公転しています。この傾きのせいで、<b>季節</b>ができます。</p>'
+        + '<div class="figure">' + SVG_SEASON + '<div class="figcap">地球の公転と、季節</div></div>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「夏至は 高くて 昼が長い」<br>「冬至は 低くて 昼が短い」<br>「春分・秋分は 真東から昇り 真西へ沈む」</p>'
+        + '<p>日本（北半球）では、<b>夏至</b>のころ、北極側が太陽の方へ傾き、太陽の高さが<b>最大</b>、昼が<b>最長</b>になります。<b>冬至</b>は、反対で、高さが<b>最小</b>、昼が<b>最短</b>です。</p>'
+        + '<div class="figure">' + SVG_SUNP + '<div class="figcap">太陽の通り道</div></div>'
+        + '<p>太陽が、真南に来たときの高さを、' + TM('南中高度', 'なんちゅうこうど') + 'といいます。春分・秋分の南中高度は、<b>90° － 緯度</b>。たとえば、緯度が<b>35°</b>の場所なら、90 － 35 ＝ <b>55°</b>です。</p>'
+        + '<div style="border:1.5px dashed var(--muted);border-radius:12px;padding:10px 12px;margin:12px 0;font-size:.92rem"><b>📎 おまけ（テストには出しません）</b><br>夏至の南中高度 ＝ 90° － 緯度 ＋ 23.4°<br>冬至の南中高度 ＝ 90° － 緯度 － 23.4°<br>緯度35°なら、夏至は 55 ＋ 23.4 ＝ <b>78.4°</b>、冬至は 55 － 23.4 ＝ <b>31.6°</b>。<br><span style="color:var(--muted)">春分・秋分（55°）を基準に、夏は23.4°高く、冬は23.4°低い、と覚えればOK。</span></div>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>自転</b>：1日1回転（西→東）　<b>公転</b>：1年に1周</p>'
+        + '<p><b>地軸</b>：約23.4°傾いている → 季節ができる</p>'
+        + '<p><b>夏至</b>：太陽が高い・昼が長い　<b>冬至</b>：低い・短い</p>'
+        + '<p><b>春分・秋分</b>：真東から昇り真西へ沈む。昼夜ほぼ同じ</p>'
+        + '<p><b>春分・秋分の南中高度</b> ＝ 90° － 緯度</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('地球が、1日に1回転することを、何という?', '自転', ['公転', '日食', '月食'], 'そう、これ!', 'もう一回', '<b>自転</b>。1日に1回転です。'),
+        QQ('地球が、太陽のまわりを、1年で1周することを、何という?', '公転', ['自転', '日周運動', '南中'], 'バッチリ!', 'ここだけ', '<b>公転</b>。1年で1周です。'),
+        QQ('地球の自転の向きは?', '西から東', ['東から西', '北から南', '南から北'], '覚えてた!', 'もう一回', '自転は<b>西から東</b>。だから太陽は東から昇ります。'),
+        QQ('季節ができる、いちばんの原因は?', '地軸が傾いたまま、公転しているから', ['地球が、太陽に近づくから', '太陽が、大きくなるから', '月が、まわるから'], '理由、言えた!', '理由をもう一度', '<b>地軸が傾いた</b>まま公転するから。距離は関係ありません。'),
+        QQ('地軸は、どれくらい傾いている?', '約23.4°', ['約90°', '約45°', '約0°'], '完ぺき!', 'もう一回', '約<b>23.4°</b>。'),
+        QQ('夏至の日の、太陽の南中高度は?', '1年で、いちばん高い', ['1年で、いちばん低い', '春分と同じ', 'ゼロ'], 'いい感じ!', 'もう一度', '夏至は、南中高度が<b>最大</b>。昼も最長です。'),
+        QQ('冬至の日の、昼の長さは?', '1年で、いちばん短い', ['1年で、いちばん長い', '夜と同じ', 'ゼロ'], 'その通り!', 'ここだけ', '冬至は、昼が<b>最短</b>。'),
+        QQ('春分の日、太陽が昇る方位は?', '真東', ['真西', '真南', '真北'], 'バッチリ!', 'もう一回', '春分・秋分は、<b>真東</b>から昇り、真西へ沈みます。'),
+        QQ('緯度 35° の場所の、春分の日の南中高度は?（90° － 緯度）', '55°', ['125°', '35°', '65°'], 'ひき算、できた!', 'ひき算をもう一度', '<b>90 － 35 ＝ 55°</b>。'),
+        QQ('太陽が、東から昇り、西へ沈むように見えるのは、なぜ?', '地球が自転しているから', ['太陽が地球のまわりを回るから', '地球が公転しているから', '月が動くから'], 'ラスト、決まった!', 'ラスト、ここだけ', '地球が<b>自転</b>しているからです。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: '地球は、冬のほうが、太陽に近い', body: '日本が冬のとき、地球は、じつは、太陽に<b>近い</b>位置にいます（1月ごろ）。それでも寒いのは、太陽の高さが低く、<b>光が弱くあたる</b>から。距離は、季節に、ほとんど関係ありません。', point: '季節をつくるのは、「距離」ではなく「傾き」。' },
+        { no: '其の二', ttl: '日本の反対側（南半球）は、12月が夏', body: 'オーストラリアなど南半球は、<b>季節が逆</b>です。12月は夏で、クリスマスに、海水浴をします。地軸の傾きで、説明できます。', point: '12月が冬なのは、北半球だけ。' }
+      ],
+      secretFoot: '地球の傾きが、四季をつくっていました。'
+    }
+  ];
+
+  var LESSONS_D = [
+    /* ===================== 第13話 生物（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-13', era: '生物', grade: '中3', no: 13, title: '細胞分裂と生殖',
+      frame: '<p>私たちの体は、たった1個の細胞から始まりました。その細胞が、<b>2つ、4つ、8つ</b>と、分かれて、ふえて、今の体になったのです。</p>'
+        + '<p>この話は、<b>細胞分裂の順番</b>と、<b>生殖</b>の丸暗記です。計算は、<b>半分にするだけ</b>。</p>',
+      goals: [
+        { ic: '🔬', k: '細胞分裂の順（唱える！）', d: '<b>核が見える → 染色体が見える → 中央に並ぶ → 両端に分かれる → しきりができる → 2つの細胞</b>' },
+        { ic: '🌱', k: '分裂がさかんな場所', d: '根の先端の<b>成長点</b>。染色は<b>酢酸オルセイン</b>（赤く染まる）。' },
+        { ic: '🧬', k: '無性生殖と有性生殖', d: '<b>無性</b>＝親と<b>同じ</b>子（分裂・出芽・栄養生殖）／<b>有性</b>＝<b>受精</b>でできる。' },
+        { ic: '➗', k: '染色体の数', d: '生殖細胞は<b>半分</b>、受精卵で<b>もとの数</b>にもどる。' }
+      ],
+      mistakes: [
+        { x: '「細胞分裂すると、染色体の数が半分になる」と思う', o: '体細胞分裂では、染色体の数は<b>変わらない</b>。半分になるのは、<b>生殖細胞</b>をつくるとき' },
+        { x: '「無性生殖でも、親と少しちがう子ができる」と思う', o: '無性生殖は、親と<b>まったく同じ</b>形質の子ができる' },
+        { x: '受精卵の染色体を、「精子と同じ数」と思う', o: '<b>精子＋卵</b>で、体細胞と<b>同じ数</b>になる（たし算）' }
+      ],
+      body: '<p>1つの細胞が、2つに分かれることを' + TM('細胞分裂', 'さいぼうぶんれつ') + 'といいます。体をつくる細胞の分裂は' + TM('体細胞分裂', 'たいさいぼうぶんれつ') + 'です。順番を、丸暗記しましょう。</p>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「核が見える → 染色体が見える → 中央に並ぶ → 両端に分かれる → しきりができる → 2つの細胞」<br><span style="font-size:.9rem;color:var(--muted)">（①〜⑥の順に並べる問題が、よく出ます！）</span></p>'
+        + '<div class="figure">' + SVG_CELLDIV + '<div class="figcap">体細胞分裂の順</div></div>'
+        + '<p>分裂の前に、染色体は<b>2倍にふえて</b>、それが2つに分かれるので、できた細胞の染色体の数は、<b>もとと同じ</b>です。</p>'
+        + '<p>この分裂を観察するには、<b>タマネギの根の先</b>（成長点）を使います。うすい塩酸で、細胞をはなれやすくして、<b>酢酸オルセイン</b>で染色体を<b>赤く染めます</b>。</p>'
+        + '<p>つぎは' + TM('生殖', 'せいしょく') + '。親と<b>同じ</b>子をつくるのが' + TM('無性生殖', 'むせいせいしょく') + '（ミカヅキモの分裂、ヒドラの出芽、ジャガイモの栄養生殖など）。<b>受精</b>で子をつくるのが' + TM('有性生殖', 'ゆうせいせいしょく') + 'です。</p>'
+        + '<p>有性生殖では、<b>精子</b>と<b>卵</b>（どちらも' + TM('生殖細胞', 'せいしょくさいぼう') + '）が合体して、' + TM('受精卵', 'じゅせいらん') + 'になります。生殖細胞の染色体は、体の細胞の<b>半分</b>。体細胞の染色体が<b>8本</b>なら、生殖細胞は 8 ÷ 2 ＝ <b>4本</b>。精子4本＋卵4本で、受精卵は、<b>8本</b>にもどります。</p>'
+        + '<div class="figure">' + SVG_SEX + '<div class="figcap">染色体の数の変化</div></div>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>細胞分裂</b>：核が見える→染色体が見える→中央に並ぶ→両端に分かれる→しきりができる→2つの細胞</p>'
+        + '<p><b>体細胞分裂</b>：染色体の数は変わらない</p>'
+        + '<p><b>観察</b>：根の先（成長点）。酢酸オルセインで赤く染める</p>'
+        + '<p><b>無性生殖</b>：親と同じ（分裂・出芽・栄養生殖）　<b>有性生殖</b>：受精</p>'
+        + '<p><b>染色体</b>：生殖細胞＝半分、受精卵＝もとの数</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('細胞が、2つに分かれることを何という?', '細胞分裂', ['受精', '光合成', '蒸散'], 'そう、これ!', 'もう一回', '<b>細胞分裂</b>。'),
+        QQ('細胞分裂のとき、はじめに見えてくるものは?', '染色体', ['葉緑体', '細胞壁', '液胞'], 'バッチリ!', 'ここだけ', 'はじめに、<b>染色体</b>が見えてきます。'),
+        QQ('体細胞分裂で、染色体が細胞の中央に並んだ。次に起こるのは?', '両端に分かれる', ['もとにもどる', '消える', 'ふえる'], '順番、言えた!', '順番をもう一度', '染色体が<b>両端に分かれ</b>、そのあと、2つの細胞になります。'),
+        QQ('体細胞分裂の前後で、染色体の数は?', '変わらない', ['半分になる', '2倍になる', 'ゼロになる'], '完ぺき!', 'ここが大事', '分裂の前後で、<b>変わりません</b>。'),
+        QQ('細胞分裂の観察で、染色体を赤く染める薬は?', '酢酸オルセイン', ['ヨウ素液', 'BTB溶液', 'ベネジクト液'], '覚えてた!', 'もう一回', '<b>酢酸オルセイン</b>。'),
+        QQ('細胞分裂がさかんな、根の先の部分を何という?', '成長点', ['気孔', '柔毛', '根毛'], 'いい感じ!', 'もう一度', '根の先の<b>成長点</b>で、細胞分裂がさかんです。'),
+        QQ('親と同じ形質の子ができる生殖は?', '無性生殖', ['有性生殖', '受精', '減数'], 'その通り!', 'ここだけ', '<b>無性生殖</b>。親と全く同じ子ができます。'),
+        QQ('精子と卵が合体することを何という?', '受精', ['分裂', '出芽', '蒸散'], 'バッチリ!', 'もう一回', '<b>受精</b>。できた細胞が受精卵です。'),
+        QQ('体細胞の染色体が 8本の生物。その生殖細胞の染色体は何本?（8 ÷ 2）', '4本', ['16本', '8本', '2本'], 'わり算、できた!', 'わり算をもう一度', '生殖細胞は<b>半分</b>。8 ÷ 2 ＝ <b>4本</b>。'),
+        QQ('精子の染色体が 4本、卵の染色体が 4本。受精卵の染色体は何本?（4 ＋ 4）', '8本', ['4本', '2本', '16本'], 'ラスト、決まった!', 'ラスト、ここだけ', '<b>4 ＋ 4 ＝ 8本</b>。もとの数にもどります。'),
+        { order: true, ask: '植物の細胞が分裂するときの図が、バラバラになっている。<b>分裂が進む順</b>に、図をタップしよう（1番目→6番目）。', items: [CELLPIC(0), CELLPIC(1), CELLPIC(2), CELLPIC(3), CELLPIC(4), CELLPIC(5)], names: CELLNAMES, vo: '順番、完ぺき!', vn: 'もう一回、順番を唱えよう', why: '<b>核が見える → 染色体が見える → 中央に並ぶ → 両端に分かれる → しきりができる → 2つの細胞</b>。声に出して、何度も言おう。' }
+      ],
+      secrets: [
+        { no: '其の一', ttl: '人の染色体は、46本', body: '人の体細胞の染色体は<b>46本</b>。精子も卵も<b>23本</b>ずつで、受精すると、46本にもどります。親から、半分ずつ受けついでいるのです。', point: '体の設計図は、両親から半分ずつ。' },
+        { no: '其の二', ttl: 'ジャガイモを植えると、同じジャガイモができる', body: 'ジャガイモのいもを植えると、親と全く同じ性質の株ができます。これが<b>栄養生殖</b>（無性生殖）。種から育てると、性質が少しずつ変わります。', point: 'おいしい品種を守るのに、使われている。' }
+      ],
+      secretFoot: '細胞のふえ方で、生き物のしくみがわかります。'
+    },
+
+    /* ===================== 第14話 化学（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-14', era: '化学', grade: '中1', no: 14, title: '密度と濃度の計算',
+      frame: '<p>氷は、水に<b>浮きます</b>。鉄は、水に<b>沈みます</b>。この差を決めているのが、<b>密度</b>です。</p>'
+        + '<p>この話は、<b>密度</b>と<b>濃度</b>の式の丸暗記と、<b>わり算1回</b>の計算です。</p>',
+      goals: [
+        { ic: '⚖️', k: '密度（唱える！）', d: '密度 ＝ <b>質量 ÷ 体積</b>。単位は<b>g/cm³</b>。水は<b>1</b>。' },
+        { ic: '🧊', k: '浮く・沈む', d: '水より密度が<b>小さい</b>→浮く／<b>大きい</b>→沈む。' },
+        { ic: '🧂', k: '溶質・溶媒・溶液', d: '<b>溶質＋溶媒＝溶液</b>。（砂糖＋水＝砂糖水）' },
+        { ic: '％', k: '濃度（唱える！）', d: '濃度（％）＝ <b>溶質 ÷ 溶液 × 100</b>。' }
+      ],
+      mistakes: [
+        { x: '密度の式を「体積 ÷ 質量」と思う', o: '<b>質量 ÷ 体積</b>。「しつりょう わる たいせき」' },
+        { x: '濃度の分母を「溶媒（水）」にしてしまう', o: '分母は<b>溶液全体</b>（溶質＋溶媒）' },
+        { x: '「重い物は、必ず沈む」と思う', o: '<b>密度</b>で決まる。大きくて重い船も、密度が小さければ浮く' }
+      ],
+      body: '<p>同じ大きさでも、物によって、重さがちがいます。その差を表すのが' + TM('密度', 'みつど') + '。<b>1 cm³あたりの質量</b>です。丸暗記。</p>'
+        + FC('密度の式', '密度（g/cm³）＝ 質量（g）÷ 体積（cm³）', '密度 ＝ 質量 ÷ 体積', 'みつどは、しつりょう わる たいせき')
+        + '<p>例：質量が<b>20 g</b>、体積が<b>10 cm³</b>の金属。密度は 20 ÷ 10 ＝ <b>2 g/cm³</b>。わり算1回です。</p>'
+        + '<div class="figure">' + SVG_DENS + '<div class="figcap">密度と、浮く・沈む</div></div>'
+        + '<p>水の密度は<b>1 g/cm³</b>。これより<b>小さい</b>物は<b>浮き</b>、<b>大きい</b>物は<b>沈み</b>ます。氷は 0.92 なので、浮きます。</p>'
+        + '<p>つぎは' + TM('濃度', 'のうど') + '。砂糖水では、とけている砂糖が' + TM('溶質', 'ようしつ') + '、とかしている水が' + TM('溶媒', 'ようばい') + '、あわせた砂糖水が' + TM('溶液', 'ようえき') + 'です。</p>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「溶質＋溶媒＝溶液」<br>「濃度（％）＝ 溶質 ÷ 溶液 × 100」</p>'
+        + '<div class="figure">' + SVG_CONC + '<div class="figcap">濃度のしくみ</div></div>'
+        + '<p>例：砂糖<b>10 g</b>を水にとかして、砂糖水が<b>100 g</b>になった。濃度は、10 ÷ 100 × 100 ＝ <b>10 ％</b>。分母は、<b>溶液全体</b>です。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>密度</b> ＝ 質量 ÷ 体積（20 ÷ 10 ＝ 2 g/cm³）</p>'
+        + '<p><b>水の密度</b>：1 g/cm³。小さい→浮く、大きい→沈む</p>'
+        + '<p><b>溶質＋溶媒＝溶液</b>（砂糖＋水＝砂糖水）</p>'
+        + '<p><b>濃度（％）</b> ＝ 溶質 ÷ 溶液 × 100</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('密度を求める式は?', '質量 ÷ 体積', ['体積 ÷ 質量', '質量 × 体積', '質量 ＋ 体積'], 'そう、これ!', 'もう一回', '密度 ＝ <b>質量 ÷ 体積</b>。'),
+        QQ('質量 20 g、体積 10 cm³ の物体の密度は?', '2 g/cm³', ['200 g/cm³', '0.5 g/cm³', '30 g/cm³'], 'わり算、できた!', 'わり算をもう一度', '<b>20 ÷ 10 ＝ 2 g/cm³</b>。'),
+        QQ('質量 30 g、体積 10 cm³ の物体の密度は?', '3 g/cm³', ['300 g/cm³', '0.3 g/cm³', '20 g/cm³'], 'ばっちり!', 'もう一回', '<b>30 ÷ 10 ＝ 3 g/cm³</b>。'),
+        QQ('水の密度は?', '1 g/cm³', ['0.5 g/cm³', '10 g/cm³', '100 g/cm³'], '覚えてた!', 'ここだけ', '水の密度は<b>1 g/cm³</b>。'),
+        QQ('水に浮くのは、密度が水より…?', '小さい物', ['大きい物', '同じ物だけ', '重い物'], '完ぺき!', 'ここが大事', '水より密度が<b>小さい</b>物は、浮きます。'),
+        QQ('密度が 7.9 g/cm³ の鉄を、水に入れると?', '沈む', ['浮く', '半分浮く', '溶ける'], 'いい感じ!', 'もう一度', '水の1より大きいので、<b>沈みます</b>。'),
+        QQ('砂糖水で、とけている砂糖のことを何という?', '溶質', ['溶媒', '溶液', '溶解'], 'バッチリ!', 'ここだけ', 'とけている物＝<b>溶質</b>。水が溶媒、砂糖水が溶液です。'),
+        QQ('濃度（％）を求める式は?', '溶質 ÷ 溶液 × 100', ['溶質 ÷ 溶媒 × 100', '溶液 ÷ 溶質 × 100', '溶質 × 溶液'], '式、言えた!', '式をもう一度', '濃度（％）＝ <b>溶質 ÷ 溶液 × 100</b>。分母は溶液全体。'),
+        QQ('砂糖 10 g が、水にとけて砂糖水 100 g になった。濃度は?', '10 ％', ['1 ％', '100 ％', '90 ％'], '計算、ばっちり!', '計算をもう一度', '10 ÷ 100 × 100 ＝ <b>10 ％</b>。'),
+        QQ('食塩 20 g がとけた、食塩水 200 g の濃度は?', '10 ％', ['20 ％', '1 ％', '100 ％'], 'ラスト、決まった!', 'ラスト、ここだけ', '20 ÷ 200 × 100 ＝ <b>10 ％</b>。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: '死海では、人が浮く', body: '中東の<b>死海</b>は、塩の濃度がとても高く、水の密度が大きいので、人が<b>ぷかぷか浮きます</b>。本を読みながら浮く写真が有名です。', point: '塩分が多いほど、水の密度が大きくなる。' },
+        { no: '其の二', ttl: '生卵は、塩水に入れると浮く', body: '水に生卵を入れると沈みますが、<b>塩をたくさんとかす</b>と、浮きます。水の密度が、卵より大きくなるからです。家でもできます。', point: '濃くすると、密度が上がる。' }
+      ],
+      secretFoot: '密度で、浮く・沈むが説明できます。'
+    },
+
+    /* ===================== 第15話 物理（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-15', era: '物理', grade: '中1', no: 15, title: '圧力と浮力',
+      frame: '<p>雪の上を歩くとき、<b>ふつうのくつ</b>だと足がうまり、<b>かんじき</b>やスキーなら、うまりません。体重は同じなのに、なぜでしょう。</p>'
+        + '<p>この話は、<b>圧力の式</b>と<b>浮力</b>。計算は、<b>わり算とひき算を1回</b>だけです。</p>',
+      goals: [
+        { ic: '📐', k: '圧力（唱える！）', d: '圧力（Pa）＝ <b>力（N）÷ 面積（m²）</b>。面積が<b>小さい</b>ほど、圧力は<b>大きい</b>。' },
+        { ic: '🌍', k: '大気圧', d: '空気の重さによる圧力。約<b>1気圧</b>＝<b>1013 hPa</b>。あらゆる向きからはたらく。' },
+        { ic: '💧', k: '水圧', d: '<b>深いほど大きい</b>。あらゆる向きからはたらく。' },
+        { ic: '🎈', k: '浮力', d: '水中の物体を<b>上向きにおす力</b>。浮力 ＝ <b>空気中の値 － 水中の値</b>。' }
+      ],
+      mistakes: [
+        { x: '「面積が広いほど、圧力が大きい」と思う', o: '<b>せまい</b>ほど大きい。面積は、わり算の<b>下</b>' },
+        { x: '「深く沈めるほど、浮力が大きい」と思う', o: '全部しずんだら、深さは<b>関係なし</b>（水に入った体積で決まる）' },
+        { x: '「大気圧は、上からだけはたらく」と思う', o: '<b>あらゆる向き</b>からはたらく' }
+      ],
+      body: '<p>面をおす力の大きさを表すのが' + TM('圧力', 'あつりょく') + 'です。同じ力でも、<b>面積がせまい</b>ほど、圧力は<b>大きく</b>なります。単位は' + TM('パスカル', '') + '（Pa）。丸暗記。</p>'
+        + FC('圧力の式', '圧力（Pa）＝ 力（N）÷ 面積（m²）', '圧力 ＝ 力 ÷ 面積', 'あつりょくは、ちから わる めんせき')
+        + '<div class="figure">' + SVG_PRESS + '<div class="figcap">面積と圧力</div></div>'
+        + '<p>例：<b>20 N</b>の力で、<b>0.5 m²</b>の面をおすと、20 ÷ 0.5 ＝ <b>40 Pa</b>。わり算1回です。</p>'
+        + '<p>つぎは' + TM('大気圧', 'たいきあつ') + '。空気にも重さがあり、地表では、<b>約1013 hPa</b>（1気圧）の圧力を、<b>あらゆる向き</b>から受けています。' + TM('水圧', 'すいあつ') + 'は、水の重さによる圧力で、<b>深いほど大きく</b>なります。</p>'
+        + '<p>最後に' + TM('浮力', 'ふりょく') + '。水の中に物を入れると、<b>上向き</b>の力を受けます。ばねばかりで測ると、水中の値が、<b>小さく</b>なります。</p>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink)">「浮力 ＝ 空気中の値 － 水中の値」</p>'
+        + '<div class="figure">' + SVG_BUOY + '<div class="figcap">ばねばかりと浮力</div></div>'
+        + '<p>例：空気中で<b>5 N</b>、水中で<b>3 N</b>なら、浮力は 5 － 3 ＝ <b>2 N</b>。ひき算1回です。物体が<b>全部水に沈んだら</b>、深さを変えても、浮力は<b>変わりません</b>。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>圧力（Pa）</b> ＝ 力（N）÷ 面積（m²）。面積が小さいほど大きい</p>'
+        + '<p><b>大気圧</b>：約1013 hPa（1気圧）。あらゆる向きから</p>'
+        + '<p><b>水圧</b>：深いほど大きい。あらゆる向きから</p>'
+        + '<p><b>浮力</b> ＝ 空気中の値 － 水中の値（5 － 3 ＝ 2 N）</p>'
+        + '<p><b>全部沈んだら</b>、深さを変えても浮力は同じ</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('圧力を求める式は?', '力 ÷ 面積', ['面積 ÷ 力', '力 × 面積', '力 ＋ 面積'], 'そう、これ!', 'もう一回', '圧力 ＝ <b>力 ÷ 面積</b>。'),
+        QQ('圧力の単位は?', 'Pa（パスカル）', ['N（ニュートン）', 'W（ワット）', 'J（ジュール）'], 'バッチリ!', 'ここだけ', '圧力の単位は<b>Pa（パスカル）</b>。'),
+        QQ('同じ力で、面をおすとき、圧力が大きくなるのは?', '面積がせまいとき', ['面積が広いとき', '変わらない', '面積が0のとき'], '覚えてた!', 'もう一回', '面積が<b>せまい</b>ほど、圧力は大きい。'),
+        QQ('20 N の力で、0.5 m² の面をおした。圧力は?（20 ÷ 0.5）', '40 Pa', ['10 Pa', '20.5 Pa', '4 Pa'], 'わり算、できた!', 'わり算をもう一度', '<b>20 ÷ 0.5 ＝ 40 Pa</b>。'),
+        QQ('100 N の力で、2 m² の面をおした。圧力は?', '50 Pa', ['200 Pa', '98 Pa', '5 Pa'], 'ばっちり!', 'もう一度', '<b>100 ÷ 2 ＝ 50 Pa</b>。'),
+        QQ('空気の重さによる圧力を何という?', '大気圧', ['水圧', '浮力', '張力'], '完ぺき!', 'ここが大事', '<b>大気圧</b>。約1013 hPaです。'),
+        QQ('水圧は、深くなるほど?', '大きくなる', ['小さくなる', '変わらない', '0になる'], 'いい感じ!', 'もう一回', '深いほど、水の重さが大きいので、<b>大きく</b>なります。'),
+        QQ('水中の物体を、上向きにおす力を何という?', '浮力', ['重力', '摩擦力', '弾性力'], 'その通り!', 'もう一度', '<b>浮力</b>。'),
+        QQ('ばねばかりが、空気中で 5 N、水中で 3 N。浮力は?（5 － 3）', '2 N', ['8 N', '15 N', '3 N'], 'ひき算、できた!', 'ひき算をもう一度', '<b>5 － 3 ＝ 2 N</b>。'),
+        QQ('物体が、全部水に沈んでいるとき、さらに深くすると浮力は?', '変わらない', ['大きくなる', '小さくなる', '0になる'], 'ラスト、決まった!', 'ラスト、ここだけ', '全部沈んだら、深さは<b>関係なし</b>。浮力は変わりません。')
+      ],
+      secrets: [
+        { no: '其の一', ttl: '画びょうは、とがっているから、刺さる', body: '画びょうは、針先の面積が<b>とても小さい</b>ので、指でおす力が、小さくても、圧力は<b>とても大きく</b>なり、かべに刺さります。反対に、おす側は、広いので、指は痛くなりません。', point: '同じ力でも、面積で変わる。' },
+        { no: '其の二', ttl: '真空パックが、ぎゅっとなる理由', body: '袋の中の空気を抜くと、外の<b>大気圧</b>が、袋を押しつけます。だから、ぴったり、ちぢむのです。', point: '大気圧は、あらゆる向きからおしている。' }
+      ],
+      secretFoot: 'おす力と面積で、世界の見え方が変わります。'
+    },
+
+    /* ===================== 第16話 地学（暗記＋やさしい計算） ===================== */
+    {
+      id: 'l3-16', era: '地学', grade: '中3', no: 16, title: '月・金星の満ち欠け',
+      frame: '<p>月は、毎日、少しずつ形が変わります。細い月から丸い月へ、そして、また細くなる。この形の変化は、<b>太陽・地球・月の位置</b>で決まります。</p>'
+        + '<p>この話は、<b>月の形の順番</b>と<b>日食・月食</b>、<b>金星</b>の丸暗記です。計算は、<b>半分にするだけ</b>。</p>',
+      goals: [
+        { ic: '🌙', k: '月の形の順（唱える！）', d: '<b>新月 → 三日月 → 上弦 → 満月 → 下弦 → 新月</b>。1周は約<b>30日</b>。' },
+        { ic: '🌒', k: '月の通り道', d: '月は、<b>西から東</b>へ公転。毎日、同じ時刻の位置が<b>東へ</b>ずれる。' },
+        { ic: '🌑', k: '日食・月食', d: '<b>日食</b>＝太陽・<b>月</b>・地球の順（新月のとき）／<b>月食</b>＝太陽・<b>地球</b>・月の順（満月のとき）。' },
+        { ic: '⭐', k: '金星', d: '<b>夕方は西</b>、<b>明け方は東</b>。真夜中には見えない。<b>近いほど大きく、欠け方が大きい</b>。' }
+      ],
+      mistakes: [
+        { x: '「日食は満月のときに起こる」と思う', o: '日食は<b>新月</b>のとき。満月のときに起こるのは<b>月食</b>' },
+        { x: '「金星は、真夜中にも見える」と思う', o: '金星は<b>内側</b>を回るので、<b>明け方と夕方</b>だけ。真夜中は見えない' },
+        { x: '「月が光るのは、月自身が光っているから」と思う', o: '<b>太陽の光を反射</b>しているだけ' }
+      ],
+      body: '<p>月は、自分では光らず、<b>太陽の光を反射</b>しています。地球のまわりを回るので、地球から見える<b>光っている部分</b>が、少しずつ変わります。形の順番を、丸暗記。</p>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「新月 → 三日月 → 上弦 → 満月 → 下弦 → 新月」</p>'
+        + '<div class="figure">' + SVG_MOON + '<div class="figcap">月の位置と、満ち欠け</div></div>'
+        + '<div style="border:2px solid var(--accent);border-radius:14px;background:var(--surface);padding:11px 14px;margin:12px 0;font-size:.95rem;line-height:1.8"><b>🔑 どんな図でも、ルールは3つだけ</b><br>① 月は、地球のまわりを<b>反時計まわり</b>に回る<br>② 月は、<b>太陽に向いた側</b>が光る<br>③ <b>新月</b>は太陽と同じ側、<b>満月</b>は太陽の反対側</div>'
+        + '<p>教科書や問題では、太陽が<b>右</b>や<b>上</b>に描かれることもあります。位置はちがっても、<b>ルールは同じ</b>。同じ話を、太陽が右にある図でも見てみましょう。</p>'
+        + '<div class="figure">' + SVG_MOON2 + '<div class="figcap">太陽が右にあるときの、月の満ち欠け</div></div>'
+        + '<p>1周には、約<b>30日</b>かかります。だから、新月から満月までは、30 ÷ 2 ＝ <b>約15日</b>。ひき算ではなく、<b>半分</b>です。</p>'
+        + '<p>つぎは、' + TM('日食', 'にっしょく') + 'と' + TM('月食', 'げっしょく') + '。</p>'
+        + '<p style="font-size:1.05rem;font-weight:700;color:var(--accent-ink);line-height:1.9">「日食は、太陽・月・地球（新月のとき）」<br>「月食は、太陽・地球・月（満月のとき）」</p>'
+        + '<div class="figure">' + SVG_ECL + '<div class="figcap">日食と月食</div></div>'
+        + '<p>最後に' + TM('金星', 'きんせい') + '。金星は、地球より<b>内側</b>を回る惑星です。だから、<b>夕方の西の空</b>（よいの明星）か、<b>明け方の東の空</b>（明けの明星）にだけ見え、<b>真夜中には見えません</b>。</p>'
+        + '<div class="figure">' + SVG_VENUS + '<div class="figcap">金星の見え方</div></div>'
+        + '<p>金星は、地球に<b>近い</b>とき、<b>大きく</b>見えて、<b>細く</b>欠け、<b>遠い</b>とき、<b>小さく</b>て、丸く見えます。</p>',
+      note: '<div class="notebox-h">📌 丸暗記カード</div>'
+        + '<p><b>月の形</b>：新月→三日月→上弦→満月→下弦→新月（約30日）</p>'
+        + '<p><b>新月→満月</b>：約15日（30 ÷ 2）</p>'
+        + '<p><b>日食</b>：太陽・月・地球（新月）　<b>月食</b>：太陽・地球・月（満月）</p>'
+        + '<p><b>金星</b>：夕方は西、明け方は東。真夜中は見えない</p>'
+        + '<p><b>金星</b>：近い＝大きく細い、遠い＝小さく丸い</p>',
+      svg: null, svgCap: '', photos: [],
+      questions: [
+        QQ('月が光って見えるのは、なぜ?', '太陽の光を反射しているから', ['月自身が光っているから', '地球が照らしているから', '星の光が集まるから'], 'そう、これ!', 'もう一回', '月は、<b>太陽の光を反射</b>しています。'),
+        QQ('月の形が変わる順で、正しいのは?', '新月 → 三日月 → 上弦 → 満月', ['新月 → 満月 → 三日月 → 上弦', '満月 → 新月 → 上弦', '三日月 → 新月 → 満月'], '順番、言えた!', '順番をもう一度', '<b>新月→三日月→上弦→満月→下弦→新月</b>。'),
+        QQ('月が、もとの形にもどるまで、約何日?', '約30日', ['約7日', '約365日', '約1日'], 'バッチリ!', 'ここだけ', '約<b>30日</b>で1周します。'),
+        QQ('新月から満月まで、約何日?（30 ÷ 2）', '約15日', ['約60日', '約30日', '約5日'], '半分、できた!', 'もう一度', '30日の<b>半分</b>、約<b>15日</b>。'),
+        QQ('日食が起こるのは、月がどの形のとき?', '新月', ['満月', '上弦', '下弦'], '覚えてた!', 'もう一回', '日食は<b>新月</b>のとき。'),
+        QQ('月食が起こるのは、月がどの形のとき?', '満月', ['新月', '上弦', '三日月'], '完ぺき!', 'ここが大事', '月食は<b>満月</b>のとき。'),
+        QQ('日食のとき、太陽・月・地球は、どの順に並ぶ?', '太陽 → 月 → 地球', ['太陽 → 地球 → 月', '地球 → 太陽 → 月', '月 → 太陽 → 地球'], 'いい感じ!', 'もう一度', '日食は、<b>太陽・月・地球</b>の順。'),
+        QQ('月食のとき、並ぶ順は?', '太陽 → 地球 → 月', ['太陽 → 月 → 地球', '月 → 太陽 → 地球', '地球 → 月 → 太陽'], 'その通り!', 'ここだけ', '月食は、<b>太陽・地球・月</b>の順。月が地球の影に入ります。'),
+        QQ('金星が見える時間帯は?', '明け方と夕方', ['真夜中', '昼の12時', '一晩じゅう'], 'バッチリ!', 'もう一回', '金星は内側を回るので、<b>明け方と夕方</b>だけ見えます。'),
+        QQ('金星が、地球に近いとき、見え方は?', '大きく見えて、細く欠ける', ['小さく見えて、丸い', '大きく見えて、丸い', '見えなくなる'], 'ラスト、決まった!', 'ラスト、ここだけ', '近いと、<b>大きく見えて、細く欠け</b>ます。'),
+        { order: true, ask: '月の形の図が、バラバラになっている。<b>新月から始めて</b>、形が変わっていく順に、図をタップしよう（1番目→5番目）。', items: [MOONPIC('new'), MOONPIC('cres'), MOONPIC('half'), MOONPIC('full'), MOONPIC('half', true)], names: ['新月（見えない）', '三日月', '上弦の月（右半分）', '満月', '下弦の月（左半分）'], vo: '月の順、完ぺき!', vn: 'もう一回、順番を唱えよう', why: '<b>新月 → 三日月 → 上弦 → 満月 → 下弦 → 新月</b>。右側が光る→丸くなる→左側が光る、と進みます。' }
+      ],
+      secrets: [
+        { no: '其の一', ttl: '月は、いつも、同じ面を地球に向けている', body: '月は、地球のまわりを1周する間に、ちょうど1回、自転しています。だから、地球からは、いつも<b>同じ模様</b>（うさぎの模様）が見えます。月の裏側は、地球からは見えません。', point: '月の裏側は、人工衛星が見つけた。' },
+        { no: '其の二', ttl: '皆既日食のとき、昼でも夜のように暗くなる', body: '月が、太陽をすっかりかくすと、昼でも<b>暗くなり</b>、星が見えます。月と太陽は、大きさが全然ちがうのに、<b>見かけの大きさがほぼ同じ</b>だから、起こります。', point: '偶然が、つくり出す、天体ショー。' }
+      ],
+      secretFoot: 'これで、レベル3の16話は、全部おしまいです。'
+    }
+  ];
+
+
+var LESSONS = [].concat(LESSONS_A, LESSONS_B, LESSONS_C, LESSONS_D);
+
+  function lsGet(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function todayStr() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function getCleared() { return lsGet('rk3_cleared', []); }
+  function markCleared(id) {
+    var c = getCleared(); if (c.indexOf(id) < 0) { c.push(id); lsSet('rk3_cleared', c); }
+    var t = todayStr(), o = lsGet('rk3_today', { d: '', ids: [] });
+    if (o.d !== t) o = { d: t, ids: [] };
+    if (o.ids.indexOf(id) < 0) o.ids.push(id);
+    lsSet('rk3_today', o);
+  }
+  function todayCount() { var o = lsGet('rk3_today', { d: '', ids: [] }); return o.d === todayStr() ? o.ids.length : 0; }
+  function builtLessons() { var n = 0; LESSONS.forEach(function () { n++; }); return n; }
+  function totalPlanned() { var n = 0; ROADMAP.forEach(function (b) { n += b.items.length; }); return n; }
+  function lessonById(id){ for (var i = 0; i < LESSONS.length; i++) if (LESSONS[i].id === id) return LESSONS[i]; return null; }
+  function lessonByNo(no){ for (var i = 0; i < LESSONS.length; i++) if (LESSONS[i].no === no) return LESSONS[i]; return null; }
+  function rangeReady(a, b){ for (var n = a; n <= b; n++) if (!lessonByNo(n)) return false; return true; }
+
+  var MARKS = ['ア', 'イ', 'ウ', 'エ'];
+  var FLD = { bio: '生物', che: '化学', phy: '物理', ear: '地学' };
+  var LV3 = [
+    [1,'bio','中2','光合成・呼吸・蒸散の実験（対照実験）'],[2,'che','中2','化学反応式（丸暗記）'],[3,'phy','中2','オームの法則'],[4,'ear','中2','湿度と露点（表を読むだけ）'],
+    [5,'bio','中2','消化酵素と栄養分の吸収'],[6,'che','中2','質量保存と質量の比'],[7,'phy','中2','電力と熱量'],[8,'ear','中1','地震波（P波・S波）の計算'],
+    [9,'bio','中2','感覚と神経・運動'],[10,'che','中3','酸・アルカリと中和'],[11,'phy','中3','速さと慣性'],[12,'ear','中3','天体の1年の動きと季節'],
+    [13,'bio','中3','細胞分裂と生殖'],[14,'che','中1','密度と濃度の計算'],[15,'phy','中1','圧力と浮力'],[16,'ear','中3','月・金星の満ち欠け']
+  ].map(function (a) { return { no: a[0], id: 'l3-' + a[0], f: a[1], g: a[2], t: a[3] }; });
+
+  var RVSETS = [
+    { id: 'r3-1', no: '①', from: 1, picks: [[1,4],[2,5],[1,3],[3,6],[0,5],[1,4],[2,6],[1,4]] },
+    { id: 'r3-2', no: '②', from: 9, picks: [[1,5],[2,4],[0,3],[3,6],[1,5],[2,6],[0,4],[3,7]] }
+  ];
+  RVSETS.forEach(function (rs) {
+    if (!rangeReady(rs.from, rs.from + 7)) return;
+    var Q = [[], []], goals = [], mist = [], sec = [];
+    var KAN = ['其の一', '其の二', '其の三', '其の四', '其の五', '其の六', '其の七', '其の八'];
+    rs.picks.forEach(function (pk, n) {
+      var no = rs.from + n, L = lessonById('l3-' + no); if (!L) return;
+      pk.forEach(function (qi, k) {
+        var q = L.questions[qi];
+        Q[k].push({ ask: '【第' + no + '話】' + q.ask, opts: q.opts, vo: q.vo, vn: q.vn, why: q.why });
+      });
+      goals.push({ ic: L.goals[0].ic, k: '第' + no + '話　' + L.title, d: L.goals.map(function (g) { return g.k; }).join('・') });
+      if (L.mistakes && L.mistakes.length) mist.push({ x: L.mistakes[0].x, o: L.mistakes[0].o });
+      if (L.secrets && L.secrets.length) { var s0 = L.secrets[0]; sec.push({ no: KAN[sec.length], ttl: s0.ttl, body: s0.body, point: s0.point }); }
+    });
+    var lo = rs.from, hi = rs.from + 7;
+    var OQ = [];
+    for (var on = lo; on <= hi; on++) { var OL = lessonById('l3-' + on); if (!OL) continue; OL.questions.forEach(function (oq) { if (oq.order) { var cp = {}; Object.keys(oq).forEach(function (k) { cp[k] = oq[k]; }); cp.ask = '【第' + on + '話】' + oq.ask; OQ.push(cp); } }); }
+    LESSONS.push({
+      id: rs.id, era: '復習', grade: 'レベル3', crumbTail: '復習' + rs.no, no: rs.no, doneLabel: '復習' + rs.no + 'クリア!',
+      title: '復習' + rs.no + '（第' + lo + '〜' + hi + '話）',
+      frame: '<p>第' + lo + '〜' + hi + '話で出てきた言葉を、<b>まぜこぜ</b>で出します。生物・化学・物理・地学が、順番バラバラで来るのが本番のテストと同じ。わすれていても大丈夫。まちがえた話に、もどればOK。</p>',
+      goals: goals,
+      mistakes: mist,
+      body: '<p>まず、上の<b>8つの話</b>を、さっとながめます。「あれ、なんだっけ？」となった話は、その話にもどって、もう一度読みましょう。</p><p>そのあと、<b>' + (16 + OQ.length) + '問</b>に挑戦。1問ずつ、答えのあとに解説が出ます。</p>',
+      questions: Q[0].concat(Q[1], OQ),
+      secrets: sec,
+      secretFoot: 'これまでの裏話を、もう一度。人に話せたら、もうキミの“持ちネタ”。'
+    });
+  });
+  (function () {
+    if (!LV3.every(function (it) { return lessonById(it.id); })) return;
+    var picks = [5,3,3,7,4,2,5,3,6,4,2,5,3,6,4,7], Q = [], G = { bio: [], che: [], phy: [], ear: [] }, M = [], S = [];
+    var KAN = ['其の一', '其の二', '其の三', '其の四'];
+    var OQ3 = [];
+    LV3.forEach(function (it) { var OL = lessonById(it.id); if (!OL) return; OL.questions.forEach(function (oq) { if (oq.order) { var cp = {}; Object.keys(oq).forEach(function (k) { cp[k] = oq[k]; }); cp.ask = '【第' + it.no + '話】' + oq.ask; OQ3.push(cp); } }); });
+    var GIC = { bio: '🌱', che: '🧪', phy: '⚡', ear: '🌏' };
+    LV3.forEach(function (it, n) {
+      var L = lessonById(it.id); if (!L) return;
+      var q = L.questions[picks[n]];
+      Q.push({ ask: '【第' + it.no + '話】' + q.ask, opts: q.opts, vo: q.vo, vn: q.vn, why: q.why });
+      G[it.f].push('第' + it.no + '話 ' + it.t);
+      if (n < 4 && L.mistakes && L.mistakes.length) M.push({ x: L.mistakes[0].x, o: L.mistakes[0].o });
+      if (n % 5 === 4 && L.secrets && L.secrets.length) { var s0 = L.secrets[0]; S.push({ no: KAN[S.length], ttl: s0.ttl, body: s0.body, point: s0.point }); }
+    });
+    var goals = Object.keys(G).map(function (k) { return { ic: GIC[k], k: FLD[k] + 'の話', d: G[k].join('、') }; });
+    LESSONS.push({
+      id: 'r3-3', era: '総復習', grade: 'レベル3', crumbTail: 'レベル3 総復習', no: '🏁', doneLabel: 'レベル3クリア！おめでとう🏆',
+      title: 'レベル3クリア（総復習）',
+      frame: '<p>いよいよ、レベル3の<b>しあげ</b>です。全16話から、<b>1話につき1問</b>、まぜこぜで出します。さらに、<b>並べかえ問題</b>も入っています。ここまで来たキミなら、きっと大丈夫。</p>',
+      goals: goals,
+      mistakes: M,
+      body: '<p>上の4つは、生物・化学・物理・地学、それぞれの話です。わすれていた話があれば、その話にもどって、読みなおしましょう。</p><p>そのあと、<b>' + (16 + OQ3.length) + '問</b>に挑戦。全部とけたら、<b>レベル3クリア</b>です。一度で満点でなくても、だいじょうぶ。くり返すほど、点につながります。</p>',
+      questions: Q.concat(OQ3),
+      secrets: S,
+      secretFoot: 'レベル3、おつかれさま。この裏話は、人に話せる“持ちネタ”。次は、レベル4でお会いしましょう。'
+    });
+  })();
+  var REVIEW_ROWS = { 8: { no: '①', label: '復習①（第1〜8話）' }, 16: { no: '②', label: '復習②（第9〜16話）' } };
+  var curF = 'all';
+
+  function navSeq() {
+    var seq = [];
+    LV3.forEach(function (it) {
+      if (lessonById(it.id)) seq.push({ id: it.id, label: '第' + it.no + '話' });
+      if (REVIEW_ROWS[it.no] && lessonById('r3-' + (it.no / 8))) seq.push({ id: 'r3-' + (it.no / 8), label: '復習' + REVIEW_ROWS[it.no].no });
+    });
+    if (lessonById('r3-3')) seq.push({ id: 'r3-3', label: '総復習' });
+    return seq;
+  }
+  function navButtons(id) {
+    var seq = navSeq(), i = -1;
+    for (var k = 0; k < seq.length; k++) if (seq[k].id === id) { i = k; break; }
+    var prev = i > 0 ? seq[i - 1] : null, next = (i >= 0 && i < seq.length - 1) ? seq[i + 1] : null;
+    return {
+      prev: prev ? '<button class="nav-btn" type="button" data-go="' + prev.id + '">← ' + prev.label + '</button>' : '<span></span>',
+      next: next ? '<button class="nav-btn primary" type="button" data-go="' + next.id + '">' + next.label + ' →</button>' : '<button class="nav-btn primary" type="button" data-toc="1">目次へ</button>'
+    };
+  }
+
+  function listHTML() {
+    var cleared = getCleared(), h = '<div class="lc-grid">';
+    LV3.forEach(function (it) {
+      if (curF !== 'all' && it.f !== curF) return;
+      var chips = '<span class="lc-chips"><span class="fld ' + it.f + '">' + FLD[it.f] + '</span><span class="fld gr">' + it.g + '</span></span>';
+      if (lessonById(it.id)) {
+        var dn = cleared.indexOf(it.id) >= 0;
+        h += '<button class="lc ready' + (dn ? ' cleared' : '') + '" type="button" data-go="' + it.id + '"><span class="lc-no">' + (dn ? '✓' : it.no) + '</span><span class="lc-main"><span class="lc-ttl">' + it.t + '</span>' + chips + '</span><span class="lc-tag">' + (dn ? 'クリア済み' : 'はじめる →') + '</span></button>';
+      } else {
+        h += '<div class="lc soon"><span class="lc-no">' + it.no + '</span><span class="lc-main"><span class="lc-ttl">' + it.t + '</span>' + chips + '</span><span class="lc-tag">準備中</span></div>';
+      }
+      if (curF === 'all' && REVIEW_ROWS[it.no]) {
+        var r = REVIEW_ROWS[it.no];
+        var rid = 'r3-' + (it.no / 8);
+        if (lessonById(rid)) {
+          var rd = cleared.indexOf(rid) >= 0;
+          h += '<button class="lc ready' + (rd ? ' cleared' : '') + '" type="button" data-go="' + rid + '"><span class="lc-no">' + (rd ? '✓' : r.no) + '</span><span class="lc-main"><span class="lc-ttl">' + r.label + '</span></span><span class="lc-tag">' + (rd ? 'クリア済み' : 'はじめる →') + '</span></button>';
+        } else {
+          h += '<div class="lc soon"><span class="lc-no">' + r.no + '</span><span class="lc-main"><span class="lc-ttl">' + r.label + '</span></span><span class="lc-tag">準備中</span></div>';
+        }
+      }
+    });
+    if (curF === 'all') {
+      if (lessonById('r3-3')) {
+        var fd = cleared.indexOf('r3-3') >= 0;
+        h += '<button class="lc ready' + (fd ? ' cleared' : '') + '" type="button" data-go="r3-3"><span class="lc-no">' + (fd ? '✓' : '🏁') + '</span><span class="lc-main"><span class="lc-ttl">レベル3クリア（総復習）</span></span><span class="lc-tag">' + (fd ? 'クリア済み' : 'はじめる →') + '</span></button>';
+      } else {
+        h += '<div class="lc soon"><span class="lc-no">🏁</span><span class="lc-main"><span class="lc-ttl">レベル3クリア（総復習）</span></span><span class="lc-tag">準備中</span></div>';
+      }
+    }
+    return h + '</div>';
+  }
+
+  function buildHome() {
+    var cleared = getCleared(), total = LV3.length, cc = 0;
+    cleared.forEach(function (id) { if (/^l3-/.test(id) && lessonById(id)) cc++; });
+    var tc = todayCount(), pct = Math.round(cc / total * 100);
+    var mmsg = (cc >= total) ? 'レベル3、全部クリア！すごい🏆' : (tc > 0 ? 'きょうも進んだね！この調子🔥' : 'きょうは1話からはじめよう。');
+    var h = '<div class="home-h1">中学理科　レベル3</div>'
+      + '<p class="home-lead">暗記が中心の編。テストによく出る実験の結果や式を、丸ごと覚えます。計算は、わり算かかけ算を1回だけ。生物・化学・物理・地学を、1話ずつ順にまわります。</p>'
+      + '<div class="meter"><div class="meter-h">📊 今日の自分メーター</div><div class="meter-row">'
+      + '<div class="meter-stat"><span class="num">' + tc + '</span><span class="lbl">きょう やった話</span></div>'
+      + '<div class="meter-stat"><span class="num">' + cc + ' / ' + total + '</span><span class="lbl">クリアした話</span></div></div>'
+      + '<div class="meter-bar"><i style="width:' + pct + '%"></i></div><p class="meter-msg">' + mmsg + '</p></div>'
+      + '<div class="home-note">レベル3は<b>全16話＋復習＋総復習</b>。ここを終えれば、テストによく出る<b>実験の結果と式</b>が、ひと通り言えるようになります。各話の最後には<b>「学校では教えてくれない裏話」</b>つき。</div>';
+    h += '<details class="intro"><summary>📖 はじめに・つかいかた（最初に読んでね）<span class="chev">▼</span></summary><div class="intro-body">'
+      + '<p>理科は、<b>「見た目・しくみ・はたらき」を図でつかむ</b>教科。理科は、<b>暗記で取れる点</b>がたくさんあります。レベル3は、<b>丸暗記</b>がメイン。計算は、わり算かかけ算を<b>1回だけ</b>です。理屈は、分からなくてOK。<b>覚えるまで、声に出して、紙に書く</b>。それだけで点になります。</p>'
+      + '<div class="intro-h">📝 つかいかた（3ステップ）</div>'
+      + '<ol class="steps"><li>「まず、いまの話でイメージ」＋「おぼえる○つ」で、ざっくりつかむ</li><li>「やさしく読む」の本文を<b>声に出して3回</b>読む（音読ボタンで数える）</li><li>問題をとく → 解説を読む → まちがえたら図にもどる</li></ol>'
+      + '<div class="intro-h">🔁 いちばん大事なこと：1回でやめない</div>'
+      + '<p>1回目は「知る」。くり返すほど「わかる」→「できる」に変わります。<b>まずは同じ話を最低5回。</b>そのあとは、何も見ずにスラスラ全問正解できるまで。1回で完ぺきな人はいません。</p>'
+      + '<div class="intro-h">🧭 レベルのすすみ方</div>'
+      + '<p class="flow">レベル1（基礎のことば）→ レベル3（定番の基本問題）→ レベル3（計算の入門）→ レベル4（上位ねらい）</p>'
+      + '<div class="intro-h">💪 うまくいくコツ</div>'
+      + '<ul class="tips"><li>🗓️ 1日1話でOK。毎日ちょっとずつが勝ち。</li><li>🖍️ 図は<b>指でなぞりながら</b>、名前を声に出して言う。</li><li>✍️ 覚えるコツは、<b>声に出す → 紙に書く → 見ないで書く</b>。1回で覚えなくて大丈夫。</li><li>🔎 学校で習っている分野だけやりたいときは、下の<b>分野ボタン</b>でしぼれます。</li><li>🗣️ 最後の「<b>裏話</b>」を家族や友だちに話してみよう。</li></ul>'
+      + '</div></details>';
+    h += '<div class="lv-h">全16話<span class="w">分野ボタンでしぼれます</span></div><p class="lv-sub">学年は、いまの教科書にあわせた目安です。</p>';
+    h += '<div class="ffilter">';
+    [['all', 'ぜんぶ']].concat(Object.keys(FLD).map(function (k) { return [k, FLD[k]]; })).forEach(function (p) {
+      h += '<button type="button" class="fbtn' + (curF === p[0] ? ' on' : '') + '" data-f="' + p[0] + '">' + p[1] + '</button>';
+    });
+    h += '</div><div id="lvlist">' + listHTML() + '</div>';
+    home.innerHTML = h;
+    wireHome();
+  }
+  function wireHome() {
+    home.querySelectorAll('.fbtn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        curF = b.getAttribute('data-f');
+        home.querySelectorAll('.fbtn').forEach(function (x) { x.classList.toggle('on', x === b); });
+        document.getElementById('lvlist').innerHTML = listHTML();
+        wireList();
+      });
+    });
+    wireList();
+  }
+  function wireList() {
+    home.querySelectorAll('#lvlist [data-go]').forEach(function (el) {
+      el.addEventListener('click', function () { location.hash = el.getAttribute('data-go'); });
+    });
+  }
+    function orderHTML(q, qi) {
+    var n = q.items.length, idx = [], i, j, t;
+    for (i = 0; i < n; i++) idx.push(i);
+    for (i = n - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = idx[i]; idx[i] = idx[j]; idx[j] = t; }
+    var h = '<div class="q-card ord"><p class="ask"><span class="qn">問' + (qi + 1) + '</span>' + q.ask + '</p><div class="ord-grid">';
+    idx.forEach(function (step, k) {
+      h += '<button type="button" class="ord-item" data-step="' + step + '" data-num="' + (k + 1) + '"><span class="ord-num">' + (k + 1) + '</span>' + q.items[step] + '<span class="ord-pick"></span></button>';
+    });
+    h += '</div><div class="ord-bar"><span class="ord-seq">1番目だと思う図から、タップしてね</span><button type="button" class="ord-reset">やりなおす</button></div>';
+    var ans = '';
+    for (i = 0; i < n; i++) { var num = idx.indexOf(i) + 1; ans += (i + 1) + '番目：<b>' + num + '</b>　' + q.names[i] + '<br>'; }
+    h += '<div class="ex-src"><span class="ex-vo">' + q.vo + '</span><span class="ex-vn">' + q.vn + '</span><span class="ex-why">' + q.why + '</span><span class="ex-ans">' + ans + '</span></div></div>';
+    return h;
+  }
+
+  function buildLessonHTML(L, idx) {
+    var prev = idx > 0 ? LESSONS[idx - 1] : null;
+    var next = idx < LESSONS.length - 1 ? LESSONS[idx + 1] : null;
+
+    var h = '<div class="crumbs"><span class="fld ' + ({ '生物': 'bio', '化学': 'che', '物理': 'phy', '地学': 'ear' }[L.era] || 'gr') + '">' + L.era + '</span><span class="fld gr">' + L.grade + '</span><span class="cr-no">' + (L.crumbTail || ('レベル3　第' + L.no + '話')) + '</span></div>'
+      + '<h1>' + L.title + '</h1>'
+      + '<p class="subhead">知らない言葉は全部とちゅうで説明します。まちがえても大丈夫。</p>';
+
+    var oc = lsGet('rk3_ondoku_' + L.id, 0), dots = '';
+    for (var di = 0; di < 5; di++) dots += '<span class="d' + (di < oc ? ' on' : '') + '"></span>';
+    var ondoku = '<div class="ondoku"><div class="ondoku-top"><span class="ondoku-lbl">👄 上の本文を音読しよう<span class="ondoku-sub">目標3回・最大5回</span></span><span class="ondoku-count">' + oc + '/5</span></div>'
+      + '<div class="ondoku-dots">' + dots + '</div><div class="ondoku-actions"><button type="button" class="ondoku-btn"' + (oc >= 5 ? ' disabled' : '') + '>読んだ！＋1</button><button type="button" class="ondoku-reset">リセット</button></div>'
+      + '<p class="ondoku-praise"' + (oc >= 3 ? '' : ' hidden') + '>' + (oc >= 5 ? '5回、おみごと！もうスラスラだね🏆' : (oc >= 3 ? '3回クリア！読む力がついてきてる💪' : '')) + '</p></div>';
+    h += '<div class="frame"><span class="frame-tag"><span class="dot"></span>まず、いまの話でイメージ</span>' + L.frame + '</div>';
+
+    h += '<div class="lesson-head"><span class="num-badge">1</span>この話でおぼえる' + L.goals.length + 'つ</div>'
+      + '<p class="sec-note">まずこれだけ。あとで全部そのまま問題に出ます。</p><div class="goals">';
+    L.goals.forEach(function (g) {
+      h += '<div class="goal"><span class="ic">' + g.ic + '</span><div><span class="k">' + g.k + '</span><span class="d">' + g.d + '</span></div></div>';
+    });
+    h += '</div>';
+
+    if (L.mistakes && L.mistakes.length) {
+      h += '<div class="mistakes"><div class="mistakes-h">⚠️ ここ、みんなよく間違える</div><ul>';
+      L.mistakes.forEach(function (m) { h += '<li><p class="mx">✕ ' + m.x + '</p><p class="mo">◯ ' + m.o + '</p></li>'; });
+      h += '</ul></div>';
+    }
+
+    h += '<div class="lesson-head"><span class="num-badge">2</span>やさしく読む</div>'
+      + '<p class="sec-note">おぼえる言葉が、お話の中でどうつながるかを見ます。</p>'
+      + '<div class="read">' + L.body + '</div>';
+    h += ondoku;
+
+    if (L.svg || (L.photos && L.photos.length)) {
+      if (L.svg) h += '<div class="figure">' + L.svg + '<div class="figcap">' + L.svgCap + '</div></div>';
+      if (L.photos) L.photos.forEach(function (p) {
+        if (p.anno && p.anno.length) {
+          var marks = '';
+          p.anno.forEach(function (a) { marks += '<span class="anno-mark" style="left:' + a.x + '%;top:' + a.y + '%">' + a.n + '</span>'; });
+          h += '<figure class="figure"><div class="annowrap"><img src="' + p.src + '" alt="' + p.cap + '" loading="lazy">' + marks + '</div><div class="figcap">' + p.cap + '<span class="cred">' + p.credit + '</span></div></figure>';
+        } else {
+          h += '<figure class="figure"><img src="' + p.src + '" alt="' + p.cap + '" loading="lazy"><div class="figcap">' + p.cap + '<span class="cred">' + p.credit + '</span></div></figure>';
+        }
+      });
+    }
+
+    if (L.zukai && L.zukai.length) {
+      L.zukai.forEach(function (z) {
+        h += '<div class="zukai"><div class="zukai-h"><span>📊 図解</span><span class="tag">テストによく出る！</span></div>'
+          + '<img src="' + z.src + '" alt="' + z.cap + '" loading="lazy">'
+          + '<div class="zukai-cap">' + z.cap + (z.credit ? '<span class="cred">' + z.credit + '</span>' : '') + '</div></div>';
+      });
+    }
+
+    if (L.note) h += '<div class="notebox">' + L.note + '</div>';
+
+    h += '<div class="q-head"><span class="num-badge">3</span>といてみよう</div>'
+      + '<p class="sec-note">答えのあとに、なぜそうなるか全部説明します。</p>'
+      + '<div class="progress"><span>できた</span><span class="count"><span class="score">0</span> / ' + L.questions.length + '</span><span class="bar"><i class="barFill"></i></span></div>';
+
+    L.questions.forEach(function (q, qi) {
+      if (q.order) { h += orderHTML(q, qi); return; }
+      var shuffled = q.opts.slice();
+      for (var i = shuffled.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = t; }
+      h += '<div class="q-card"><p class="ask"><span class="qn">問' + (qi + 1) + '</span>' + q.ask + '</p><div class="opts">';
+      shuffled.forEach(function (op, oi) {
+        h += '<button type="button" class="opt" data-ok="' + (op.ok ? '1' : '0') + '"><span class="mk">' + MARKS[oi] + '</span><span>' + op.t + '</span></button>';
+      });
+      h += '</div><div class="ex-src"><span class="ex-vo">' + q.vo + '</span><span class="ex-vn">' + q.vn + '</span><span class="ex-why">' + q.why + '</span></div></div>';
+    });
+
+    h += '<div class="done"><div class="done-head">🎉 ' + (L.doneLabel || ('第' + L.no + '話クリア!')) + '</div><span class="score-final">0 / ' + L.questions.length + '</span><p class="done-msg"></p></div>';
+
+    h += '<div class="secret"><div class="secret-head"><span>🔓</span>学校では教えてくれない<ruby>裏話<rt>うらばなし</rt></ruby></div>'
+      + '<p class="secret-lead">ここまで解いたキミへ。テストには出ないけど、クラスのほとんどが知らない話を' + L.secrets.length + 'つ。</p>';
+    L.secrets.forEach(function (s) {
+      h += '<div class="secret-item"><div class="si-no">' + s.no + '</div><div class="si-body"><p class="si-ttl">' + s.ttl + '</p><p>' + s.body + '</p><p class="si-point">' + s.point + '</p></div></div>';
+    });
+    h += '<p class="secret-foot">' + L.secretFoot + '</p></div>';
+
+    var nb = navButtons(L.id);
+    h += '<div class="nav-row">'
+      + nb.prev
+      + '<button class="nav-btn toc" type="button" data-toc="1">目次へ</button>'
+      + '<button class="nav-btn retry" type="button">もう一度とく</button>'
+      + nb.next
+      + '</div>';
+
+    return h;
+  }
+
+    function wireOrder(card, update) {
+    var items = card.querySelectorAll('.ord-item'), picks = [];
+    var seq = card.querySelector('.ord-seq'), reset = card.querySelector('.ord-reset');
+    function clear() {
+      picks = [];
+      items.forEach(function (b) { b.classList.remove('picked'); b.querySelector('.ord-pick').textContent = ''; });
+      seq.textContent = '1番目だと思う図から、タップしてね';
+    }
+    function finish() {
+      var ok = true;
+      picks.forEach(function (p, i) {
+        var good = Number(p.getAttribute('data-step')) === i;
+        if (!good) ok = false;
+        p.classList.remove('picked'); p.classList.add(good ? 'ok' : 'ng');
+        p.querySelector('.ord-pick').textContent = (good ? '○ ' : '× ') + (i + 1) + '番目';
+      });
+      card.dataset.done = '1'; if (ok) card.dataset.correct = '1';
+      reset.disabled = true; items.forEach(function (b) { b.disabled = true; });
+      var src = card.querySelector('.ex-src');
+      var ex = document.createElement('div');
+      ex.className = 'explain ' + (ok ? 'ok' : 'ng');
+      ex.innerHTML = '<span class="verdict">' + (ok ? src.querySelector('.ex-vo').innerHTML : src.querySelector('.ex-vn').innerHTML) + '</span><p>' + src.querySelector('.ex-why').innerHTML + '</p><p>正しい順は、こうです。<br>' + src.querySelector('.ex-ans').innerHTML + '</p>';
+      card.appendChild(ex);
+      update();
+    }
+    items.forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (card.dataset.done || b.classList.contains('picked')) return;
+        picks.push(b); b.classList.add('picked'); b.querySelector('.ord-pick').textContent = picks.length + '番目';
+        seq.textContent = '選んだ順：' + picks.map(function (p) { return p.getAttribute('data-num'); }).join(' → ');
+        if (picks.length === items.length) finish();
+      });
+    });
+    reset.addEventListener('click', function () { if (!card.dataset.done) clear(); });
+  }
+
+  function wireLesson(L) {
+    var sf = stage.querySelector('.score-final');
+    var doneBox = stage.querySelector('.done');
+    var secretBox = stage.querySelector('.secret');
+    var cards = stage.querySelectorAll('.q-card');
+
+    function update() {
+      var ans = 0, sc = 0;
+      cards.forEach(function (c) { if (c.dataset.done) ans++; if (c.dataset.correct) sc++; });
+      stage.querySelector('.score').textContent = sc;
+      stage.querySelector('.barFill').style.width = Math.round(ans / cards.length * 100) + '%';
+      if (ans === cards.length) {
+        markCleared(L.id);
+        sf.textContent = sc + ' / ' + cards.length;
+        var m;
+        if (sc === cards.length) m = '全問正解! でも“1回だけ”じゃもったいない。何も見ずにまたスラスラ解けたら本物。最低5回、完ぺきになるまで基礎練しよう💪';
+        else if (sc >= Math.ceil(cards.length * 0.6)) m = 'いい感じ! まちがえた解説をもう一度読んで、もう一周。基礎は最低5回、完ぺきになるまでくり返すのが近道。';
+        else m = '大丈夫。解説を読んで、もう一度といてみよう。1回でできる人はいません。くり返すほどできるようになる——まずは最低5回！';
+        stage.querySelector('.done-msg').textContent = m;
+        doneBox.classList.add('on'); secretBox.classList.add('on');
+        doneBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    cards.forEach(function (card) {
+      if (card.classList.contains('ord')) { wireOrder(card, update); return; }
+      var opts = card.querySelectorAll('.opt');
+      opts.forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (card.dataset.done) return;
+          card.dataset.done = '1';
+          var ok = b.getAttribute('data-ok') === '1';
+          if (ok) card.dataset.correct = '1';
+          opts.forEach(function (x) { x.disabled = true; });
+          if (ok) { b.classList.add('correct'); }
+          else { b.classList.add('wrong'); opts.forEach(function (x) { if (x.getAttribute('data-ok') === '1') x.classList.add('correct'); }); }
+          opts.forEach(function (x) { if (!x.classList.contains('correct') && !x.classList.contains('wrong')) x.classList.add('dim'); });
+          var src = card.querySelector('.ex-src');
+          var ex = document.createElement('div');
+          ex.className = 'explain ' + (ok ? 'ok' : 'ng');
+          ex.innerHTML = '<span class="verdict">' + (ok ? src.querySelector('.ex-vo').innerHTML : src.querySelector('.ex-vn').innerHTML) + '</span><p>' + src.querySelector('.ex-why').innerHTML + '</p>';
+          card.appendChild(ex);
+          update();
+        });
+      });
+    });
+
+    var ond = stage.querySelector('.ondoku');
+    if (ond) {
+      var okey = 'rk3_ondoku_' + L.id;
+      var obtn = ond.querySelector('.ondoku-btn'), orst = ond.querySelector('.ondoku-reset');
+      var odots = ond.querySelectorAll('.ondoku-dots .d'), ocnt = ond.querySelector('.ondoku-count'), opr = ond.querySelector('.ondoku-praise');
+      var opaint = function (n) {
+        for (var i = 0; i < 5; i++) odots[i].classList.toggle('on', i < n);
+        ocnt.textContent = n + '/5'; obtn.disabled = n >= 5;
+        if (n >= 3) { opr.hidden = false; opr.textContent = n >= 5 ? '5回、おみごと！もうスラスラだね🏆' : '3回クリア！読む力がついてきてる💪'; }
+        else opr.hidden = true;
+      };
+      obtn.addEventListener('click', function () { var n = lsGet(okey, 0); if (n < 5) { n++; lsSet(okey, n); opaint(n); } });
+      orst.addEventListener('click', function () { lsSet(okey, 0); opaint(0); });
+    }
+    stage.querySelectorAll('[data-go]').forEach(function (el) { el.addEventListener('click', function () { location.hash = el.getAttribute('data-go'); }); });
+    stage.querySelectorAll('[data-toc]').forEach(function (toc) { toc.addEventListener('click', function () { location.hash = ''; }); });
+    var retry = stage.querySelector('.retry'); if (retry) retry.addEventListener('click', function () { render(L.id); window.scrollTo(0, 0); });
+  }
+
+
+  function render(id) {
+    var L = lessonById(id);
+    if (L) {
+      stage.innerHTML = buildLessonHTML(L, LESSONS.indexOf(L));
+      wireLesson(L);
+      stage.hidden = false; home.hidden = true; window.scrollTo(0, 0);
+    } else {
+      buildHome();
+      stage.hidden = true; home.hidden = false; window.scrollTo(0, 0);
+    }
+  }
+  function route() { render((location.hash || '').replace('#', '')); }
+  window.addEventListener('hashchange', route);
+  document.getElementById('brand').addEventListener('click', function () { location.hash = ''; });
+  var home = document.getElementById('home'), stage = document.getElementById('stage');
+  route();
+</script>
+
+</body>
+</html>
